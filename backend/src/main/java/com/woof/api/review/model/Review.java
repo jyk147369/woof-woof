@@ -2,8 +2,8 @@ package com.woof.api.review.model;
 
 
 import com.woof.api.orders.model.Orders;
-import com.woof.api.productCeo.model.ProductCeo;
-import com.woof.api.productManager.model.ProductManager;
+import com.woof.api.product.model.entity.ProductSchool;
+import com.woof.api.product.model.entity.ProductManager;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -30,7 +30,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productCeo_idx")
-    ProductCeo productCeo; //상품 : 리뷰 = 1 : N
+    ProductSchool productSchool; //상품 : 리뷰 = 1 : N
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productManagerIdx")
@@ -41,11 +41,11 @@ public class Review {
     Orders orders; //주문 : 리뷰 = 1 : N
 
     @Builder
-    public Review(Long idx, String name, String text, ProductCeo productCeo, Integer productNumber, ProductManager productManager, Orders orders ){
+    public Review(Long idx, String name, String text, ProductSchool productSchool, Integer productNumber, ProductManager productManager, Orders orders ){
         this.idx = idx;
         this.name = name;
         this.text = text;
-        this.productCeo = productCeo;
+        this.productSchool = productSchool;
         this.productManager = productManager;
 //        this.productNumber = productNumber;
         this.orders = orders;

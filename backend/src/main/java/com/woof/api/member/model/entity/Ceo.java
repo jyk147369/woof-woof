@@ -1,7 +1,6 @@
 package com.woof.api.member.model.entity;
 
 import com.woof.api.orders.model.Orders;
-import com.woof.api.productCeo.model.ProductCeo;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +21,7 @@ public class Ceo implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
-
+    private String storeName;       // 내가 추가
     private String email;
     private String password;
     private String businessnum;

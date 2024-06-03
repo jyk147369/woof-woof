@@ -2,8 +2,8 @@ package com.woof.api.cart.model;
 
 
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.productCeo.model.ProductCeo;
-import com.woof.api.productManager.model.ProductManager;
+import com.woof.api.product.model.entity.ProductSchool;
+import com.woof.api.product.model.entity.ProductManager;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,7 +28,7 @@ public class Cart {
     // 즐겨찾기 : 업체 = N : 1
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productCeo_idx")
-    private ProductCeo productCeo;
+    private ProductSchool productSchool;
 
     // 즐겨찾기 : 매니저 = N : 1
     @ManyToOne(fetch = FetchType.EAGER)

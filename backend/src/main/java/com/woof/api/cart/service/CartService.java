@@ -7,15 +7,11 @@ import com.woof.api.cart.repository.CartRepository;
 import com.woof.api.cart.repository.querydsl.CartRepositoryCustomImpl;
 import com.woof.api.common.Response;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.member.repository.MemberRepository;
-import com.woof.api.productCeo.model.ProductCeo;
-import com.woof.api.productCeo.repository.ProductCeoRepository;
-import com.woof.api.productManager.model.ProductManager;
-import com.woof.api.productManager.repository.ProductManagerRepository;
+import com.woof.api.product.model.entity.ProductSchool;
+import com.woof.api.product.model.entity.ProductManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 
@@ -35,7 +31,7 @@ public class CartService {
                 .member(Member.builder()
                         .idx(request.getMemberIdx())
                         .build())
-                .productCeo(ProductCeo.builder()
+                .productSchool(ProductSchool.builder()
                         .idx(request.getProductCeoIdx())
                         .build())
                 .productManager(ProductManager.builder()
@@ -48,7 +44,7 @@ public class CartService {
                 .result(CartCreateRes.builder()
                         .cartIdx(cart.getIdx())
                         .memberIdx(cart.getMember().getIdx())
-                        .productCeoIdx(cart.getProductCeo().getIdx())
+                        .productCeoIdx(cart.getProductSchool().getIdx())
                         .productManagerIdx(cart.getProductManager().getIdx())
                         .build())
                 .build();
@@ -71,8 +67,8 @@ public class CartService {
             CartListRes cartListRes = CartListRes.builder()
                     .cartIdx(cart.getIdx())
                     .memberIdx(cart.getMember().getIdx())
-                    .productCeoIdx(cart.getProductCeo().getIdx())
-                    .productCeoStoreName(cart.getProductCeo().getStoreName())
+                    .productCeoIdx(cart.getProductSchool().getIdx())
+                    .productCeoStoreName(cart.getProductSchool().getStoreName())
                     .productManagerIdx(cart.getProductManager().getIdx())
                     .productMangerName(cart.getProductManager().getManagerName())
                     .build();
