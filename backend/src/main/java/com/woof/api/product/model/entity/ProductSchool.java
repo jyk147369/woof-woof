@@ -2,7 +2,7 @@ package com.woof.api.product.model.entity;
 
 import com.woof.api.cart.model.Cart;
 import com.woof.api.orders.model.Orders;
-import com.woof.api.review.model.Review;
+import com.woof.api.review.model.entity.Review;
 import lombok.*;
 
 import javax.persistence.*;

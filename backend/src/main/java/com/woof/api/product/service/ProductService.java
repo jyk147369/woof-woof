@@ -46,6 +46,7 @@ public class ProductService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Transactional
     public ProductSchoolCreateResult createSchool(ProductSchoolCreateReq productSchoolCreateReq) {
         Ceo ceo = ((Ceo) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ProductSchool productSchool = ProductSchool.builder()
@@ -138,17 +139,8 @@ public class ProductService {
 
     @Transactional
     public ProductSchoolReadRes readSchool(Long idx) {
-        Optional<ProductSchool> resultCeo = productSchoolRepository.findByIdx(idx);
-
-        ProductSchool productSchool = resultCeo.get();
-        List<ProductImage> productImages = productSchool.getProductImages();
-
-        String filenames = "";
-        for (ProductImage productImage : productImages) {
-            String filename = productImage.getFilename();
-            filenames += filename + ",";
-        }
-        filenames = filenames.substring(0, filenames.length() - 1);
+        ProductSchool productSchool = productSchoolRepository
+                .findByIdx(idx).orElseThrow(() -> new RuntimeException("해당 idx의 상품을 찾을 수 없습니다."));
 
         return ProductSchoolReadRes.builder()
                 .idx(productSchool.getIdx())
@@ -156,7 +148,6 @@ public class ProductService {
                 .businessNum(productSchool.getBusinessNum())
                 .price(productSchool.getPrice())
                 .contents(productSchool.getContents())
-//                .filename(filenames)
                 .build();
     }
 
@@ -306,17 +297,8 @@ public class ProductService {
 
     @Transactional
     public ProductManagerReadRes readManager(Long idx) {
-        Optional<ProductManager> resultCeo = productManagerRepository.findByIdx(idx);
-
-        ProductManager productManager = resultCeo.get();
-        List<ProductImage> productImages = productManager.getProductImages();
-
-        String filenames = "";
-        for (ProductImage productImage : productImages) {
-            String filename = productImage.getFilename();
-            filenames += filename + ",";
-        }
-        filenames = filenames.substring(0, filenames.length() - 1);
+        ProductManager productManager = productManagerRepository.findByIdx(idx)
+                .orElseThrow(() -> new RuntimeException("해당 idx의 매니저를 찾을 수 없습니다."));
 
         return ProductManagerReadRes.builder()
                 .idx(productManager.getIdx())
@@ -326,7 +308,6 @@ public class ProductService {
                 .price(productManager.getPrice())
                 .career(productManager.getCareer())
                 .contents(productManager.getContents())
-//                .filename(filenames)
                 .build();
     }
 

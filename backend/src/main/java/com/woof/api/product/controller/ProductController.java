@@ -84,7 +84,7 @@ public class ProductController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/manager/delete")
     public ResponseEntity<String> deleteManager(@RequestParam Long idx) {
         productService.deleteManager(idx);
-        return ResponseEntity.ok().body("매니저 idx" + idx + "삭제 완료");
+        return ResponseEntity.ok().body("매니저 idx : " + idx + "삭제 완료");
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/manager/files/{productManagerIdx}")
@@ -155,12 +155,18 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/school/files/{productSchoolIdx}")
-    public ResponseEntity<List<ProductFileDto>> listFilesByProductSchoolId(@PathVariable Long productSchoolIdx) {
+    public ResponseEntity<List<ProductFileDto>> listFilesByProductSchoolIdx(@PathVariable Long productSchoolIdx) {
         List<ProductFileDto> files = productService.listFilesByProductSchoolIdx(productSchoolIdx);
         return ResponseEntity.ok().body(files);
     }
 
     // ----------------------------------------------------------------------------------------------- //
+
+    @RequestMapping(method = RequestMethod.POST, value = "/uploadFile")
+    private void uploadFile(MultipartFile uploadFile, Long productIdx) {
+        String uploadPath = productService.uploadFile(uploadFile, productIdx);
+        productService.saveFile(productIdx, uploadPath);
+    }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteFile")
     public ResponseEntity<String> deleteFile(@RequestParam Long fileId) {

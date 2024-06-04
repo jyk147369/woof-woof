@@ -1,53 +1,96 @@
 package com.woof.api.review.controller;
 
 
-import com.woof.api.review.model.dto.ReviewDto;
-import com.woof.api.review.model.dto.ReviewResDto;
-import com.woof.api.review.service.ReviewNotFoundException;
+import com.woof.api.product.model.dto.ProductFileDto;
+import com.woof.api.product.model.dto.manager.ProductManagerListRes;
+import com.woof.api.product.model.dto.manager.ProductManagerUpdateReq;
+import com.woof.api.review.model.dto.*;
 import com.woof.api.review.service.ReviewService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/review")
 @CrossOrigin("*")
 public class ReviewController {
-    ReviewService reviewService;
+    private final ReviewService reviewService;
 
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 
-    @ApiOperation(value="리뷰 생성", notes="회원이 리뷰를 생성한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity create(@RequestBody ReviewDto reviewDto) {
-        ReviewResDto reviewResDto = reviewService.create(reviewDto);
-        return ResponseEntity.ok().body(reviewResDto);
-    }
+    public ResponseEntity<ReviewCreateRes> createReview(
+            @RequestPart ReviewCreateReq reviewCreateReq,
+            @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
+        ReviewCreateResult reviewCreateResult = reviewService.create(reviewCreateReq);
 
-    @ApiOperation(value="리뷰 조회", notes="회원이 리뷰를 조회한다.")
-    @RequestMapping(method = RequestMethod.GET, value = "/read")
-    public ResponseEntity read(Long idx) {
-        return ResponseEntity.ok().body(reviewService.read(idx));
-    }
-
-    @ApiOperation(value="리뷰 수정", notes="회원이 리뷰 idx를 입력하여 특정 리뷰를 수정한다.")
-    @PatchMapping("/update/{idx}")
-    public ResponseEntity<String> update(@PathVariable Long idx, @RequestBody ReviewDto reviewDto) {
-        try {
-            reviewService.update(idx, reviewDto);
-            return ResponseEntity.ok().body("리뷰가 성공적으로 업데이트되었습니다.");
-        } catch (ReviewNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        if (uploadFiles != null) {
+            for (MultipartFile uploadFile : uploadFiles) {
+                String uploadPath = reviewService.uploadFile(uploadFile, reviewCreateResult.getIdx());
+                reviewService.saveFile(reviewCreateResult.getIdx(), uploadPath);
+            }
         }
+
+        ReviewCreateRes response = ReviewCreateRes.builder()
+                .code(1000)
+                .message("요청 성공.")
+                .success(true)
+                .isSuccess(true)
+                .result("리뷰 idx : " + reviewCreateResult.getIdx())
+                .build();
+        return ResponseEntity.ok().body(response);
     }
 
-    @ApiOperation(value="리뷰 삭제", notes="회원이 리뷰를 삭제한다.")
-    @RequestMapping(method = RequestMethod.DELETE, value = "/delete")
-    public ResponseEntity delete(Long idx) {
+    @RequestMapping(method = RequestMethod.GET, value = "/manager/list")
+    public ResponseEntity<ReviewListRes> listByManager(Long managerIdx) {
+        return ResponseEntity.ok().body(reviewService.listByManager(managerIdx));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/school/list")
+    public ResponseEntity<ReviewListRes> listBySchool(Long schoolIdx) {
+        return ResponseEntity.ok().body(reviewService.listBySchool(schoolIdx));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/mylist")
+    public ResponseEntity<ReviewListRes> myList(Long memberIdx) {
+        return ResponseEntity.ok().body(reviewService.myList(memberIdx));
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH, value = "/update")
+    public ResponseEntity<String> update(@RequestPart ReviewUpdateReq reviewUpdateReq,
+                                         @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
+        reviewService.update(reviewUpdateReq);
+
+        if (uploadFiles != null) {
+            for (MultipartFile uploadFile : uploadFiles) {
+                String uploadPath = reviewService.uploadFile(uploadFile, reviewUpdateReq.getIdx());
+                reviewService.saveFile(reviewUpdateReq.getIdx(), uploadPath);
+            }
+        }
+        return ResponseEntity.ok("수정 완료");
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH, value = "/delete")
+    public ResponseEntity<String> delete(@RequestParam Long idx) {
         reviewService.delete(idx);
-        return ResponseEntity.ok().body("리뷰가 삭제되었습니다.");
+        return ResponseEntity.ok().body("리뷰 idx : " + idx + "삭제 완료");
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/files/{reviewIdx}")
+    public ResponseEntity<List<ReviewFileDto>> listFilesByReviewIdx(@PathVariable Long reviewIdx) {
+        List<ReviewFileDto> files = reviewService.listFilesByReviewIdx(reviewIdx);
+        return ResponseEntity.ok().body(files);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteFile")
+    public ResponseEntity<String> deleteFile(@RequestParam Long fileId) {
+        reviewService.deleteFile(fileId);
+        return ResponseEntity.ok("파일 id " + fileId + " 삭제 완료");
     }
 }
