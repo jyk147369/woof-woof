@@ -1,6 +1,6 @@
 package com.woof.api.member.model.entity;
 
-import com.woof.api.cart.model.Cart;
+import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.orders.model.Orders;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +30,7 @@ public class Member implements UserDetails {
     private boolean status;
 
     @OneToMany(mappedBy = "member")
-    List<Cart> carts = new ArrayList<>();
+    List<Bookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     List<Orders> orders = new ArrayList<>();

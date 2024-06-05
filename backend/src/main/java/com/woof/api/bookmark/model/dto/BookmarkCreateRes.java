@@ -1,4 +1,4 @@
-package com.woof.api.cart.model.dto;
+package com.woof.api.bookmark.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartCreateRes {
-    private Long cartIdx;
+public class BookmarkCreateRes {
+
+    private Long bookmarkIdx;
     private Long memberIdx;
-    private Long productCeoIdx;
-
+    private Long productSchoolIdx;
     private Long productManagerIdx;
-
 }

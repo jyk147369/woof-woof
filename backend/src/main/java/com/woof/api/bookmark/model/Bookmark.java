@@ -1,4 +1,4 @@
-package com.woof.api.cart.model;
+package com.woof.api.bookmark.model;
 
 
 import com.woof.api.member.model.entity.Member;
@@ -14,11 +14,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Setter
 @Builder
-public class Cart {
+public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long idx;
+    private Long idx;
 
     // 즐겨찾기 : 사용자 = N : 1
     @ManyToOne(fetch = FetchType.EAGER)
@@ -34,7 +34,5 @@ public class Cart {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productManager_idx")
     private ProductManager productManager;
-
-
 
 }
