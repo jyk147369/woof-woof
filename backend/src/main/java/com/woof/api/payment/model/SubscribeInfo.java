@@ -1,6 +1,5 @@
 package com.woof.api.payment.model;
 
-import com.woof.api.common.Constants;
 import lombok.Getter;
 
 @Getter

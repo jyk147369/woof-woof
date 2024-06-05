@@ -5,17 +5,12 @@ import com.woof.api.cart.model.Cart;
 import com.woof.api.cart.model.dto.*;
 import com.woof.api.cart.repository.CartRepository;
 import com.woof.api.cart.repository.querydsl.CartRepositoryCustomImpl;
-import com.woof.api.common.Response;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.member.repository.MemberRepository;
 import com.woof.api.productCeo.model.ProductCeo;
-import com.woof.api.productCeo.repository.ProductCeoRepository;
 import com.woof.api.productManager.model.ProductManager;
-import com.woof.api.productManager.repository.ProductManagerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 
