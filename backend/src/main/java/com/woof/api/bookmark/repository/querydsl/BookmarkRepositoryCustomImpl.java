@@ -2,8 +2,6 @@ package com.woof.api.bookmark.repository.querydsl;
 
 
 import com.woof.api.bookmark.model.Bookmark;
-import com.woof.api.bookmark.model.QCart;
-import com.woof.api.member.model.entity.QMember;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +17,11 @@ public class BookmarkRepositoryCustomImpl extends QuerydslRepositorySupport impl
     @Override
     public List<Bookmark> findList(Long memberIdx) {
 
-        QCart cart = new QCart("cart");
+        QBookmark bookmark = new QBookmark("bookmark");
         QMember member = new QMember("member");
 
-        List<Bookmark> result = from(cart)
-                .leftJoin(cart.member, member).fetchJoin()
+        List<Bookmark> result = from(bookmark)
+                .leftJoin(bookmark.member, member).fetchJoin()
                 .distinct().fetch();
 
         return result;

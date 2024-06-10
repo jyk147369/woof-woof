@@ -34,7 +34,7 @@ public class BookmarkController {
     public ResponseEntity<BaseRes> bookmarkList(
             @AuthenticationPrincipal Member member)
     {
-        return ResponseEntity.ok().body(bookmarkService.bookmarkList(memberIdx));
+        return ResponseEntity.ok().body(bookmarkService.bookmarkList(member.getIdx()));
     }
 
 

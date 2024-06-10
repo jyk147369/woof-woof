@@ -6,7 +6,6 @@ import com.woof.api.bookmark.model.dto.*;
 import com.woof.api.bookmark.repository.BookmarkRepository;
 import com.woof.api.bookmark.repository.querydsl.BookmarkRepositoryCustomImpl;
 import com.woof.api.common.BaseRes;
-import com.woof.api.common.Response;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
@@ -48,7 +47,7 @@ public class BookmarkService {
 
         return BaseRes.builder()
                 .isSuccess(true)
-                .message("등록이 성공됐습니다.")
+                .message("즐겨찾기에 추가됐습니다.")
                 .result(BookmarkCreateRes.builder()
                         .bookmarkIdx(bookmark.getIdx())
                         .memberIdx(bookmark.getMember().getIdx())
@@ -60,7 +59,7 @@ public class BookmarkService {
     }
 
 //     즐겨찾기 목록 조회
-    public List<BookmarkListRes> cartList(Long memberIdx) {
+    public BaseRes bookmarkList(Long memberIdx) {
         List<Bookmark> result = bookmarkRepositoryCustomImpl.findList(memberIdx);
         List<BookmarkListRes> list = new ArrayList<>();
 
@@ -75,13 +74,15 @@ public class BookmarkService {
                     .build();
             list.add(bookmarkListRes);
         }
-        return list;
+        return BaseRes.builder().isSuccess(true).message("조회 성공").result(list).build();
     }
 
 
     // @Transactional
-    public void cartRemove(Long idx) {
-        bookmarkRepository.deleteById(idx);
+    public BaseRes deleteBookmark(Long bookmarkIdx) {
+        bookmarkRepository.deleteById(bookmarkIdx);
+
+        return BaseRes.builder().isSuccess(true).message("삭제 성공").result("즐겨찾기 삭제되었습니다.").build();
     }
 
 }
