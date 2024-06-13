@@ -29,7 +29,7 @@ public class Member implements UserDetails {
     private String memberName;
     private String memberNickname;
     private String authority;
-    private boolean status;
+    private Boolean status;
     private String profileImage;
     private LocalDateTime updatedAt;
     private

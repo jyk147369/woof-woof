@@ -27,13 +27,13 @@ public class MemberProfileImageService {
     private String bucket;
     private final AmazonS3 s3;
 
-    public String makeFolder() {
+    private String makeFolder() {
         String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String folderPath = str.replace("/", File.separator);
         return folderPath;
     }
 
-    public String saveFile(MultipartFile productFile) {
+    private String saveFile(MultipartFile productFile) {
         String originalName = productFile.getOriginalFilename();
 
         String folderPath = makeFolder();

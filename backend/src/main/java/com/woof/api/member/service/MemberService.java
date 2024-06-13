@@ -1,15 +1,20 @@
 package com.woof.api.member.service;
 
 import com.woof.api.common.BaseResponse;
+import com.woof.api.member.exception.MemberAccountException;
 import com.woof.api.member.exception.MemberDuplicateException;
+import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.member.model.request.PatchMemberUpdateReq;
+import com.woof.api.member.model.request.PostMemberLoginReq;
 import com.woof.api.member.model.request.PostMemberSignupReq;
 import com.woof.api.member.model.response.GetMemberReadRes;
 import com.woof.api.member.model.response.PatchMemberUpdateRes;
+import com.woof.api.member.model.response.PostMemberLoginRes;
 import com.woof.api.member.model.response.PostMemberSignupRes;
 import com.woof.api.member.repository.MemberProfileImageRepository;
 import com.woof.api.member.repository.MemberRepository;
+import com.woof.api.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,22 +43,22 @@ public class MemberService implements UserDetailsService {
     private final MemberProfileImageService memberProfileImageService;
     private final MemberProfileImageRepository memberProfileImageRepository;
 
-    public Member getMemberByEmail (String email){
-        return memberRepository.findByEmail(email).get();
-    }
+//    public Member getMemberByEmail (String email){
+//        return memberRepository.findByMemberEmail(email).get();
+//    }
 
     // Member CRUD
 
     // create
     @Transactional
     public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq request, MultipartFile profileImage) {
-        memberRepository.findByEmail(request.getMemberEmail()).ifPresent(member -> {
+        memberRepository.findByMemberEmail(request.getMemberEmail()).ifPresent(member -> {
             throw MemberDuplicateException.forMemberId(request.getMemberEmail());
         });
 
         Member member = Member.builder()
                 .memberEmail(request.getMemberEmail())
-                .memberPw(request.getMemberPw())
+                .memberPw(passwordEncoder.encode(request.getMemberPw()))
                 .memberName(request.getMemberName())
                 .memberNickname(request.getMemberNickname())
                 .build();
@@ -71,6 +76,21 @@ public class MemberService implements UserDetailsService {
                 .build();
 
         return BaseResponse.successRes("MEMBER_001", true, "회원이 등록되었습니다.", response);
+    }
+
+    public BaseResponse<PostMemberLoginRes> login(PostMemberLoginReq request){
+        Member member = memberRepository.findByMemberEmail(request.getMemberEmail()).orElseThrow(() ->
+        MemberNotFoundException.forMemberEmail(request.getMemberEmail()));
+
+        PostMemberLoginRes response = PostMemberLoginRes.builder()
+                .accessToken(JwtUtils.generateAccessToken(member, secretKey, expiredTimeMs))
+                .build();
+
+        if (passwordEncoder.matches(request.getMemberPw(), member.getMemberPw()) && member.getStatus().equals(true)) {
+            return BaseResponse.successRes("MEMBER_002", true, "로그인에 성공하였습니다.", response);
+        } else {
+            throw MemberAccountException.forInvalidPassword();
+        }
     }
 
 //    public PostMemberSignupRes signup(PostMemberSignupReq postMemberSignupReq){
@@ -122,7 +142,7 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println(username);
-        Optional<Member> result = memberRepository.findByEmail(username);
+        Optional<Member> result = memberRepository.findByMemberEmail(username);
         Member member = null;
         if(result.isPresent()) {
             member = result.get();

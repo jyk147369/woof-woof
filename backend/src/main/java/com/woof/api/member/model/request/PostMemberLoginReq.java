@@ -11,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostMemberLoginReq {
-    private String email;
-    private String password;
+    private String memberEmail;
+    private String memberPw;
 }

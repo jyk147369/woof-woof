@@ -8,8 +8,8 @@ public class MemberNotFoundException extends EntityNotFoundException {
         super(errorCode, message);
     }
 
-    public static MemberNotFoundException forMemberId(String memberId) {
-        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("%s은 존재하지 않는 회원입니다.", memberId));
+    public static MemberNotFoundException forMemberEmail(String memberEmail) {
+        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("%s은 존재하지 않는 회원입니다.", memberEmail));
     }
 
     public static MemberNotFoundException forMemberIdx(Long memberIdx) {
