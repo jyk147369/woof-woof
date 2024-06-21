@@ -19,7 +19,7 @@ public class JwtUtils {
     public static String generateAccessToken(Member member, String secretKey, Long expiredTimeMs) {
 
         Claims claims = Jwts.claims();
-        claims.put("memberIdx", member.getMemberIdx());
+        claims.put("memberIdx", member.getIdx());
         claims.put("memberEmail", member.getMemberEmail());
         //claims.put("memberName", member.getMemberName());
         claims.put("memberNickname", member.getMemberNickname());

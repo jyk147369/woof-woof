@@ -70,7 +70,7 @@ public class MemberService implements UserDetailsService {
         }
 
         PostMemberSignupRes response =  PostMemberSignupRes.builder()
-                .memberIdx(member.getMemberIdx())
+                .memberIdx(member.getIdx())
                 .memberEmail(member.getMemberEmail())
                 .memberName(member.getMemberName())
                 .build();
@@ -91,6 +91,11 @@ public class MemberService implements UserDetailsService {
         } else {
             throw MemberAccountException.forInvalidPassword();
         }
+    }
+
+    @Transactional
+    public void sendEmail (PostMemberSignupReq request) {
+
     }
 
 //    public PostMemberSignupRes signup(PostMemberSignupReq postMemberSignupReq){

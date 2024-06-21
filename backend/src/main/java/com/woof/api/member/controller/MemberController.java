@@ -82,20 +82,8 @@ public class MemberController {
 
     @ApiOperation(value="일반회원 로그인", notes="일반회원이 정보를 입력하여 로그인한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/member/login")
-    public ResponseEntity login(@RequestBody PostMemberLoginReq request){
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
-        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        if(authentication.getPrincipal() != null) {
-            Member member = (Member)authentication.getPrincipal();
-            return ResponseEntity.ok().body(
-                    PostMemberLoginRes.builder()
-//                            .accessToken(TokenProvider.generateAccessToken(member.getUsername(), "ROLE_MEMBER"))
-//                            .idx(member.getIdx())
-                            .build());
-
-        }
-
-        return ResponseEntity.badRequest().body("에러");
+    public ResponseEntity<Object> login(@RequestBody @Valid PostMemberLoginReq request){
+        return ResponseEntity.ok().body(memberService.login(request));
     }
 
     @ApiOperation(value="매니저회원 로그인", notes="매니저회원이 정보를 입력하여 로그인한다.")

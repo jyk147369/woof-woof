@@ -1,8 +1,10 @@
 package com.woof.api.member.model.entity;
 
 import com.woof.api.cart.model.Cart;
+import com.woof.api.common.BaseEntity;
 import com.woof.api.orders.model.Orders;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.joda.time.LocalDateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,12 +19,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
-public class Member implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberIdx;
+public class Member extends BaseEntity implements UserDetails {
 
     private String memberEmail;
     private String memberPw;
@@ -31,8 +30,6 @@ public class Member implements UserDetails {
     private String authority;
     private Boolean status;
     private String profileImage;
-    private LocalDateTime updatedAt;
-    private
 
     @OneToMany(mappedBy = "member")
     List<Cart> carts = new ArrayList<>();

@@ -21,7 +21,7 @@ public enum ErrorCode {
     DIFFERENT_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_009", "회원의 패스워드가 저장된 데이터와 다른 경우"),
     SAME_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_010", "회원정보 변경시 기존 비밀번호가 일치하지 않은 경우"),
 
-
+    // 주문
 
 
     // 회의실
