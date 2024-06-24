@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Data
 @Builder
-public class Dk {
+public class CustomerInfo {
     Long idx;
     String name;
     String place;
