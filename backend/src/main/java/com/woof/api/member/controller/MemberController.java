@@ -3,10 +3,9 @@ package com.woof.api.member.controller;
 import com.woof.api.member.model.entity.Ceo;
 import com.woof.api.member.model.entity.Manager;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.member.model.requestdto.*;
-import com.woof.api.member.model.responsedto.*;
+import com.woof.api.member.model.request.*;
+import com.woof.api.member.model.response.*;
 import com.woof.api.member.service.*;
-import com.woof.api.utils.TokenProvider;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +13,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.persistence.ColumnResult;
+import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/member")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class MemberController {
 
     private final ManagerService managerService;
@@ -31,11 +31,10 @@ public class MemberController {
     private final AuthenticationManager authenticationManager;
 
     @ApiOperation(value="일반회원 회원가입", notes="일반회원이 정보를 입력하여 회원가입한다.")
-    @RequestMapping(method = RequestMethod.POST, value = "/member/signup")
-    public ResponseEntity signup (@RequestBody PostMemberSignupReq postMemberSignupReq){
-        PostMemberSignupRes response = memberService.signup(postMemberSignupReq);
-        memberEmailVerifyService.sendMemberMail(postMemberSignupReq.getEmail(), "ROLE_MEMBER");
-        return ResponseEntity.ok().body(response);
+    @RequestMapping(method = RequestMethod.POST, value = "/signup")
+    public ResponseEntity<Object> signup (@RequestPart(value = "member") @Valid PostMemberSignupReq request,
+                                          @RequestPart(value = "profileImage", required = false) MultipartFile profileImage){
+        return ResponseEntity.ok().body(memberService.signup(request, profileImage));
     }
 
     @ApiOperation(value="매니저회원 회원가입", notes="매니저회원이 정보를 입력하여 회원가입한다.")
@@ -83,20 +82,8 @@ public class MemberController {
 
     @ApiOperation(value="일반회원 로그인", notes="일반회원이 정보를 입력하여 로그인한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/member/login")
-    public ResponseEntity login(@RequestBody PostMemberLoginReq request){
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
-        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        if(authentication.getPrincipal() != null) {
-            Member member = (Member)authentication.getPrincipal();
-            return ResponseEntity.ok().body(
-                    PostMemberLoginRes.builder()
-                            .accessToken(TokenProvider.generateAccessToken(member.getUsername(), "ROLE_MEMBER"))
-                            .idx(member.getIdx())
-                            .build());
-
-        }
-
-        return ResponseEntity.badRequest().body("에러");
+    public ResponseEntity<Object> login(@RequestBody @Valid PostMemberLoginReq request){
+        return ResponseEntity.ok().body(memberService.login(request));
     }
 
     @ApiOperation(value="매니저회원 로그인", notes="매니저회원이 정보를 입력하여 로그인한다.")
@@ -104,10 +91,10 @@ public class MemberController {
     public ResponseEntity login(@RequestBody PostManagerLoginReq request){
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("manager_"+request.getEmail(), request.getPassword());
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        if(authentication.getPrincipal() != null) {
-            Manager manager = (Manager) authentication.getPrincipal();
-            return ResponseEntity.ok().body(PostManagerLoginRes.builder().accessToken(TokenProvider.generateAccessToken(manager.getUsername(), "ROLE_MANAGER")).build());
-        }
+//        if(authentication.getPrincipal() != null) {
+//            Manager manager = (Manager) authentication.getPrincipal();
+//            return ResponseEntity.ok().body(PostManagerLoginRes.builder().accessToken(TokenProvider.generateAccessToken(manager.getUsername(), "ROLE_MANAGER")).build());
+//        }
         return ResponseEntity.badRequest().body("에러");
     }
 
@@ -116,10 +103,10 @@ public class MemberController {
     public ResponseEntity login(@RequestBody PostCeoLoginReq request){
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("ceo_"+request.getBusinessnum(), request.getPassword());
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        if(authentication.getPrincipal() != null) {
-            Ceo ceo = (Ceo) authentication.getPrincipal();
-            return ResponseEntity.ok().body(PostManagerLoginRes.builder().accessToken(TokenProvider.generateAccessToken(ceo.getUsername(), "ROLE_CEO")).build());
-        }
+//        if(authentication.getPrincipal() != null) {
+//            Ceo ceo = (Ceo) authentication.getPrincipal();
+//            return ResponseEntity.ok().body(PostManagerLoginRes.builder().accessToken(TokenProvider.generateAccessToken(ceo.getUsername(), "ROLE_CEO")).build());
+//        }
         return ResponseEntity.badRequest().body("에러");
     }
 
@@ -135,19 +122,19 @@ public class MemberController {
 //        return "성공";
 //    }
 
-    @ApiOperation(value="일반회원 마이페이지 조회", notes="일반회원이 이메일을 입력하고 정보를 조회한다.")
-    @GetMapping("/member/{email}")
-    public ResponseEntity read(@PathVariable String email) {
-        GetMemberReadRes response = memberService.readMember(email);
-        return ResponseEntity.ok().body(response);
-    }
+//    @ApiOperation(value="일반회원 마이페이지 조회", notes="일반회원이 이메일을 입력하고 정보를 조회한다.")
+//    @GetMapping("/member/{email}")
+//    public ResponseEntity read(@PathVariable String email) {
+//        GetMemberReadRes response = memberService.readMember(email);
+//        return ResponseEntity.ok().body(response);
+//    }
 
-    @ApiOperation(value="일반회원 정보 수정", notes="일반회원이 정보를 수정한다.")
-    @RequestMapping(method = RequestMethod.PATCH, value = "/member/update")
-    public ResponseEntity update (@RequestBody PatchMemberUpdateReq request) {
-        PatchMemberUpdateRes response = memberService.updateMember(request);
-        return ResponseEntity.ok().body(response);
-    }
+//    @ApiOperation(value="일반회원 정보 수정", notes="일반회원이 정보를 수정한다.")
+//    @RequestMapping(method = RequestMethod.PATCH, value = "/member/update")
+//    public ResponseEntity update (@RequestBody PatchMemberUpdateReq request) {
+//        PatchMemberUpdateRes response = memberService.updateMember(request);
+//        return ResponseEntity.ok().body(response);
+//    }
 
 
 }

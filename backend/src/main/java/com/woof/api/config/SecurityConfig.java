@@ -1,8 +1,10 @@
 package com.woof.api.config;
 
 import com.woof.api.config.filter.JwtFilter;
-import com.woof.api.utils.TokenProvider;
+import com.woof.api.member.exception.security.CustomAccessDeniedHandler;
+import com.woof.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig{
 
-    private final TokenProvider tokenProvider;
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final MemberRepository memberRepository;
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration) throws Exception {
@@ -43,7 +49,7 @@ public class SecurityConfig{
                     .antMatchers("/**").permitAll()
                     .anyRequest().permitAll();
 
-            http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+//            http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
             http.formLogin().disable();
 

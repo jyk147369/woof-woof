@@ -1,7 +1,5 @@
 package com.woof.api.orders.model.dto;
 
-import com.woof.api.member.model.entity.Member;
-import com.woof.api.productCeo.model.ProductCeo;
 import lombok.*;
 
 
