@@ -23,25 +23,20 @@ import java.util.*;
 public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
-    private final ProductSchoolRepository productSchoolRepository;
-    private final ProductManagerRepository productManagerRepository;
     private final BookmarkRepositoryCustomImpl bookmarkRepositoryCustomImpl;
 
     @Transactional(readOnly = false)
-    public BaseResponse createBookmark(BookmarkCreateReq req) {
-
-//        ProductSchool school = ProductSchoolRepository.findByIdx(req.getProductSchoolIdx())
-//                .orElseThrow(() -> new )
+    public BaseResponse createBookmark(BookmarkCreateReq bookmarkCreateReq) {
 
         Bookmark bookmark = bookmarkRepository.save(Bookmark.builder()
                 .member(Member.builder()
-                        .idx(req.getMemberIdx())
+                        .idx(bookmarkCreateReq.getMemberIdx())
                         .build())
                 .productSchool(ProductSchool.builder()
-                        .idx(req.getProductSchoolIdx())
+                        .idx(bookmarkCreateReq.getProductSchoolIdx())
                         .build())
                 .productManager(ProductManager.builder()
-                        .idx(req.getProductManagerIdx())
+                        .idx(bookmarkCreateReq.getProductManagerIdx())
                         .build())
                 .build());
 

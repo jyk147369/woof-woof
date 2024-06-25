@@ -9,6 +9,7 @@ import com.woof.api.member.model.entity.Member;
 import com.woof.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.LocalDateTime;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class AdminService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 관리자 회원가입
     @Transactional(readOnly = false)
@@ -30,12 +32,13 @@ public class AdminService {
             throw new AdminException(ErrorCode.DUPLICATE_SIGNUP_ID, String.format("SignUp Email [ %s ] is duplicated.", postSignUpAdminReq.getEmail()));
         }
 
-        Member member = Member.builder().password(passwordEncoder.encode(postSignUpAdminReq.getPassword())).name(postSignUpAdminReq.getName()).email(postSignUpAdminReq.getEmail()).authority("ROLE_ADMIN").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).status(true).build();
+        Member member = Member.builder().memberPw(passwordEncoder.encode(postSignUpAdminReq.getPassword())).memberName(postSignUpAdminReq.getName()).memberEmail(postSignUpAdminReq.getEmail()).authority("ROLE_ADMIN").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).status(true).build();
 
         memberRepository.save(member);
 
-        BaseResponse baseRes = BaseResponse.builder().isSuccess(true).message("관리자 가입에 성공하였습니다.").result(PostSignUpAdminRes.builder().email(user.getEmail()).name(user.getName()).build()).build();
+        BaseResponse baseRes = BaseResponse.builder().isSuccess(true).message("관리자 가입에 성공하였습니다.").result(PostSignUpAdminRes.builder().email(member.getMemberEmail()).name(member.getMemberName()).build()).build();
 
         return baseRes;
     }
+
 }
