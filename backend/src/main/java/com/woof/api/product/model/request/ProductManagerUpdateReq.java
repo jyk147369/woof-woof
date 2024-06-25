@@ -1,4 +1,4 @@
-package com.woof.api.product.model.dto.manager;
+package com.woof.api.product.model.request;
 
 
 import lombok.Builder;

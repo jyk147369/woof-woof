@@ -1,11 +1,12 @@
-package com.woof.api.product.model.dto.manager;
+package com.woof.api.product.model.request;
+
 
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
-public class ProductManagerReadRes {
+public class ProductManagerCreateReq {
     private Long idx;
     private String managerName;     // 매니저 이름
     private String gender;          // 매니저 성별
@@ -13,5 +14,4 @@ public class ProductManagerReadRes {
     private Integer price;          // 매니저 1달 이용 가격
     private String career;          // 매니저 경력
     private String contents;        // 인사글
-//    private String filename;
 }

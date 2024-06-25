@@ -1,4 +1,4 @@
-package com.woof.api.product.model.dto.school;
+package com.woof.api.product.model.response;
 
 import lombok.Builder;
 import lombok.Data;

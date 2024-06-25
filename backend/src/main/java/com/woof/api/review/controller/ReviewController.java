@@ -1,13 +1,8 @@
 package com.woof.api.review.controller;
 
 
-import com.woof.api.product.model.dto.ProductFileDto;
-import com.woof.api.product.model.dto.manager.ProductManagerListRes;
-import com.woof.api.product.model.dto.manager.ProductManagerUpdateReq;
 import com.woof.api.review.model.dto.*;
 import com.woof.api.review.service.ReviewService;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,6 +1,6 @@
 package com.woof.api.product.controller;
 
-import com.woof.api.product.model.dto.manager.ProductManagerListRes;
+import com.woof.api.product.model.response.ProductManagerListRes;
 import com.woof.api.product.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

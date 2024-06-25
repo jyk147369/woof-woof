@@ -3,7 +3,6 @@ package com.woof.api.bookmark.controller;
 import com.woof.api.bookmark.model.dto.BookmarkCreateReq;
 import com.woof.api.bookmark.service.BookmarkService;
 import com.woof.api.common.BaseRes;
-import com.woof.api.common.Response;
 import com.woof.api.member.model.entity.Member;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

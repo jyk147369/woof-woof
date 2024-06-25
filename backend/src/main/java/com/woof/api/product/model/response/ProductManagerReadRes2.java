@@ -1,14 +1,15 @@
-package com.woof.api.product.model.dto.manager;
+package com.woof.api.product.model.response;
 
 import lombok.Builder;
 import lombok.Data;
 
+
 @Builder
 @Data
-public class ProductManagerCreateRes {
+public class ProductManagerReadRes2 {
     private Boolean isSuccess;
     private Integer code;
     private String message;
-    private String result;
+    private ProductManagerReadRes result;
     private Boolean success;
 }

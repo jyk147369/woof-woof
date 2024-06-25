@@ -1,6 +1,6 @@
 package com.woof.api.member.model.entity;
 
-import com.woof.api.cart.model.Cart;
+import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.common.BaseEntity;
 import com.woof.api.orders.model.Orders;
 import lombok.*;
@@ -32,7 +32,7 @@ public class Member extends BaseEntity implements UserDetails {
     private String profileImage;
 
     @OneToMany(mappedBy = "member")
-    List<Cart> carts = new ArrayList<>();
+    List<Bookmark> carts = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     List<Orders> orders = new ArrayList<>();

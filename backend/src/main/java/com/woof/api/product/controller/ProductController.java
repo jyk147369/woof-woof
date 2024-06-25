@@ -1,11 +1,11 @@
 package com.woof.api.product.controller;
 
-import com.woof.api.product.model.dto.ProductFileDto;
-import com.woof.api.product.model.dto.manager.*;
-import com.woof.api.product.model.dto.school.ProductSchoolCreateReq;
-import com.woof.api.product.model.dto.school.ProductSchoolCreateRes;
-import com.woof.api.product.model.dto.school.ProductSchoolCreateResult;
-import com.woof.api.product.model.dto.school.ProductSchoolUpdateReq;
+import com.woof.api.common.BaseResponse;
+import com.woof.api.product.model.response.*;
+import com.woof.api.product.model.request.ProductManagerCreateReq;
+import com.woof.api.product.model.request.ProductManagerUpdateReq;
+import com.woof.api.product.model.request.ProductSchoolCreateReq;
+import com.woof.api.product.model.request.ProductSchoolUpdateReq;
 import com.woof.api.product.service.ProductService;
 //import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +24,14 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // 추후 전부 BaseResEntity로 변경
-
-//    @ApiOperation(value="매니저 정보 등록", notes="매니저회원이 매니저 정보를 등록한다.")
+    //    @ApiOperation(value="매니저 정보 등록", notes="매니저회원이 매니저 정보를 등록한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/manager/create")
-    public ResponseEntity<ProductManagerCreateRes> createManager(
+    public ResponseEntity<BaseResponse<ProductManagerCreateResult>> createManager(
             @RequestPart ProductManagerCreateReq productManagerCreateReq,
             @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
-        ProductManagerCreateResult productManagerCreateResult = productService.createManager(productManagerCreateReq);
+
+        BaseResponse<ProductManagerCreateResult> baseResponse = productService.createManager(productManagerCreateReq);
+        ProductManagerCreateResult productManagerCreateResult = baseResponse.getResult();
 
         if (uploadFiles != null) {
             for (MultipartFile uploadFile : uploadFiles) {
@@ -39,36 +39,30 @@ public class ProductController {
                 productService.saveFile(productManagerCreateResult.getIdx(), uploadPath);
             }
         }
+        return ResponseEntity.ok().body(baseResponse);
+    }
 
-        ProductManagerCreateRes response = ProductManagerCreateRes.builder()
-                .code(1000)
-                .message("요청 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result("매니저 idx : " + productManagerCreateResult.getIdx())
-                .build();
+    //    @ApiOperation(value="매니저 목록 조회", notes="회원이 전체 매니저를 조회한다.")
+    @RequestMapping(method = RequestMethod.GET, value = "/manager/list")
+    public ResponseEntity<BaseResponse<List<ProductManagerReadRes>>> listManager() {
+        BaseResponse<List<ProductManagerReadRes>> response = productService.listManager();
         return ResponseEntity.ok().body(response);
     }
 
-//    @ApiOperation(value="매니저 목록 조회", notes="회원이 전체 매니저를 조회한다.")
-    @RequestMapping(method = RequestMethod.GET, value = "/manager/list")
-    public ResponseEntity<ProductManagerListRes> listManager() {
-        return ResponseEntity.ok().body(productService.listManager());
+    //    @ApiOperation(value="특정 매니저 조회", notes="회원이 매니저 idx를 입력하여 특정 매니저를 조회한다.")
+    @RequestMapping(method = RequestMethod.GET, value ="/manager/read/{idx}")
+    public ResponseEntity<BaseResponse<ProductManagerReadRes>> readManager(@PathVariable Long idx) {
+        BaseResponse<ProductManagerReadRes> response = productService.readManager(idx);
+        return ResponseEntity.ok().body(response);
     }
 
-//    @ApiOperation(value="특정 매니저 조회", notes="회원이 매니저 idx를 입력하여 특정 매니저를 조회한다.")
-    @GetMapping("/manager/read/{idx}")
-    public ResponseEntity<ProductManagerReadRes> readManager(@PathVariable Long idx) {
-        return ResponseEntity.ok().body(productService.readManager(idx));
-    }
-
-//    @ApiOperation(value="매니저 정보 수정", notes="매니저회원이 매니저의 정보를 수정한다.")
+    //    @ApiOperation(value="매니저 정보 수정", notes="매니저회원이 매니저의 정보를 수정한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/manager/update")
-    public ResponseEntity<String> updateManager(
+    public ResponseEntity<BaseResponse<Void>> updateManager(
             @RequestPart ProductManagerUpdateReq productManagerUpdateReq,
             @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
 
-        productService.updateManager(productManagerUpdateReq);
+        BaseResponse<Void> response = productService.updateManager(productManagerUpdateReq);
 
         if (uploadFiles != null) {
             for (MultipartFile uploadFile : uploadFiles) {
@@ -76,15 +70,14 @@ public class ProductController {
                 productService.saveFile(productManagerUpdateReq.getIdx(), uploadPath);
             }
         }
-
-        return ResponseEntity.ok("수정 완료");
+        return ResponseEntity.ok().body(response);
     }
 
-//    @ApiOperation(value="매니저 정보 삭제", notes="매니저회원이 매니저의 정보를 삭제한다.")
+    //    @ApiOperation(value="매니저 정보 삭제", notes="매니저회원이 매니저의 정보를 삭제한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/manager/delete")
-    public ResponseEntity<String> deleteManager(@RequestParam Long idx) {
-        productService.deleteManager(idx);
-        return ResponseEntity.ok().body("매니저 idx : " + idx + "삭제 완료");
+    public ResponseEntity<BaseResponse<Void>> deleteManager(@RequestParam Long idx) {
+        BaseResponse<Void> response = productService.deleteManager(idx);
+        return ResponseEntity.ok().body(response);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/manager/files/{productManagerIdx}")
@@ -95,11 +88,13 @@ public class ProductController {
 
     // ----------------------------------------------------------------------------------------------- //
 
-    //    @ApiOperation(value="상품 정보 등록", notes="업체 회원이 상품을 정보를 등록한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/school/create")
-    public ResponseEntity createSchool(@RequestPart ProductSchoolCreateReq productSchoolCreateReq,
-                                       @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
-        ProductSchoolCreateResult productSchoolCreateResult = productService.createSchool(productSchoolCreateReq);
+    public ResponseEntity<BaseResponse<ProductSchoolCreateResult>> createSchool(
+            @RequestPart ProductSchoolCreateReq productSchoolCreateReq,
+            @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
+
+        BaseResponse<ProductSchoolCreateResult> baseResponse = productService.createSchool(productSchoolCreateReq);
+        ProductSchoolCreateResult productSchoolCreateResult = baseResponse.getResult();
 
         if (uploadFiles != null) {
             for (MultipartFile uploadFile : uploadFiles) {
@@ -107,36 +102,30 @@ public class ProductController {
                 productService.saveFile(productSchoolCreateResult.getIdx(), uploadPath);
             }
         }
-
-        ProductSchoolCreateRes response = ProductSchoolCreateRes.builder()
-                .code(1000)
-                .message("요청 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result("상품 idx : " + productSchoolCreateResult.getIdx())
-                .build();
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(baseResponse);
     }
 
     //    @ApiOperation(value="상품 목록 조회", notes="회원이 전체 상품을 조회한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/school/list")
-    public ResponseEntity listSchool() {
-        return ResponseEntity.ok().body(productService.listSchool());
+    public ResponseEntity<BaseResponse<List<ProductSchoolReadRes>>> listSchool() {
+        BaseResponse<List<ProductSchoolReadRes>> response = productService.listSchool();
+        return ResponseEntity.ok().body(response);
     }
 
     //    @ApiOperation(value="특정 상품 조회", notes="회원이 상품 idx를 입력하여 특정 상품을 조회한다.")
-    @GetMapping("/school/read/{idx}")
-    public ResponseEntity readSchool(@PathVariable Long idx) {
-        return ResponseEntity.ok().body(productService.readSchool(idx));
+    @RequestMapping(method = RequestMethod.GET, value ="/school/read/{idx}")
+    public ResponseEntity<BaseResponse<ProductSchoolReadRes>> readSchool(@PathVariable Long idx) {
+        BaseResponse<ProductSchoolReadRes> response = productService.readSchool(idx);
+        return ResponseEntity.ok().body(response);
     }
 
     //    @ApiOperation(value="상품 정보 수정", notes="업체회원이 상품의 정보를 수정한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/school/update")
-    public ResponseEntity<String> updateSchool(
+    public ResponseEntity<BaseResponse<Void>> updateSchool(
             @RequestPart ProductSchoolUpdateReq productSchoolUpdateReq,
             @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
 
-        productService.updateSchool(productSchoolUpdateReq);
+        BaseResponse<Void> response = productService.updateSchool(productSchoolUpdateReq);
 
         if (uploadFiles != null) {
             for (MultipartFile uploadFile : uploadFiles) {
@@ -144,14 +133,14 @@ public class ProductController {
                 productService.saveFile(productSchoolUpdateReq.getIdx(), uploadPath);
             }
         }
-        return ResponseEntity.ok("수정 완료");
+        return ResponseEntity.ok().body(response);
     }
 
     //    @ApiOperation(value="상품 정보 삭제", notes="업체회원이 상품의 정보를 삭제한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/school/delete")
-    public ResponseEntity deleteSchool(@RequestParam Long idx) {
-        productService.deleteSchool(idx);
-        return ResponseEntity.ok().body("상품 idx" + idx + "삭제 완료");
+    public ResponseEntity<BaseResponse<Void>>  deleteSchool(@RequestParam Long idx) {
+        BaseResponse<Void> response = productService.deleteSchool(idx);
+        return ResponseEntity.ok().body(response);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/school/files/{productSchoolIdx}")

@@ -1,4 +1,4 @@
-package com.woof.api.product.model.dto;
+package com.woof.api.product.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
