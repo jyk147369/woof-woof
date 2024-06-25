@@ -2,8 +2,8 @@ package com.woof.api.member.service;
 
 
 import com.woof.api.member.model.entity.Ceo;
-import com.woof.api.member.model.requestdto.PostCeoSignupReq;
-import com.woof.api.member.model.responsedto.PostCeoSignupRes;
+import com.woof.api.member.model.request.PostCeoSignupReq;
+import com.woof.api.member.model.response.PostCeoSignupRes;
 import com.woof.api.member.repository.CeoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,9 +1,9 @@
 package com.woof.api.member.service;
 
 import com.woof.api.member.model.entity.Manager;
-import com.woof.api.member.model.requestdto.GetEmailConfirmReq;
-import com.woof.api.member.model.requestdto.PostManagerSignupReq;
-import com.woof.api.member.model.responsedto.PostManagerSignupRes;
+import com.woof.api.member.model.request.GetEmailConfirmReq;
+import com.woof.api.member.model.request.PostManagerSignupReq;
+import com.woof.api.member.model.response.PostManagerSignupRes;
 import com.woof.api.member.repository.ManagerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
