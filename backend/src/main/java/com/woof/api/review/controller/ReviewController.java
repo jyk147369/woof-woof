@@ -52,7 +52,6 @@ public class ReviewController {
         BaseResponse<List<ReviewReadDto>> response = reviewService.listByManager(managerIdx);
         return ResponseEntity.ok().body(response);
     }
-
     //    @ApiOperation(value="유치원별 리뷰 목록 조회", notes="회원이 유치원별로 리뷰를 조회한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/school/list")
     public ResponseEntity<BaseResponse<List<ReviewReadDto>>> listBySchool(Long schoolIdx) {

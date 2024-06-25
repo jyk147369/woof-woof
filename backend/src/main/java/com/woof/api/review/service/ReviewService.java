@@ -136,7 +136,6 @@ public class ReviewService {
         return BaseResponse.successRes("REVIEW_003", true, "유치원별 리뷰 목록 조회 성공.", reviewReadDtos);
     }
 
-
     @Transactional
     public BaseResponse<List<ReviewReadDto>> myList(Long memberIdx) {
         List<Review> result = reviewRepository.findByMemberIdx(memberIdx);
