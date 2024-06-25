@@ -1,6 +1,6 @@
 package com.woof.api.product.model.entity;
 
-import com.woof.api.cart.model.Cart;
+import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.orders.model.Orders;
 import com.woof.api.review.model.entity.Review;
 import lombok.*;
@@ -31,7 +31,7 @@ public class ProductSchool {
 //    합칠 때 활성화
 
     @OneToMany(mappedBy = "productSchool")
-    private List<Cart> carts = new ArrayList<>();
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "productSchool")
     private List<ProductImage> productImages = new ArrayList<>();
