@@ -1,17 +1,26 @@
 package com.woof.api.admin.controller;
 
 import com.woof.api.admin.model.request.PostSignUpAdminReq;
-import com.woof.api.common.BaseRes;
-import com.woof.api.member.service.MemberService;
+import com.woof.api.admin.service.AdminService;
+import com.woof.api.common.BaseResponse;
+import com.woof.api.member.model.entity.Member;
+import com.woof.api.member.model.request.PatchMemberUpdateReq;
+import com.woof.api.member.model.request.PostMemberLoginReq;
+import com.woof.api.member.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 @Tag(name = "관리자", description = "Admin CRUD")
 @Api(tags = "관리자 회원기능")
@@ -22,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final MemberService memberService;
+    private final AdminService adminService;
 
     @Operation(summary = "관리자 회원 가입", description = "관리자가 정보를 입력하여 회원 가입을 진행한다.")
     @ApiResponses({
@@ -29,10 +39,10 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
-    public ResponseEntity<BaseRes> signup(
+    public ResponseEntity<BaseResponse> signup(
             @RequestBody @Valid PostSignUpAdminReq postSignUpAdminReq
     ) {
-        BaseRes baseRes = memberService.adminSignup(postSignUpAdminReq);
+        BaseResponse baseRes = adminService.adminSignup(postSignUpAdminReq);
         return ResponseEntity.ok().body(baseRes);
     }
 
@@ -42,9 +52,9 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @RequestMapping(method = RequestMethod.POST, value = "/login")
-    public ResponseEntity<BaseRes> login(@RequestBody @Valid PostLoginUserReq postLoginUserReq) {
+    public ResponseEntity<BaseResponse> login(@RequestBody @Valid PostMemberLoginReq postMemberLoginReq) {
 
-        BaseRes baseRes = memberService.login(postLoginUserReq);
+        BaseResponse baseRes = memberService.login(postMemberLoginReq);
         return ResponseEntity.ok().body(baseRes);
     }
 
@@ -55,10 +65,10 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @RequestMapping(method = RequestMethod.PATCH, value = "/update")
-    public ResponseEntity<BaseRes> update(@RequestPart(value = "admin") @Valid PatchUpdateUserReq patchUpdateUserReq
+    public ResponseEntity<BaseResponse> update(@RequestPart(value = "admin") @Valid PatchMemberUpdateReq patchMemberUpdateReq
     ) {
-        User user = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        BaseRes baseRes = memberService.update(user.getEmail(), patchUpdateUserReq);
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        BaseResponse baseRes = memberService.update(member.getEmail(), patchMemberUpdateReq);
 
         return ResponseEntity.ok().body(baseRes);
     }
@@ -69,8 +79,8 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{userIdx}")
-    public ResponseEntity<BaseRes> delete(@PathVariable @NotNull @Positive Integer userIdx) {
-        BaseRes baseRes = memberService.delete(userIdx);
+    public ResponseEntity<BaseResponse> delete(@PathVariable @NotNull @Positive Integer idx) {
+        BaseResponse baseRes = memberService.delete(idx);
 
         return ResponseEntity.ok().body(baseRes);
     }

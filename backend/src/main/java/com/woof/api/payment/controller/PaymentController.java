@@ -3,7 +3,7 @@ package com.woof.api.payment.controller;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import com.woof.api.common.Response;
+import com.woof.api.common.BaseResponse;
 import com.woof.api.payment.service.PaymentService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +24,13 @@ public class PaymentController {
     // 정기 결제
     @ApiOperation(value="정기 결제", notes="회원이 매달 정기적으로 일정 금액을 결제한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/validation/subscribe")
-    public Response validationSubscribe(String impUid) throws IamportResponseException, IOException {
+    public BaseResponse validationSubscribe(String impUid) throws IamportResponseException, IOException {
         if(paymentService.subscribeValidation(impUid)) {
-            return Response.success("결제 성공");
+            return BaseResponse.successRes("code입니다",true,"결제 성공","아무거나0");
+
         }
 
-        return Response.error("결제 금액 이상");
+        return BaseResponse.error("결제금액이상",true,"결제 성공","아무거나0");
     }
 
     // 구독 취소
@@ -43,14 +44,4 @@ public class PaymentController {
         }
     }
 
-    // 환불
-    @RequestMapping(method = RequestMethod.POST, value = "/payments/cancel")
-    public IamportResponse<Payment> refundPayment(@RequestParam String impUid, @RequestParam BigDecimal amount, @RequestParam String reason) {
-        try {
-            return paymentService.refundPayment(impUid, amount, reason);
-        } catch (IamportResponseException | IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

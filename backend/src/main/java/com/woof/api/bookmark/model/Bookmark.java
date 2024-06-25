@@ -1,6 +1,7 @@
 package com.woof.api.bookmark.model;
 
 
+import com.woof.api.common.BaseEntity;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Setter
 @Builder
-public class Bookmark {
+public class Bookmark extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

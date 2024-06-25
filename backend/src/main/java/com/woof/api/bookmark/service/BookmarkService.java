@@ -5,7 +5,7 @@ import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.bookmark.model.dto.*;
 import com.woof.api.bookmark.repository.BookmarkRepository;
 import com.woof.api.bookmark.repository.querydsl.BookmarkRepositoryCustomImpl;
-import com.woof.api.common.BaseRes;
+import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
@@ -28,7 +28,7 @@ public class BookmarkService {
     private final BookmarkRepositoryCustomImpl bookmarkRepositoryCustomImpl;
 
     @Transactional(readOnly = false)
-    public BaseRes createBookmark(BookmarkCreateReq req) {
+    public BaseResponse createBookmark(BookmarkCreateReq req) {
 
 //        ProductSchool school = ProductSchoolRepository.findByIdx(req.getProductSchoolIdx())
 //                .orElseThrow(() -> new )
@@ -45,7 +45,7 @@ public class BookmarkService {
                         .build())
                 .build());
 
-        return BaseRes.builder()
+        return BaseResponse.builder()
                 .isSuccess(true)
                 .message("즐겨찾기에 추가됐습니다.")
                 .result(BookmarkCreateRes.builder()
@@ -59,7 +59,7 @@ public class BookmarkService {
     }
 
 //     즐겨찾기 목록 조회
-    public BaseRes bookmarkList(Long memberIdx) {
+    public BaseResponse bookmarkList(Long memberIdx) {
         List<Bookmark> result = bookmarkRepositoryCustomImpl.findList(memberIdx);
         List<BookmarkListRes> list = new ArrayList<>();
 
@@ -74,15 +74,15 @@ public class BookmarkService {
                     .build();
             list.add(bookmarkListRes);
         }
-        return BaseRes.builder().isSuccess(true).message("조회 성공").result(list).build();
+        return BaseResponse.builder().isSuccess(true).message("조회 성공").result(list).build();
     }
 
 
     // @Transactional
-    public BaseRes deleteBookmark(Long bookmarkIdx) {
+    public BaseResponse deleteBookmark(Long bookmarkIdx) {
         bookmarkRepository.deleteById(bookmarkIdx);
 
-        return BaseRes.builder().isSuccess(true).message("삭제 성공").result("즐겨찾기 삭제되었습니다.").build();
+        return BaseResponse.builder().isSuccess(true).message("삭제 성공").result("즐겨찾기 삭제되었습니다.").build();
     }
 
 }
