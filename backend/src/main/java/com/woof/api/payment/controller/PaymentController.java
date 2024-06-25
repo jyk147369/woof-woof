@@ -31,7 +31,7 @@ public class PaymentController {
     }
 
     //구독 취소
-    public Response cancelSubscription
+    public Response cancelSubscription;
 
     //결제 취소
 
