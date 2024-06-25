@@ -132,7 +132,6 @@ public class ReviewService {
 
             reviewReadDtos.add(reviewReadDto);
         }
-
         return BaseResponse.successRes("REVIEW_003", true, "유치원별 리뷰 목록 조회 성공.", reviewReadDtos);
     }
 

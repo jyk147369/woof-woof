@@ -42,7 +42,6 @@ public class ReviewController {
                 reviewService.saveFile(reviewCreateResult.getIdx(), uploadPath);
             }
         }
-
         return ResponseEntity.ok().body(baseResponse);
     }
 
