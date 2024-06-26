@@ -27,7 +27,6 @@ public class ProductSchool extends BaseEntity {
 
     @OneToMany(mappedBy = "productSchool")
     private List<Orders> orders = new ArrayList<>();
-//    합칠 때 활성화
 
     @OneToMany(mappedBy = "productSchool")
     private List<Bookmark> bookmarks = new ArrayList<>();
