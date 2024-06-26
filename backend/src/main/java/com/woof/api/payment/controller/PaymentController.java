@@ -26,11 +26,11 @@ public class PaymentController {
     @RequestMapping(method = RequestMethod.GET, value = "/validation/subscribe")
     public BaseResponse validationSubscribe(String impUid) throws IamportResponseException, IOException {
         if(paymentService.subscribeValidation(impUid)) {
-            return BaseResponse.successRes("code입니다",true,"결제 성공","아무거나0");
+            return BaseResponse.successRes("PAYMENT_001",true,"결제가 완료되었습니다.","결제 성공");
 
         }
 
-        return BaseResponse.error("결제금액이상",true,"결제 성공","아무거나0");
+        return BaseResponse.error("PAYMENT_002",true,"결제 실패하였습니다.","결제 실패");
     }
 
     // 구독 취소
@@ -43,5 +43,4 @@ public class PaymentController {
             return null;
         }
     }
-
 }
