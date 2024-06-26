@@ -1,7 +1,6 @@
 package com.woof.api.payment.controller;
 
 import com.siot.IamportRestClient.exception.IamportResponseException;
-import com.woof.api.common.Response;
 import com.woof.api.payment.service.PaymentService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

@@ -45,9 +45,9 @@ public class OrderController {
 
     @ApiOperation(value="예약 수정", notes="회원이 예약서의 정보를 수정한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/update")
-    public ResponseEntity<OrdersReadRes2> update(@RequestBody OrdersUpdateReq ordersUpdateReq) {
+    public ResponseEntity <OrdersReadRes2> update(@RequestBody OrdersUpdateReq ordersUpdateReq) {
         //ResponseEntity 반환, orderDto를 매개변수로 받아옴
-        OrdersReadRes2 result = orderService.update(ordersUpdateReq);
+        OrdersReadRes2 result = orderService.update(ordersUpdateReq).getResult();
         //orderService의 업데이트 메소드에 orderDto를 받아옴
 
         return ResponseEntity.ok().body(result);
@@ -64,7 +64,7 @@ public class OrderController {
     @ApiOperation(value="회원 예약목록 조회", notes="회원이 예약한 목록을 회원 idx를 입력하여 조회한다.")
     @GetMapping("/{memberIdx}")
     public ResponseEntity getOrders(@PathVariable Long memberIdx) {
-        List<Dk> orders = orderService.getOrdersByMemberIdx(memberIdx);
+        List<CustomerInfo> orders = orderService.getOrdersByMemberIdx(memberIdx);
         return ResponseEntity.ok().body(orders);
     }
 
