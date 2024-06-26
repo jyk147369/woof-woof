@@ -34,7 +34,7 @@ public class MemberController {
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
     public ResponseEntity<Object> signup (@RequestPart(value = "member") @Valid PostMemberSignupReq request,
                                           @RequestPart(value = "profileImage", required = false) MultipartFile profileImage){
-        return ResponseEntity.ok().body(memberService.signup(request, profileImage));
+        return ResponseEntity.ok().body(memberService.signup(request, profileImage, "ROLE_MEMBER"));
     }
 
     @ApiOperation(value="매니저회원 회원가입", notes="매니저회원이 정보를 입력하여 회원가입한다.")

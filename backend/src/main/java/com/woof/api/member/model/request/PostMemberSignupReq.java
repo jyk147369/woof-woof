@@ -11,9 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostMemberSignupReq {
 
-    private String memberEmail;
-    private String memberPw;
-    private String memberName;
-    private String memberNickname;
+    private String email;
+    private String pw;
+    private String name;
+    private String nickname;
     private String authority;
 }
