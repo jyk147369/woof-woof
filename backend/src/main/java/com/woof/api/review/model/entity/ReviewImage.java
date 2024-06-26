@@ -1,5 +1,6 @@
 package com.woof.api.review.model.entity;
 
+import com.woof.api.common.BaseEntity;
 import com.woof.api.product.model.entity.ProductManager;
 import com.woof.api.product.model.entity.ProductSchool;
 import lombok.*;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Setter
 @Builder
-public class ReviewImage {
+public class ReviewImage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
