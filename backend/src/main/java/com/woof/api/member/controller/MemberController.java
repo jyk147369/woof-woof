@@ -1,8 +1,10 @@
 package com.woof.api.member.controller;
 
+import com.woof.api.member.model.entity.Ceo;
+import com.woof.api.member.model.entity.Manager;
+import com.woof.api.member.model.entity.Member;
 import com.woof.api.member.model.request.*;
-import com.woof.api.member.model.response.PostCeoSignupRes;
-import com.woof.api.member.model.response.PostManagerSignupRes;
+import com.woof.api.member.model.response.*;
 import com.woof.api.member.service.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +34,7 @@ public class MemberController {
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
     public ResponseEntity<Object> signup (@RequestPart(value = "member") @Valid PostMemberSignupReq request,
                                           @RequestPart(value = "profileImage", required = false) MultipartFile profileImage){
-        return ResponseEntity.ok().body(memberService.signup(request, profileImage));
+        return ResponseEntity.ok().body(memberService.signup(request, profileImage, "ROLE_MEMBER"));
     }
 
     @ApiOperation(value="매니저회원 회원가입", notes="매니저회원이 정보를 입력하여 회원가입한다.")

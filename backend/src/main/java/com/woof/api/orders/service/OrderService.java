@@ -1,5 +1,6 @@
 package com.woof.api.orders.service;
 
+import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.orders.model.Orders;
 import com.woof.api.orders.model.dto.*;
@@ -23,9 +24,7 @@ public class OrderService {
 
 
     @Transactional
-    public void create(OrderDto orderDto) {
-
-
+    public BaseResponse create(OrderDto orderDto) {
         orderRepository.save(
                 Orders.builder()
                         .productSchool(
@@ -48,6 +47,8 @@ public class OrderService {
                         .place(orderDto.getPlace())
 //                        .reservation_status(orderDto.getReservation_status())
                         .build());
+
+        return BaseResponse.successRes("Orders_001", true, "주문을 완료했습니다", orderRepository);
     }
 //
     public OrdersListRes list() {
@@ -116,7 +117,7 @@ public class OrderService {
         }
     }
 
-    public OrdersReadRes2 update(OrdersUpdateReq ordersUpdateReq) {
+    public BaseResponse <OrdersReadRes2> update(OrdersUpdateReq ordersUpdateReq) {
 //        OrdersReadRes2를 반환하는 업데이트 메소드
         //OrderDto를 매개변수로 받아온다
         Optional<Orders> result = orderRepository.findById(ordersUpdateReq.getIdx());
@@ -156,10 +157,10 @@ public class OrderService {
                     .build();
             //주문 요청 성공시 "주문 수정 성공"을 반환한다
 
-            return response;
+            return BaseResponse.successRes("Orders_2", true, "주문 정보 수정에 성공하였습니다", response);
 
         } else {
-            return OrdersReadRes2.builder()
+            OrdersReadRes2 responseFail = OrdersReadRes2.builder()
                     .code(400)
                     .message("요청 실패.")
                     .success(false)
@@ -168,6 +169,8 @@ public class OrderService {
                             .reservation_status("주문 수정에 실패하였습니다.주문 ID가 유효하지 않습니다.")
                             .build())
                     .build();
+
+            return BaseResponse.successRes("Orders_3", false, "주문 정보 수정에 실패하였습니다", responseFail);
         }//주문 실패시 "주문 실패"를 반환한다
 
     }
@@ -179,13 +182,14 @@ public class OrderService {
                         .idx(idx)
                         .build());
 
+
     }
 
-    public List<Dk> getOrdersByMemberIdx(Long memberIdx) {
+    public List<CustomerInfo> getOrdersByMemberIdx(Long memberIdx) {
         List<Orders> byMemberIdx = orderRepository.findByMemberIdx(memberIdx);
-        List<Dk> dkRes = new ArrayList<>();
+        List<CustomerInfo> dkRes = new ArrayList<>();
         for (Orders order : byMemberIdx) {
-            Dk res = Dk.builder()
+            CustomerInfo res = CustomerInfo.builder()
                     .idx(order.getIdx())
                     .name(order.getName())
                     .phNum(order.getPhoneNumber())

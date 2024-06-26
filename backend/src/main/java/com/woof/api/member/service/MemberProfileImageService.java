@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -60,7 +62,7 @@ public class MemberProfileImageService {
         String saveFileName = saveFile(uploadFile);
         MemberProfileImage createMemberProfileImage = MemberProfileImage.builder()
                 .memberImageAddr(saveFileName)
-                .memberIdx(member.getMemberIdx())
+                .memberIdx(member.getIdx())
                 .build();
         memberProfileImageRepository.save(createMemberProfileImage);
         return saveFileName.replace(File.separator, "/");

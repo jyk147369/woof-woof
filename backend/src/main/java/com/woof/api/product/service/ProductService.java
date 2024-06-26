@@ -5,15 +5,19 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
+import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Ceo;
 import com.woof.api.member.model.entity.Manager;
-import com.woof.api.product.model.dto.ProductFileDto;
-import com.woof.api.product.model.dto.manager.*;
-import com.woof.api.product.model.dto.school.*;
+import com.woof.api.product.model.response.ProductFileDto;
 import com.woof.api.product.model.entity.ProductManager;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductImage;
 
+import com.woof.api.product.model.request.ProductManagerCreateReq;
+import com.woof.api.product.model.request.ProductManagerUpdateReq;
+import com.woof.api.product.model.request.ProductSchoolCreateReq;
+import com.woof.api.product.model.request.ProductSchoolUpdateReq;
+import com.woof.api.product.model.response.*;
 import com.woof.api.product.repository.ProductImageRepository;
 import com.woof.api.product.repository.ProductManagerRepository;
 import com.woof.api.product.repository.ProductSchoolRepository;
@@ -46,169 +50,8 @@ public class ProductService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public ProductSchoolCreateResult createSchool(ProductSchoolCreateReq productSchoolCreateReq) {
-        Ceo ceo = ((Ceo) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ProductSchool productSchool = ProductSchool.builder()
-                .storeName(ceo.getStoreName())
-                .businessNum(ceo.getBusinessnum())
-                .productName(productSchoolCreateReq.getProductName())
-                .price(productSchoolCreateReq.getPrice())
-                .contents(productSchoolCreateReq.getContents())
-                .status(0)
-                .build();
-        productSchoolRepository.save(productSchool);
 
-        ProductSchoolCreateResult productSchoolCreateResult = ProductSchoolCreateResult.builder().build();
-        productSchoolCreateResult.setIdx(productSchool.getIdx());
-
-        return productSchoolCreateResult;
-    }
-
-    @Transactional
-    public ProductSchoolListRes listSchool() {
-        List<ProductSchool> result = productSchoolRepository.findByStatus(1);
-        List<ProductSchoolReadRes> productSchoolReadResList = new ArrayList<>();
-
-        for (ProductSchool productSchool : result) {
-            List<ProductImage> productImages = productSchool.getProductImages();
-
-            String filenames = "";
-            for (ProductImage productImage : productImages) {
-                String filename = productImage.getFilename();
-                filenames += filename + ",";
-            }
-            filenames = filenames.substring(0, filenames.length() - 1);
-
-            ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
-                    .idx(productSchool.getIdx())
-                    .storeName(productSchool.getStoreName())
-                    .businessNum(productSchool.getBusinessNum())
-                    .price(productSchool.getPrice())
-                    .contents(productSchool.getContents())
-//                    .filename(filenames)
-                    .build();
-
-            productSchoolReadResList.add(productSchoolReadRes);
-        }
-
-        return ProductSchoolListRes.builder()
-                .code(1000)
-                .message("요청 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result(productSchoolReadResList)
-                .build();
-    }
-
-    @Transactional
-    public ProductSchoolListRes adminListSchool() {
-        List<ProductSchool> result = productSchoolRepository.findAll();
-        List<ProductSchoolReadRes> productSchoolReadResList = new ArrayList<>();
-
-        for (ProductSchool productSchool : result) {
-            List<ProductImage> productImages = productSchool.getProductImages();
-
-            String filenames = "";
-            for (ProductImage productImage : productImages) {
-                String filename = productImage.getFilename();
-                filenames += filename + ",";
-            }
-            filenames = filenames.substring(0, filenames.length() - 1);
-
-            ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
-                    .idx(productSchool.getIdx())
-                    .storeName(productSchool.getStoreName())
-                    .businessNum(productSchool.getBusinessNum())
-                    .price(productSchool.getPrice())
-                    .contents(productSchool.getContents())
-//                    .filename(filenames)
-                    .build();
-
-            productSchoolReadResList.add(productSchoolReadRes);
-        }
-
-        return ProductSchoolListRes.builder()
-                .code(1000)
-                .message("요청 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result(productSchoolReadResList)
-                .build();
-    }
-
-    @Transactional
-    public ProductSchoolReadRes readSchool(Long idx) {
-        Optional<ProductSchool> resultCeo = productSchoolRepository.findByIdx(idx);
-
-        ProductSchool productSchool = resultCeo.get();
-        List<ProductImage> productImages = productSchool.getProductImages();
-
-        String filenames = "";
-        for (ProductImage productImage : productImages) {
-            String filename = productImage.getFilename();
-            filenames += filename + ",";
-        }
-        filenames = filenames.substring(0, filenames.length() - 1);
-
-        return ProductSchoolReadRes.builder()
-                .idx(productSchool.getIdx())
-                .storeName(productSchool.getStoreName())
-                .businessNum(productSchool.getBusinessNum())
-                .price(productSchool.getPrice())
-                .contents(productSchool.getContents())
-//                .filename(filenames)
-                .build();
-    }
-
-    public void updateSchool(ProductSchoolUpdateReq productSchoolUpdateReq) {
-        ProductSchool productSchool = productSchoolRepository.findById(productSchoolUpdateReq.getIdx())
-                .orElseThrow(() -> new RuntimeException("해당 idx의 상품을 찾을 수 없습니다."));
-
-        productSchool.setProductName(productSchoolUpdateReq.getProductName());
-        productSchool.setPrice(productSchoolUpdateReq.getPrice());
-        productSchool.setBusinessNum(productSchoolUpdateReq.getBusinessNum());
-        productSchool.setContents(productSchoolUpdateReq.getContents());
-
-        productSchoolRepository.save(productSchool);
-    }
-
-    @Transactional
-    public void deleteSchool(Long idx) {
-        // 해당 idx의 ProductSchoolImage를 한 번에 삭제
-        productImageRepository.deleteAllByProductSchoolIdx(idx);
-        // ProductSchool의 status를 2로 변경
-        ProductSchool productSchool = productSchoolRepository.findByIdx(idx).get();
-        productSchool.setStatus(2);
-    }
-
-    @Transactional
-    public List<ProductFileDto> listFilesByProductSchoolIdx(Long productSchoolIdx) {
-        // Board 엔티티의 ID를 기반으로 파일 목록 조회
-        List<ProductImage> productImages = productImageRepository.findByProductSchoolIdx(productSchoolIdx);
-
-        // 조회된 파일 목록을 BoardFileDto 리스트로 변환
-        List<ProductFileDto> fileDtos = productImages.stream().map(file -> {
-            // 각 파일에 대한 Presigned URL 생성
-            String downloadUrl = generatePresignedUrl(file.getFilename(), file.getOriginalFilename());
-
-            // 파일의 원본 이름과 다운로드 URL을 사용하여 GooutFileDto 객체 생성
-            return new ProductFileDto(file.getIdx(), file.getOriginalFilename(), downloadUrl);
-        }).collect(Collectors.toList());
-
-        return fileDtos;
-    }
-
-    @Transactional
-    public void checkSchool(Long idx) {
-        ProductSchool productSchool = productSchoolRepository.findByIdx(idx)
-                .orElseThrow(() -> new RuntimeException("해당 idx의 업체 정보를 찾을 수 없습니다."));
-        productSchool.setStatus(1);
-        productSchoolRepository.save(productSchool);
-    }
-
-    // ----------------------------------------------------------------------------------------------- //
-
-    public ProductManagerCreateResult createManager(ProductManagerCreateReq productManagerCreateReq) {
+    public BaseResponse<ProductManagerCreateResult> createManager(ProductManagerCreateReq productManagerCreateReq) {
         Manager manager = ((Manager) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ProductManager productManager = ProductManager.builder()
                 .managerName(manager.getNickname())             // 닉네임이 맞는지 (실명 안해도 되려나요)
@@ -224,11 +67,11 @@ public class ProductService {
         ProductManagerCreateResult productManagerCreateResult = ProductManagerCreateResult.builder().build();
         productManagerCreateResult.setIdx(productManager.getIdx());
 
-        return productManagerCreateResult;
+        return BaseResponse.successRes("PRODUCT_001", true, "매니저가 등록되었습니다.", productManagerCreateResult);
     }
 
     @Transactional
-    public ProductManagerListRes listManager() {
+    public BaseResponse<List<ProductManagerReadRes>> listManager() {
         List<ProductManager> result = productManagerRepository.findByStatus(1);
         List<ProductManagerReadRes> productManagerReadResList = new ArrayList<>();
 
@@ -256,17 +99,11 @@ public class ProductService {
             productManagerReadResList.add(productManagerReadRes);
         }
 
-        return ProductManagerListRes.builder()
-                .code(1000)
-                .message("요청 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result(productManagerReadResList)
-                .build();
+        return BaseResponse.successRes("PRODUCT_002", true, "매니저 목록 조회 성공.", productManagerReadResList);
     }
 
     @Transactional
-    public ProductManagerListRes adminListManager() {
+    public BaseResponse<List<ProductManagerReadRes>> adminListManager() {
         List<ProductManager> result = productManagerRepository.findAll();
         List<ProductManagerReadRes> productManagerReadResList = new ArrayList<>();
 
@@ -294,31 +131,16 @@ public class ProductService {
             productManagerReadResList.add(productManagerReadRes);
         }
 
-        return ProductManagerListRes.builder()
-                .code(1000)
-                .message("요청 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result(productManagerReadResList)
-                .build();
+        return BaseResponse.successRes("PRODUCT_003", true, "관리자용 매니저 목록 조회 성공.", productManagerReadResList);
     }
 
 
     @Transactional
-    public ProductManagerReadRes readManager(Long idx) {
-        Optional<ProductManager> resultCeo = productManagerRepository.findByIdx(idx);
+    public BaseResponse<ProductManagerReadRes> readManager(Long idx) {
+        ProductManager productManager = productManagerRepository.findByIdx(idx)
+                .orElseThrow(() -> new RuntimeException("해당 idx의 매니저를 찾을 수 없습니다."));
 
-        ProductManager productManager = resultCeo.get();
-        List<ProductImage> productImages = productManager.getProductImages();
-
-        String filenames = "";
-        for (ProductImage productImage : productImages) {
-            String filename = productImage.getFilename();
-            filenames += filename + ",";
-        }
-        filenames = filenames.substring(0, filenames.length() - 1);
-
-        return ProductManagerReadRes.builder()
+        ProductManagerReadRes productManagerReadRes = ProductManagerReadRes.builder()
                 .idx(productManager.getIdx())
                 .managerName(productManager.getManagerName())
                 .gender(productManager.getGender())
@@ -326,11 +148,12 @@ public class ProductService {
                 .price(productManager.getPrice())
                 .career(productManager.getCareer())
                 .contents(productManager.getContents())
-//                .filename(filenames)
                 .build();
+
+        return BaseResponse.successRes("PRODUCT_004", true, "매니저 조회 성공.", productManagerReadRes);
     }
 
-    public void updateManager(ProductManagerUpdateReq productManagerUpdateReq) {
+    public BaseResponse<Void> updateManager(ProductManagerUpdateReq productManagerUpdateReq) {
         ProductManager productManager = productManagerRepository.findById(productManagerUpdateReq.getIdx())
                 .orElseThrow(() -> new RuntimeException("해당 idx의 매니저를 찾을 수 없습니다."));
 
@@ -342,15 +165,19 @@ public class ProductService {
         productManager.setContents(productManagerUpdateReq.getContents());
 
         productManagerRepository.save(productManager);
+
+        return BaseResponse.successRes("PRODUCT_005", true, "매니저 정보 수정 성공.", null);
     }
 
     @Transactional
-    public void deleteManager(Long idx) {
+    public BaseResponse<Void> deleteManager(Long idx) {
         // 해당 idx의 ProductManagerImage를 한 번에 삭제
         productImageRepository.deleteAllByProductManagerIdx(idx);
         // ProductManager의 status를 2로 변경
         ProductManager productManager = productManagerRepository.findByIdx(idx).get();
         productManager.setStatus(2);
+
+        return BaseResponse.successRes("PRODUCT_006", true, "매니저 삭제 성공.", null);
     }
 
     @Transactional
@@ -371,11 +198,162 @@ public class ProductService {
     }
 
     @Transactional
-    public void checkManager(Long idx) {
+    public BaseResponse<Void> checkManager(Long idx) {
         ProductManager productManager = productManagerRepository.findByIdx(idx)
                 .orElseThrow(() -> new RuntimeException("해당 idx의 업체 정보를 찾을 수 없습니다."));
         productManager.setStatus(1);
         productManagerRepository.save(productManager);
+
+        return BaseResponse.successRes("PRODUCT_007", true, "매니저 승인 성공.", null);
+    }
+
+    // ----------------------------------------------------------------------------------------------- //
+
+    @Transactional
+    public BaseResponse<ProductSchoolCreateResult> createSchool(ProductSchoolCreateReq productSchoolCreateReq) {
+        Ceo ceo = ((Ceo) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ProductSchool productSchool = ProductSchool.builder()
+                .storeName(ceo.getStoreName())
+                .businessNum(ceo.getBusinessnum())
+                .productName(productSchoolCreateReq.getProductName())
+                .price(productSchoolCreateReq.getPrice())
+                .contents(productSchoolCreateReq.getContents())
+                .status(0)
+                .build();
+        productSchoolRepository.save(productSchool);
+
+        ProductSchoolCreateResult productSchoolCreateResult = ProductSchoolCreateResult.builder().build();
+        productSchoolCreateResult.setIdx(productSchool.getIdx());
+
+        return BaseResponse.successRes("PRODUCT_008", true, "업체가 등록되었습니다.", productSchoolCreateResult);
+    }
+
+    @Transactional
+    public BaseResponse<List<ProductSchoolReadRes>> listSchool() {
+        List<ProductSchool> result = productSchoolRepository.findByStatus(1);
+        List<ProductSchoolReadRes> productSchoolReadResList = new ArrayList<>();
+
+        for (ProductSchool productSchool : result) {
+            List<ProductImage> productImages = productSchool.getProductImages();
+
+            String filenames = "";
+            for (ProductImage productImage : productImages) {
+                String filename = productImage.getFilename();
+                filenames += filename + ",";
+            }
+            filenames = filenames.substring(0, filenames.length() - 1);
+
+            ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
+                    .idx(productSchool.getIdx())
+                    .storeName(productSchool.getStoreName())
+                    .businessNum(productSchool.getBusinessNum())
+                    .price(productSchool.getPrice())
+                    .contents(productSchool.getContents())
+//                    .filename(filenames)
+                    .build();
+
+            productSchoolReadResList.add(productSchoolReadRes);
+        }
+
+        return BaseResponse.successRes("PRODUCT_009", true, "업체 목록 조회 성공.", productSchoolReadResList);
+    }
+
+    @Transactional
+    public BaseResponse<List<ProductSchoolReadRes>> adminListSchool() {
+        List<ProductSchool> result = productSchoolRepository.findAll();
+        List<ProductSchoolReadRes> productSchoolReadResList = new ArrayList<>();
+
+        for (ProductSchool productSchool : result) {
+            List<ProductImage> productImages = productSchool.getProductImages();
+
+            String filenames = "";
+            for (ProductImage productImage : productImages) {
+                String filename = productImage.getFilename();
+                filenames += filename + ",";
+            }
+            filenames = filenames.substring(0, filenames.length() - 1);
+
+            ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
+                    .idx(productSchool.getIdx())
+                    .storeName(productSchool.getStoreName())
+                    .businessNum(productSchool.getBusinessNum())
+                    .price(productSchool.getPrice())
+                    .contents(productSchool.getContents())
+//                    .filename(filenames)
+                    .build();
+
+            productSchoolReadResList.add(productSchoolReadRes);
+        }
+
+        return BaseResponse.successRes("PRODUCT_010", true, "관리자용 업체 목록 조회 성공.", productSchoolReadResList);
+    }
+
+    @Transactional
+    public BaseResponse<ProductSchoolReadRes> readSchool(Long idx) {
+        ProductSchool productSchool = productSchoolRepository
+                .findByIdx(idx).orElseThrow(() -> new RuntimeException("해당 idx의 상품을 찾을 수 없습니다."));
+
+        ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
+                .idx(productSchool.getIdx())
+                .storeName(productSchool.getStoreName())
+                .businessNum(productSchool.getBusinessNum())
+                .price(productSchool.getPrice())
+                .contents(productSchool.getContents())
+                .build();
+
+        return BaseResponse.successRes("PRODUCT_011", true, "업체 조회 성공.", productSchoolReadRes);
+    }
+
+    public BaseResponse<Void> updateSchool(ProductSchoolUpdateReq productSchoolUpdateReq) {
+        ProductSchool productSchool = productSchoolRepository.findById(productSchoolUpdateReq.getIdx())
+                .orElseThrow(() -> new RuntimeException("해당 idx의 상품을 찾을 수 없습니다."));
+
+        productSchool.setProductName(productSchoolUpdateReq.getProductName());
+        productSchool.setPrice(productSchoolUpdateReq.getPrice());
+        productSchool.setBusinessNum(productSchoolUpdateReq.getBusinessNum());
+        productSchool.setContents(productSchoolUpdateReq.getContents());
+
+        productSchoolRepository.save(productSchool);
+
+        return BaseResponse.successRes("PRODUCT_012", true, "업체 정보 수정 성공.", null);
+    }
+
+    @Transactional
+    public BaseResponse<Void> deleteSchool(Long idx) {
+        // 해당 idx의 ProductSchoolImage를 한 번에 삭제
+        productImageRepository.deleteAllByProductSchoolIdx(idx);
+        // ProductSchool의 status를 2로 변경
+        ProductSchool productSchool = productSchoolRepository.findByIdx(idx).get();
+        productSchool.setStatus(2);
+
+        return BaseResponse.successRes("PRODUCT_013", true, "업체 삭제 성공.", null);
+    }
+
+    @Transactional
+    public List<ProductFileDto> listFilesByProductSchoolIdx(Long productSchoolIdx) {
+        // Board 엔티티의 ID를 기반으로 파일 목록 조회
+        List<ProductImage> productImages = productImageRepository.findByProductSchoolIdx(productSchoolIdx);
+
+        // 조회된 파일 목록을 BoardFileDto 리스트로 변환
+        List<ProductFileDto> fileDtos = productImages.stream().map(file -> {
+            // 각 파일에 대한 Presigned URL 생성
+            String downloadUrl = generatePresignedUrl(file.getFilename(), file.getOriginalFilename());
+
+            // 파일의 원본 이름과 다운로드 URL을 사용하여 GooutFileDto 객체 생성
+            return new ProductFileDto(file.getIdx(), file.getOriginalFilename(), downloadUrl);
+        }).collect(Collectors.toList());
+
+        return fileDtos;
+    }
+
+    @Transactional
+    public BaseResponse<Void> checkSchool(Long idx) {
+        ProductSchool productSchool = productSchoolRepository.findByIdx(idx)
+                .orElseThrow(() -> new RuntimeException("해당 idx의 업체 정보를 찾을 수 없습니다."));
+        productSchool.setStatus(1);
+        productSchoolRepository.save(productSchool);
+
+        return BaseResponse.successRes("PRODUCT_014", true, "업체 승인 성공.", null);
     }
 
     // ----------------------------------------------------------------------------------------------- //

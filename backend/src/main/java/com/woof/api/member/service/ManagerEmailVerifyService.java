@@ -2,9 +2,8 @@ package com.woof.api.member.service;
 
 import com.woof.api.member.model.entity.Manager;
 import com.woof.api.member.model.entity.ManagerEmailVerify;
-import com.woof.api.member.repository.ManagerEmailVerifyRepository;
 import com.woof.api.member.repository.ManagerRepository;
-import com.woof.api.utils.TokenProvider;
+import com.woof.api.member.repository.ManagerEmailVerifyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -50,7 +49,6 @@ public class ManagerEmailVerifyService {
     }
 
     public void sendManagerMail (String email, String role){
-
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("[MANAGER] woof 이메일 인증");
@@ -58,9 +56,9 @@ public class ManagerEmailVerifyService {
         String uuid = UUID.randomUUID().toString();
         create(email,uuid);
         // jwt 생성
-        String jwt = TokenProvider.generateAccessToken(email,role);
+//        String jwt = TokenProvider.generateAccessToken(email,role);
         //message.setText("http://3.35.233.95:8080/managerconfirm?email=" + email + "&uuid=" + uuid + "&jwt=" + jwt);
-        message.setText("http://localhost:8080/managerconfirm?email=" + email + "&uuid=" + uuid + "&jwt=" + jwt);
+        message.setText("http://localhost:8080/managerconfirm?email=" + email + "&uuid=" + uuid);
         emailSender.send(message);
     }
 

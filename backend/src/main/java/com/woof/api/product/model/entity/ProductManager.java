@@ -1,9 +1,11 @@
 package com.woof.api.product.model.entity;
 
 import com.woof.api.bookmark.model.Bookmark;
+import com.woof.api.common.BaseEntity;
 import com.woof.api.orders.model.Orders;
-import com.woof.api.review.model.Review;
+import com.woof.api.review.model.entity.Review;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,11 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-@Builder
-public class ProductManager {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
+@SuperBuilder
+public class ProductManager extends BaseEntity {
     private String managerName;     // 매니저 이름
     private String gender;          // 매니저 성별
     private String businessNum;     // 매니저 번호

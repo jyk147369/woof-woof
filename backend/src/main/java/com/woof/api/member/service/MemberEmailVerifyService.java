@@ -1,10 +1,12 @@
 package com.woof.api.member.service;
 
-import com.woof.api.member.model.entity.Member;
 import com.woof.api.member.model.entity.MemberEmailVerify;
+import com.woof.api.member.model.entity.Member;
 import com.woof.api.member.repository.MemberEmailVerifyRepository;
 import com.woof.api.member.repository.MemberRepository;
+import com.woof.api.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class MemberEmailVerifyService {
     private final MemberEmailVerifyRepository memberEmailVerifyRepository;
     private final JavaMailSender emailSender;
     private final MemberRepository memberRepository;
+
+    @Value("${jwt.secret-key}")
+    private String secretKey;
     public Boolean confirm(String email, String uuid){
         Optional<MemberEmailVerify> result = memberEmailVerifyRepository.findByEmail(email);
 
@@ -26,7 +31,7 @@ public class MemberEmailVerifyService {
             MemberEmailVerify memberEmailVerify = result.get();
 
             if(memberEmailVerify.getUuid().equals(uuid)) {
-                Optional<Member> member = memberRepository.findByEmail(email);
+                Optional<Member> member = memberRepository.findByMemberEmail(email);
                 if (member.isPresent()) {
                     member.get().setStatus(true);
                     memberRepository.save(member.get());
@@ -57,14 +62,14 @@ public class MemberEmailVerifyService {
         String uuid = UUID.randomUUID().toString();
         create(email,uuid);
         // jwt 생성
-        String jwt = TokenProvider.generateAccessToken(email, role);
+//        String jwt = JwtUtils.generateAccessToken(email, role);
         //message.setText("http://3.35.233.95:8080/memberconfirm?email=" + email + "&uuid=" + uuid + "&jwt=" + jwt);
-        message.setText("http://localhost:8080/memberconfirm?email=" + email + "&uuid=" + uuid + "&jwt=" + jwt);
+        message.setText("http://localhost:8080/memberconfirm?email=" + email + "&uuid=" + uuid);
         emailSender.send(message);
     }
 
     public void update(String email) {
-        Optional<Member> result = memberRepository.findByEmail(email);
+        Optional<Member> result = memberRepository.findByMemberEmail(email);
         if (result.isPresent()) {
             Member member = result.get();
             member.setStatus(true);
