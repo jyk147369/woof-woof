@@ -6,6 +6,7 @@ import com.woof.api.member.model.entity.Member;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
@@ -14,12 +15,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-@Builder
+@SuperBuilder
 public class Bookmark extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
 
     // 즐겨찾기 : 사용자 = N : 1
     @ManyToOne(fetch = FetchType.EAGER)
