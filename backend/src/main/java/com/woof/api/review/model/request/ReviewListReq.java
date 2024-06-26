@@ -1,4 +1,4 @@
-package com.woof.api.review.model.dto;
+package com.woof.api.review.model.request;
 
 import lombok.Builder;
 import lombok.Data;

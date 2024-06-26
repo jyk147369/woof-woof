@@ -6,10 +6,17 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
+import com.woof.api.common.BaseRes;
+import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.review.model.dto.*;
 import com.woof.api.review.model.entity.Review;
 import com.woof.api.review.model.entity.ReviewImage;
+import com.woof.api.review.model.request.ReviewCreateReq;
+import com.woof.api.review.model.request.ReviewFileDto;
+import com.woof.api.review.model.request.ReviewUpdateReq;
+import com.woof.api.review.model.response.ReviewCreateResult;
+import com.woof.api.review.model.response.ReviewListRes;
+import com.woof.api.review.model.response.ReviewReadDto;
 import com.woof.api.review.repository.ReviewImageRepository;
 import com.woof.api.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +37,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.woof.api.common.BaseResponse.successRes;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -42,10 +51,10 @@ public class ReviewService {
     private String bucket;
 
     @Transactional
-    public ReviewCreateResult create(ReviewCreateReq reviewCreateReq) {
+    public BaseResponse<ReviewCreateResult> create(ReviewCreateReq reviewCreateReq) {
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Review review = Review.builder()
-                .nickname(member.getNickname())
+                .nickname(member.getMemberNickname())
                 .text(reviewCreateReq.getText())
                 .rating(reviewCreateReq.getRating())
                 .orderIdx(reviewCreateReq.getOrderIdx())
@@ -56,11 +65,14 @@ public class ReviewService {
         ReviewCreateResult reviewCreateResult = ReviewCreateResult.builder().build();
         reviewCreateResult.setIdx(review.getIdx());
 
-        return reviewCreateResult;
+        return BaseResponse.successRes("REVEIW_001",
+                true,
+                "리뷰가 등록되었습니다.",
+                reviewCreateResult);
     }
 
     @Transactional
-    public ReviewListRes listByManager(Long managerIdx) {
+    public BaseResponse<List<ReviewReadDto>> listByManager(Long managerIdx) {
         List<Review> result = reviewRepository.findByProductManagerIdxAndStatus(managerIdx, 1);
         List<ReviewReadDto> reviewReadDtos = new ArrayList<>();
 
@@ -72,7 +84,9 @@ public class ReviewService {
                 String filename = reviewImage.getFilename();
                 filenames += filename + ",";
             }
-            filenames = filenames.substring(0, filenames.length() - 1);
+            if (!filenames.isEmpty()) {
+                filenames = filenames.substring(0, filenames.length() - 1);
+            }
 
             ReviewReadDto reviewReadDto = ReviewReadDto.builder()
                     .idx(review.getIdx())
@@ -86,17 +100,12 @@ public class ReviewService {
             reviewReadDtos.add(reviewReadDto);
         }
 
-        return ReviewListRes.builder()
-                .code(1000)
-                .message("매니저 리뷰 조회 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result(reviewReadDtos)
-                .build();
+        return BaseResponse.successRes("REVIEW_002", true, "매니저별 리뷰 목록 조회 성공.", reviewReadDtos);
     }
 
+
     @Transactional
-    public ReviewListRes listBySchool(Long schoolIdx) {
+    public BaseResponse<List<ReviewReadDto>> listBySchool(Long schoolIdx) {
         List<Review> result = reviewRepository.findByProductSchoolIdxAndStatus(schoolIdx, 1);
         List<ReviewReadDto> reviewReadDtos = new ArrayList<>();
 
@@ -108,7 +117,9 @@ public class ReviewService {
                 String filename = reviewImage.getFilename();
                 filenames += filename + ",";
             }
-            filenames = filenames.substring(0, filenames.length() - 1);
+            if (!filenames.isEmpty()) {
+                filenames = filenames.substring(0, filenames.length() - 1);
+            }
 
             ReviewReadDto reviewReadDto = ReviewReadDto.builder()
                     .idx(review.getIdx())
@@ -121,18 +132,11 @@ public class ReviewService {
 
             reviewReadDtos.add(reviewReadDto);
         }
-
-        return ReviewListRes.builder()
-                .code(1000)
-                .message("업체 리뷰 조회 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result(reviewReadDtos)
-                .build();
+        return BaseResponse.successRes("REVIEW_003", true, "유치원별 리뷰 목록 조회 성공.", reviewReadDtos);
     }
 
     @Transactional
-    public ReviewListRes myList(Long memberIdx) {
+    public BaseResponse<List<ReviewReadDto>> myList(Long memberIdx) {
         List<Review> result = reviewRepository.findByMemberIdx(memberIdx);
         List<ReviewReadDto> reviewReadDtos = new ArrayList<>();
 
@@ -144,7 +148,9 @@ public class ReviewService {
                 String filename = reviewImage.getFilename();
                 filenames += filename + ",";
             }
-            filenames = filenames.substring(0, filenames.length() - 1);
+            if (!filenames.isEmpty()) {
+                filenames = filenames.substring(0, filenames.length() - 1);
+            }
 
             ReviewReadDto reviewReadDto = ReviewReadDto.builder()
                     .idx(review.getIdx())
@@ -158,17 +164,12 @@ public class ReviewService {
             reviewReadDtos.add(reviewReadDto);
         }
 
-        return ReviewListRes.builder()
-                .code(1000)
-                .message("업체 리뷰 조회 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result(reviewReadDtos)
-                .build();
+        return BaseResponse.successRes("REVIEW_004", true, "내 리뷰 목록 조회 성공.", reviewReadDtos);
     }
 
+
     @Transactional
-    public ReviewListRes adminList() {
+    public BaseResponse<List<ReviewReadDto>> adminList() {
         List<Review> result = reviewRepository.findAll();
         List<ReviewReadDto> reviewReadDtos = new ArrayList<>();
 
@@ -194,30 +195,28 @@ public class ReviewService {
             reviewReadDtos.add(reviewReadDto);
         }
 
-        return ReviewListRes.builder()
-                .code(1000)
-                .message("업체 리뷰 조회 성공.")
-                .success(true)
-                .isSuccess(true)
-                .result(reviewReadDtos)
-                .build();
+        return BaseResponse.successRes("REVIEW_005", true, "매니저 목록 조회 성공.", reviewReadDtos);
     }
 
-    public void update(ReviewUpdateReq reviewUpdateReq) {
+    public BaseResponse <Void> update(ReviewUpdateReq reviewUpdateReq) {
         Review review = reviewRepository.findByIdx(reviewUpdateReq.getIdx())
                 .orElseThrow(() -> new RuntimeException("해당 idx의 리뷰를 찾을 수 없습니다."));
 
         review.setText(reviewUpdateReq.getText());
         review.setRating(reviewUpdateReq.getRating());
         reviewRepository.save(review);
+
+        return BaseResponse.successRes("REVIEW_006", true, "리뷰 업데이트 성공.", null);
     }
 
-    public void delete(Long idx) {
+    public  BaseResponse<Void> delete(Long idx) {
         // 해당 idx의 ReviewImage를 한 번에 삭제
         reviewImageRepository.deleteAllByReviewIdx(idx);
         // ProductSchool의 status를 2로 변경
         Review review = reviewRepository.findByIdx(idx).get();
         review.setStatus(2);
+
+        return BaseResponse.successRes("REVIEW_007", true,"리뷰 삭제 성공.", null);
     }
 
 // ----------------------------------------------------------------------------------------------- //
