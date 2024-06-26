@@ -5,8 +5,8 @@ import com.woof.api.member.model.entity.Member;
 import com.woof.api.orders.model.Orders;
 import com.woof.api.orders.model.dto.*;
 import com.woof.api.orders.repository.OrderRepository;
-import com.woof.api.productCeo.model.ProductCeo;
-import com.woof.api.productManager.model.ProductManager;
+import com.woof.api.product.model.entity.ProductSchool;
+import com.woof.api.product.model.entity.ProductManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +27,8 @@ public class OrderService {
     public BaseResponse create(OrderDto orderDto) {
         orderRepository.save(
                 Orders.builder()
-                        .productCeo(
-                                ProductCeo.builder()
+                        .productSchool(
+                                ProductSchool.builder()
                                         .idx(orderDto.getProductCeoIdx())
 //                                        .productName(orderDto.getProductName())
                                         .build())

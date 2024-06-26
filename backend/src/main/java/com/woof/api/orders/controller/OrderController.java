@@ -16,15 +16,16 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/orders")
+@RequestMapping("/orders")
 @CrossOrigin("*")
 public class OrderController {
-    private final OrderService orderService;
 
+    private final OrderService orderService;
 
     @ApiOperation(value="예약 작성", notes="회원이 예약 정보를 입력하여 예약서를 생성한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity create(@RequestBody OrderDto orderDto){
+    public ResponseEntity<Object> createOrder(@RequestBody OrderDto orderDto){
+        //수정 필요
         orderService.create(orderDto);
 
         return ResponseEntity.ok().body("예약에 성공하였습니다");

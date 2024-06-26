@@ -17,7 +17,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class PaymentController {
+
     private final PaymentService paymentService;
+
     @ApiOperation(value="정기 결제", notes="회원이 매달 정기적으로 일정 금액을 결제한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/validation/subscribe")
     public Response validationSubscribe(String impUid) throws IamportResponseException, IOException {
@@ -27,5 +29,10 @@ public class PaymentController {
 
         return Response.error("결제 금액 이상");
     }
+
+    //구독 취소
+    public Response cancelSubscription
+
+    //결제 취소
 
 }

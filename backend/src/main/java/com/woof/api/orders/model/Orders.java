@@ -5,8 +5,8 @@ import com.woof.api.member.model.entity.Ceo;
 import com.woof.api.member.model.entity.Manager;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.payment.model.Payment;
-import com.woof.api.productCeo.model.ProductCeo;
-import com.woof.api.productManager.model.ProductManager;
+import com.woof.api.product.model.entity.ProductSchool;
+import com.woof.api.product.model.entity.ProductManager;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,7 +34,7 @@ public class Orders {
     //
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productCeo_idx")
-    private ProductCeo productCeo;
+    private ProductSchool productSchool;
 
     //매니저 1 : 주문 N
     @ManyToOne(fetch = FetchType.LAZY)
