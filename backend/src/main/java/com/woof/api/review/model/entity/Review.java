@@ -19,9 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;           // 기본키
+ 
     private String nickname;    // 작성자 닉네임
     private String text;        // 리뷰 내용
     private Long orderIdx;      // 주문 idx
