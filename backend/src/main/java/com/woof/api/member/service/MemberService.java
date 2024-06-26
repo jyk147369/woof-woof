@@ -17,6 +17,8 @@ import com.woof.api.member.repository.MemberRepository;
 import com.woof.api.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,9 +27,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -41,26 +46,24 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberProfileImageService memberProfileImageService;
-    private final MemberProfileImageRepository memberProfileImageRepository;
+    private final JavaMailSender emailSender;
 
-//    public Member getMemberByEmail (String email){
-//        return memberRepository.findByMemberEmail(email).get();
-//    }
 
-    // Member CRUD
-
-    // create
     @Transactional
-    public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq request, MultipartFile profileImage) {
-        memberRepository.findByMemberEmail(request.getMemberEmail()).ifPresent(member -> {
-            throw MemberDuplicateException.forMemberId(request.getMemberEmail());
+    public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq request, MultipartFile profileImage, String role) {
+        memberRepository.findByMemberEmail(request.getEmail()).ifPresent(member -> {
+            throw MemberDuplicateException.forMemberId(request.getEmail());
         });
 
         Member member = Member.builder()
-                .memberEmail(request.getMemberEmail())
-                .memberPw(passwordEncoder.encode(request.getMemberPw()))
-                .memberName(request.getMemberName())
-                .memberNickname(request.getMemberNickname())
+                .memberEmail(request.getEmail())
+                .memberPw(passwordEncoder.encode(request.getPw()))
+                .memberName(request.getName())
+                .memberNickname(request.getNickname())
+                .authority(role)
+                .createAt(LocalDateTime.now())
+                .updateAt(LocalDateTime.now())
+                .status(false)
                 .build();
 
         memberRepository.save(member);

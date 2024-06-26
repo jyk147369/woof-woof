@@ -62,7 +62,7 @@ public class MemberProfileImageService {
         String saveFileName = saveFile(uploadFile);
         MemberProfileImage createMemberProfileImage = MemberProfileImage.builder()
                 .memberImageAddr(saveFileName)
-                .memberIdx(member.getMemberIdx())
+                .memberIdx(member.getIdx())
                 .build();
         memberProfileImageRepository.save(createMemberProfileImage);
         return saveFileName.replace(File.separator, "/");
