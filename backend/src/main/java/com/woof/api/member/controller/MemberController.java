@@ -37,6 +37,20 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.signup(request, profileImage, "ROLE_MEMBER"));
     }
 
+    @ApiOperation(value="일반회원 이메일 인증확인", notes="일반회원이 회원가입시 이메일 인증한다.")
+    @RequestMapping(method = RequestMethod.GET, value = "/memberconfirm")
+    public RedirectView memberConfirm(GetEmailConfirmReq getEmailConfirmReq) {
+
+        if (memberEmailVerifyService.confirm(getEmailConfirmReq.getEmail(), getEmailConfirmReq.getUuid())) {
+            memberEmailVerifyService.update(getEmailConfirmReq.getEmail());
+
+            return new RedirectView("http://localhost:3000/emailconfirm/" + getEmailConfirmReq.getJwt());
+        } else {
+
+            return new RedirectView("http://localhost:3000/emailCertError");
+        }
+    }
+
     @ApiOperation(value="매니저회원 회원가입", notes="매니저회원이 정보를 입력하여 회원가입한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/manager/signup")
     public ResponseEntity signup (@RequestBody PostManagerSignupReq postManagerSignupReq){
@@ -52,19 +66,7 @@ public class MemberController {
         return ResponseEntity.ok().body(response);
     }
 
-    @ApiOperation(value="일반회원 이메일 인증확인", notes="일반회원이 회원가입시 이메일 인증한다.")
-    @RequestMapping(method = RequestMethod.GET, value = "/memberconfirm")
-    public RedirectView memberConfirm(GetEmailConfirmReq getEmailConfirmReq) {
 
-        if (memberEmailVerifyService.confirm(getEmailConfirmReq.getEmail(), getEmailConfirmReq.getUuid())) {
-            memberEmailVerifyService.update(getEmailConfirmReq.getEmail());
-
-            return new RedirectView("http://localhost:3000/emailconfirm/" + getEmailConfirmReq.getJwt());
-        } else {
-
-            return new RedirectView("http://localhost:3000/emailCertError");
-        }
-    }
 
     @ApiOperation(value="매니저회원 이메일 인증확인", notes="매니저회원이 회원가입시 이메일 인증한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/managerconfirm")
