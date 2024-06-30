@@ -1,6 +1,7 @@
 package com.woof.api.review.model.entity;
 
 
+import com.woof.api.common.BaseEntity;
 import com.woof.api.orders.model.Orders;
 import com.woof.api.product.model.entity.ProductImage;
 import com.woof.api.product.model.entity.ProductSchool;
@@ -17,10 +18,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;           // 기본키
+public class Review extends BaseEntity {
+ 
     private String nickname;    // 작성자 닉네임
     private String text;        // 리뷰 내용
     private Long orderIdx;      // 주문 idx

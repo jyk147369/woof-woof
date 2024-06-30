@@ -1,4 +1,4 @@
-package com.woof.api.review.model.dto;
+package com.woof.api.review.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
