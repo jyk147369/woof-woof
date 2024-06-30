@@ -31,7 +31,7 @@ public class EmailVerifyService {
             helper.setTo(request.getEmail());
             helper.setSubject("[WOOF] " + request.getAuthority().substring(5) + " 회원가입 인증 메일입니다.");
             String uuid = UUID.randomUUID().toString();
-            String url = "http://localhost:8080/confirm?email=" + request.getEmail() + "&uuid=" + uuid;
+            String url = "http://localhost:8080/member/confirm?email=" + request.getEmail() + "&uuid=" + uuid;
 
             // 이미지 파일 경로
             String imagePath = "https://github.com/hyungdoyou/devops/assets/148875644/f9dc322f-9d41-455d-b35c-e3cfcd7c008d";
@@ -81,7 +81,7 @@ public class EmailVerifyService {
 
     }
 
-    public void update(String email) {
+    public void updateStatus(String email) {
         Optional<Member> result = memberRepository.findByMemberEmail(email);
         if (result.isPresent()) {
             Member member = result.get();
