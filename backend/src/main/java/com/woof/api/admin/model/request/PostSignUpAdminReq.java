@@ -2,8 +2,10 @@ package com.woof.api.admin.model.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.intellij.lang.annotations.Pattern;
-import org.jetbrains.annotations.NotNull;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 
 @Getter
