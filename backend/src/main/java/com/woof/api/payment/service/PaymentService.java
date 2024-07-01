@@ -1,24 +1,46 @@
 package com.woof.api.payment.service;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.AgainPaymentData;
+import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.request.ScheduleEntry;
+import com.siot.IamportRestClient.request.UnscheduleData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import com.siot.IamportRestClient.response.Schedule;
+import com.woof.api.orders.model.Orders;
 import com.woof.api.payment.model.SubscribeInfo;
+import com.woof.api.payment.model.dto.response.GetPortOneRes;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
     private final IamportClient iamportClient;
 
+    @Value("${imp.apiKey}")
+    private String apiKey;
+
+    @Value("${imp.secretKey}")
+    private String secretKey;
+    
+    // 정기결제
     public void regularPayment() throws IamportResponseException, IOException {
         AgainPaymentData again_data = new AgainPaymentData("test14", new Date().toString(), BigDecimal.valueOf(1005));
         IamportResponse<Payment> payment_response = iamportClient.againPayment(again_data);
@@ -42,4 +64,23 @@ public class PaymentService {
 
         return false;
     }
+
+    // 구독 취소
+    public IamportResponse<Payment> cancelSubscription(String customerUid) throws IamportResponseException, IOException {
+        UnscheduleData unscheduleData = new UnscheduleData(customerUid);
+        IamportResponse<List<Schedule>> response = iamportClient.unsubscribeSchedule(unscheduleData);
+
+        // 구독 취소 처리 후, 결과 반환
+        if (response.getResponse() != null && !response.getResponse().isEmpty()) {
+            Schedule entry = response.getResponse().get(0);
+            if ("cancelled".equals(entry.getStatus())) {
+                System.out.println("구독 취소 완료");
+                return iamportClient.paymentByImpUid(entry.getImp_uid());
+            }
+        }
+
+        System.out.println("구독 취소 실패");
+        return null;
+    }
+
 }

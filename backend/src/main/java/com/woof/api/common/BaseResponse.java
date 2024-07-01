@@ -19,4 +19,8 @@ public class BaseResponse<T> {
     public static <T>BaseResponse<T> successRes(String code, Boolean isSuccess, String message, T result) {
         return new BaseResponse<>(code, isSuccess, message, result);
     }
+
+    public static <T>BaseResponse<T> error(String code, Boolean isSuccess, String message, T result) {
+        return new BaseResponse<>(code, isSuccess, message, result);
+    }
 }
