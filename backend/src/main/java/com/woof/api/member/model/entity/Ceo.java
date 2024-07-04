@@ -1,6 +1,6 @@
 package com.woof.api.member.model.entity;
 
-import com.woof.api.orders.model.Orders;
+import com.woof.api.orders.model.entity.Orders;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

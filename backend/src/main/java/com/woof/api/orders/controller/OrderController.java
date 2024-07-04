@@ -1,17 +1,16 @@
 package com.woof.api.orders.controller;
 
 
-import com.woof.api.orders.model.Orders;
-import com.woof.api.orders.model.dto.*;
+import com.woof.api.orders.model.entity.CustomerInfo;
+import com.woof.api.orders.model.entity.OrderDto;
+import com.woof.api.orders.model.request.OrdersUpdateReq;
+import com.woof.api.orders.model.response.OrdersReadRes2;
 import com.woof.api.orders.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
 
 @RestController

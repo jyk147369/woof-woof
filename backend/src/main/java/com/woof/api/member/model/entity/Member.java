@@ -2,10 +2,9 @@ package com.woof.api.member.model.entity;
 
 import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.common.BaseEntity;
-import com.woof.api.orders.model.Orders;
+import com.woof.api.orders.model.entity.Orders;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.joda.time.LocalDateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

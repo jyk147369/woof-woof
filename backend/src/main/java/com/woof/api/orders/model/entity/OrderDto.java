@@ -1,6 +1,7 @@
-package com.woof.api.orders.model.dto;
+package com.woof.api.orders.model.entity;
 
 
+import com.woof.api.common.BaseEntity;
 import lombok.*;
 
 @Getter
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Data
-public class OrderDto {
+public class OrderDto extends BaseEntity {
     private String name;
     private String phoneNumber; //예약자 전화번호
     private Integer time; //예약시간

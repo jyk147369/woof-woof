@@ -2,7 +2,7 @@ package com.woof.api.product.model.entity;
 
 import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.common.BaseEntity;
-import com.woof.api.orders.model.Orders;
+import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.review.model.entity.Review;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
