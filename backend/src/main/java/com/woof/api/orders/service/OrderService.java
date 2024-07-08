@@ -2,8 +2,8 @@ package com.woof.api.orders.service;
 
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
+import com.woof.api.orders.model.dto.OrderDto;
 import com.woof.api.orders.model.entity.CustomerInfo;
-import com.woof.api.orders.model.entity.OrderDto;
 import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.orders.model.request.OrdersUpdateReq;
 import com.woof.api.orders.model.response.OrdersListRes;

@@ -12,7 +12,7 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.siot.IamportRestClient.response.Schedule;
 import com.woof.api.common.BaseResponse;
-import com.woof.api.orders.model.Orders;
+import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.orders.repository.OrderRepository;
 import com.woof.api.payment.model.SubscribeInfo;
 import com.woof.api.payment.model.dto.response.GetPortOneRes;
@@ -35,10 +35,10 @@ public class PaymentService {
     private final IamportClient iamportClient;
     private final OrderRepository orderRepository;
 
-    @Value("${imp.apiKey}")
+    @Value("${imp.imp_key}")
     private String apiKey;
 
-    @Value("${imp.secretKey}")
+    @Value("${imp.imp_secret}")
     private String secretKey;
 
     //PortOne 토큰 발급

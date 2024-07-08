@@ -1,7 +1,7 @@
-package com.woof.api.orders.model.dto;
+package com.woof.api.orders.model.response;
 
 
-import com.woof.api.orders.model.Orders;
+import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.payment.model.dto.response.GetPortOneRes;
 import lombok.Builder;
 import lombok.Getter;
