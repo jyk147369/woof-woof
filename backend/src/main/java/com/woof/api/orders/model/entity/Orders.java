@@ -1,6 +1,7 @@
-package com.woof.api.orders.model;
+package com.woof.api.orders.model.entity;
 
 
+import com.woof.api.common.BaseEntity;
 import com.woof.api.member.model.entity.Ceo;
 import com.woof.api.member.model.entity.Manager;
 import com.woof.api.member.model.entity.Member;
@@ -18,10 +19,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @Builder
-public class Orders {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
+public class Orders extends BaseEntity {
 
     private String name;
     private String phoneNumber; //예약자 전화번호

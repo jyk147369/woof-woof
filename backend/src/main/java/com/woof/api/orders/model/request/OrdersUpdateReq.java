@@ -1,10 +1,8 @@
-package com.woof.api.orders.model.dto;
+package com.woof.api.orders.model.request;
 
 
 import lombok.Builder;
 import lombok.Data;
-
-import javax.persistence.Entity;
 
 @Builder
 @Data

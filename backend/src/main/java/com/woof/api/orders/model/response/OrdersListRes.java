@@ -1,17 +1,16 @@
-package com.woof.api.orders.model.dto;
+package com.woof.api.orders.model.response;
 
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 
 @Builder
 @Data
-public class OrdersReadRes2 {
+public class OrdersListRes {
     private Boolean isSuccess;
     private Integer code;
     private String message;
-    private OrdersReadRes result;
+    private List<OrdersReadRes> result;
     private Boolean success;
-
-
 }
