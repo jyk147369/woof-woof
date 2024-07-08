@@ -32,7 +32,7 @@ public class AdminService {
             throw new AdminException(ErrorCode.DUPLICATE_SIGNUP_ID, String.format("SignUp Email [ %s ] is duplicated.", postSignUpAdminReq.getEmail()));
         }
 
-        Member member = Member.builder().memberPw(passwordEncoder.encode(postSignUpAdminReq.getPassword())).memberName(postSignUpAdminReq.getName()).memberEmail(postSignUpAdminReq.getEmail()).authority("ROLE_ADMIN").createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).status(true).build();
+        Member member = Member.builder().memberPw(passwordEncoder.encode(postSignUpAdminReq.getPassword())).memberName(postSignUpAdminReq.getName()).memberEmail(postSignUpAdminReq.getEmail()).authority("ROLE_ADMIN").status(true).build();
 
         memberRepository.save(member);
 

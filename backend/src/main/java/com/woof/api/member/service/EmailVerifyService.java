@@ -21,7 +21,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EmailVerifyService {
     private final JavaMailSender emailSender;
-    private final EmailVerifyService emailVerifyService;
     private final EmailVerifyRepository emailVerifyRepository;
     private final MemberRepository memberRepository;
     public void sendEmail(PostMemberSignupReq request) {
@@ -46,7 +45,7 @@ public class EmailVerifyService {
             helper.setText(content, true); // true는 HTML 메일임을 의미합니다.
             emailSender.send(message);
             // 이메일 인증 제한시간 추가하기-> redis
-            emailVerifyService.create(request.getEmail(), uuid);
+            create(request.getEmail(), uuid);
         } catch (MessagingException e) {
             e.printStackTrace();
             // 예외 처리 로직

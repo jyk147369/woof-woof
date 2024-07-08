@@ -3,6 +3,7 @@ package com.woof.api.member.model.entity;
 import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.common.BaseEntity;
 import com.woof.api.orders.model.Orders;
+import com.woof.api.review.model.entity.Review;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.joda.time.LocalDateTime;
@@ -36,6 +37,9 @@ public class Member extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member")
     List<Orders> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    List<Review> review = new ArrayList<>();
 
 
     @Override
