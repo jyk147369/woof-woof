@@ -1,26 +1,37 @@
 package com.woof.api.orders.controller;
 
 
+import com.woof.api.common.BaseResponse;
+import com.woof.api.common.error.ErrorCode;
+import com.woof.api.member.model.entity.Member;
 import com.woof.api.orders.model.Orders;
 import com.woof.api.orders.model.dto.*;
 import com.woof.api.orders.service.OrderService;
+import com.woof.api.payment.service.PaymentService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
 @CrossOrigin("*")
+@Slf4j
 public class OrderController {
 
     private final OrderService orderService;
+    private final PaymentService paymentService;
 
     @ApiOperation(value="예약 작성", notes="회원이 예약 정보를 입력하여 예약서를 생성한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/create")
@@ -69,6 +80,39 @@ public class OrderController {
         return ResponseEntity.ok().body(orders);
     }
 
+    @ApiOperation(value = "상품 주문")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "email", value = "이메일을 받기 위한 토큰 입력",
+                    required = true, paramType = "query", dataType = "string", defaultValue = ""),
+            @ApiImplicitParam(name = "impUid", value = "주문 번호 입력",
+                    required = true, paramType = "query", dataType = "string", defaultValue = "")})
+    @RequestMapping(method = RequestMethod.POST, value = "/validation")
+    public BaseResponse<List<PostOrderInfoRes>> ordersCreate(@AuthenticationPrincipal Member member,
+                                                             @RequestBody Map<String, String> requestBody, OrderDto orderDto) {
+        String impUid = requestBody.get("impUid");
+        log.info("Received impUid for validation: {}", impUid);
+        try {
+            if(paymentService.paymentValidation(impUid)){
+                log.info("Payment validation successful, creating order...");
+                return orderService.create(orderDto);
+            } else {
+                log.error("Payment validation failed for impUid: {}", impUid);
+                throw new OrdersException(ErrorCode.NOT_MATCH_AMOUNT);
+            }
+        } catch (Exception e) {
+            log.error("Server error occurred", e);
+            throw new OrdersException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    //고객이 구매를 취소
+    @ApiOperation(value = "주문 취소")
+    @ApiImplicitParams(
+            @ApiImplicitParam(name = "impUid", value = "취소할 주문의 주문 번호 입력",
+                    required = true, paramType = "query", dataType = "string", defaultValue = ""))
+    @RequestMapping(method = RequestMethod.GET,value = "/cancel")
+    public BaseResponse<String> orderCancel(String impUid) throws IOException {
+        return paymentService.paymentCancel(impUid);
+    }
 
 }
