@@ -46,6 +46,7 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberProfileImageService memberProfileImageService;
+    private final EmailVerifyService emailVerifyService;
     private final JavaMailSender emailSender;
 
 
@@ -78,8 +79,12 @@ public class MemberService implements UserDetailsService {
                 .memberName(member.getMemberName())
                 .build();
 
+        emailVerifyService.sendEmail(request);
+
         return BaseResponse.successRes("MEMBER_001", true, "회원이 등록되었습니다.", response);
     }
+
+
 
     public BaseResponse<PostMemberLoginRes> login(PostMemberLoginReq request){
         Member member = memberRepository.findByMemberEmail(request.getMemberEmail()).orElseThrow(() ->

@@ -12,6 +12,5 @@ import lombok.Setter;
 public class GetEmailConfirmReq {
 
     private String email;
-    private String jwt;
     private String uuid;
 }

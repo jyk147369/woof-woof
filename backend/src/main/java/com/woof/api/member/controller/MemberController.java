@@ -1,6 +1,7 @@
 package com.woof.api.member.controller;
 
 import com.woof.api.member.model.entity.Ceo;
+import com.woof.api.member.model.entity.EmailVerify;
 import com.woof.api.member.model.entity.Manager;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.member.model.request.*;
@@ -29,12 +30,27 @@ public class MemberController {
     private final ManagerEmailVerifyService managerEmailVerifyService;
     private final MemberEmailVerifyService memberEmailVerifyService;
     private final AuthenticationManager authenticationManager;
+    private final EmailVerifyService emailVerifyService;
 
     @ApiOperation(value="일반회원 회원가입", notes="일반회원이 정보를 입력하여 회원가입한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/signup")
     public ResponseEntity<Object> signup (@RequestPart(value = "member") @Valid PostMemberSignupReq request,
                                           @RequestPart(value = "profileImage", required = false) MultipartFile profileImage){
         return ResponseEntity.ok().body(memberService.signup(request, profileImage, "ROLE_MEMBER"));
+    }
+
+    @ApiOperation(value="일반회원 이메일 인증확인", notes="일반회원이 회원가입시 이메일 인증한다.")
+    @RequestMapping(method = RequestMethod.GET, value = "/confirm")
+    public RedirectView memberConfirm(GetEmailConfirmReq getEmailConfirmReq) {
+
+        if (emailVerifyService.confirm(getEmailConfirmReq.getEmail(), getEmailConfirmReq.getUuid())) {
+            emailVerifyService.updateStatus(getEmailConfirmReq.getEmail());
+
+            return new RedirectView("http://localhost:3000/" );
+        } else {
+
+            return new RedirectView("http://localhost:3000/emailCertError");
+        }
     }
 
     @ApiOperation(value="매니저회원 회원가입", notes="매니저회원이 정보를 입력하여 회원가입한다.")
@@ -52,19 +68,7 @@ public class MemberController {
         return ResponseEntity.ok().body(response);
     }
 
-    @ApiOperation(value="일반회원 이메일 인증확인", notes="일반회원이 회원가입시 이메일 인증한다.")
-    @RequestMapping(method = RequestMethod.GET, value = "/memberconfirm")
-    public RedirectView memberConfirm(GetEmailConfirmReq getEmailConfirmReq) {
 
-        if (memberEmailVerifyService.confirm(getEmailConfirmReq.getEmail(), getEmailConfirmReq.getUuid())) {
-            memberEmailVerifyService.update(getEmailConfirmReq.getEmail());
-
-            return new RedirectView("http://localhost:3000/emailconfirm/" + getEmailConfirmReq.getJwt());
-        } else {
-
-            return new RedirectView("http://localhost:3000/emailCertError");
-        }
-    }
 
     @ApiOperation(value="매니저회원 이메일 인증확인", notes="매니저회원이 회원가입시 이메일 인증한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/managerconfirm")
@@ -73,7 +77,7 @@ public class MemberController {
         if (managerEmailVerifyService.confirm(getEmailConfirmReq.getEmail(), getEmailConfirmReq.getUuid())) {
             managerEmailVerifyService.update(getEmailConfirmReq.getEmail());
 
-            return new RedirectView("http://localhost:3000/emailconfirm/" + getEmailConfirmReq.getJwt());
+            return new RedirectView("http://localhost:3000/emailconfirm/");
         } else {
 
             return new RedirectView("http://localhost:3000/emailCertError");
