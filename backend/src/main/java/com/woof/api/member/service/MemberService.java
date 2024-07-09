@@ -5,20 +5,16 @@ import com.woof.api.member.exception.MemberAccountException;
 import com.woof.api.member.exception.MemberDuplicateException;
 import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.member.model.request.PatchMemberUpdateReq;
 import com.woof.api.member.model.request.PostMemberLoginReq;
 import com.woof.api.member.model.request.PostMemberSignupReq;
 import com.woof.api.member.model.response.GetMemberReadRes;
-import com.woof.api.member.model.response.PatchMemberUpdateRes;
 import com.woof.api.member.model.response.PostMemberLoginRes;
 import com.woof.api.member.model.response.PostMemberSignupRes;
-import com.woof.api.member.repository.MemberProfileImageRepository;
 import com.woof.api.member.repository.MemberRepository;
 import com.woof.api.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,12 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,8 +38,6 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final MemberProfileImageService memberProfileImageService;
     private final EmailVerifyService emailVerifyService;
-    private final JavaMailSender emailSender;
-
 
     @Transactional
     public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq request, MultipartFile profileImage, String role) {
@@ -74,9 +63,10 @@ public class MemberService implements UserDetailsService {
         }
 
         PostMemberSignupRes response =  PostMemberSignupRes.builder()
-                .memberIdx(member.getIdx())
-                .memberEmail(member.getMemberEmail())
-                .memberName(member.getMemberName())
+                .idx(member.getIdx())
+                .email(member.getMemberEmail())
+                .name(member.getMemberName())
+                .role(member.getAuthority())
                 .build();
 
         emailVerifyService.sendEmail(request);
@@ -84,84 +74,44 @@ public class MemberService implements UserDetailsService {
         return BaseResponse.successRes("MEMBER_001", true, "회원이 등록되었습니다.", response);
     }
 
-
-
     public BaseResponse<PostMemberLoginRes> login(PostMemberLoginReq request){
-        Member member = memberRepository.findByMemberEmail(request.getMemberEmail()).orElseThrow(() ->
-        MemberNotFoundException.forMemberEmail(request.getMemberEmail()));
+        Member member = memberRepository.findByMemberEmail(request.getEmail()).orElseThrow(() ->
+        MemberNotFoundException.forMemberEmail(request.getEmail()));
 
         PostMemberLoginRes response = PostMemberLoginRes.builder()
                 .accessToken(JwtUtils.generateAccessToken(member, secretKey, expiredTimeMs))
                 .build();
 
-        if (passwordEncoder.matches(request.getMemberPw(), member.getMemberPw()) && member.getStatus().equals(true)) {
+        if (passwordEncoder.matches(request.getPw(), member.getMemberPw()) && member.getStatus().equals(true)) {
             return BaseResponse.successRes("MEMBER_002", true, "로그인에 성공하였습니다.", response);
         } else {
             throw MemberAccountException.forInvalidPassword();
         }
     }
 
-    @Transactional
-    public void sendEmail (PostMemberSignupReq request) {
-
-    }
-
-//    public PostMemberSignupRes signup(PostMemberSignupReq postMemberSignupReq){
-//
-//        Optional<Member> duplicatedMember = memberRepository.findByEmail(postMemberSignupReq.getEmail());
-//        // 멤버 정보를 빌드로 저장
-//        if(!duplicatedMember.isPresent()) {
-//
-//            Member member = Member.builder()
-//                    .email(postMemberSignupReq.getEmail())
-//                    .password(passwordEncoder.encode(postMemberSignupReq.getPassword()))
-//                    .nickname(postMemberSignupReq.getNickname())
-//                    .authority("ROLE_USER")
-//                    .status(false)
-//                    .build();
-//
-//            memberRepository.save(member);
-//
-//            Map<String, Long> result = new HashMap<>();
-//            result.put("idx", member.getIdx());
-//
-//            PostMemberSignupRes postMemberSignupRes = PostMemberSignupRes.builder()
-//                    .isSuccess(true)
-//                    .code(1000L)
-//                    .message("요청 성공.")
-//                    .result(result)
-//                    .success(true)
-//                    .build();
-//
-//            return postMemberSignupRes;
-//
-//        } else {
-//
-//            PostMemberSignupRes postMemberSignupRes = PostMemberSignupRes.builder()
-//                    .isSuccess(false)
-//                    .code(4000L)
-//                    .message("요청 실패. 중복된 이메일입니다.")
-//                    .result(null)
-//                    .success(false)
-//                    .build();
-//
-//            return postMemberSignupRes;
-//
-//        }
-//
-//
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(username);
-        Optional<Member> result = memberRepository.findByMemberEmail(username);
-        Member member = null;
-        if(result.isPresent()) {
-            member = result.get();
-        }
+        Member member = memberRepository.findByMemberEmail(username).orElseThrow(() ->
+                MemberNotFoundException.forMemberEmail(username));
 
         return member;
+    }
+
+    public BaseResponse<GetMemberReadRes> read(){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        Member result = memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
+                MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
+
+        GetMemberReadRes response = GetMemberReadRes.builder()
+                .email(result.getMemberEmail())
+                .name(result.getMemberName())
+                .nickname(result.getMemberNickname())
+                .authority(result.getAuthority())
+                .profileImage(result.getProfileImage())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "회원조회에 성공하였습니다.", response);
     }
 
 //    // read

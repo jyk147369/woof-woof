@@ -1,20 +1,17 @@
 package com.woof.api.member.model.entity;
 
-import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.common.BaseEntity;
-import com.woof.api.orders.model.entity.Orders;
-import com.woof.api.review.model.entity.Review;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.joda.time.LocalDateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Entity;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Getter
 @Setter
@@ -32,14 +29,11 @@ public class Member extends BaseEntity implements UserDetails {
     private Boolean status;
     private String profileImage;
 
-    @OneToMany(mappedBy = "member")
-    List<Bookmark> carts = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    List<Orders> orders = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    List<Review> review = new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    List<Bookmark> carts = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member")
+//    List<Orders> orders = new ArrayList<>();
 
 
     @Override

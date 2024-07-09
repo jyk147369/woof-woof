@@ -73,7 +73,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String authority = JwtUtils.getAuthority(token, secretKey);
 
-            if (authority.equals("ROLE_USER")) {
+            if (authority.equals("ROLE_MEMBER") || authority.equals("ROLE_MANAGER") || authority.equals("ROLE_CEO")) {
                 String memberEmail = JwtUtils.getUserMemberEmail(token, secretKey);
                 if (memberEmail != null) {
                     Optional<Member> result = memberRepository.findByMemberEmail(memberEmail);

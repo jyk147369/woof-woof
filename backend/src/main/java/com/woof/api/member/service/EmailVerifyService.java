@@ -1,9 +1,7 @@
 package com.woof.api.member.service;
 
 import com.woof.api.member.model.entity.EmailVerify;
-import com.woof.api.member.model.entity.ManagerEmailVerify;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.member.model.entity.MemberEmailVerify;
 import com.woof.api.member.model.request.PostMemberSignupReq;
 import com.woof.api.member.repository.EmailVerifyRepository;
 import com.woof.api.member.repository.MemberRepository;
@@ -21,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EmailVerifyService {
     private final JavaMailSender emailSender;
+//    private final EmailVerifyService emailVerifyService;
     private final EmailVerifyRepository emailVerifyRepository;
     private final MemberRepository memberRepository;
     public void sendEmail(PostMemberSignupReq request) {
@@ -28,9 +27,10 @@ public class EmailVerifyService {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(request.getEmail());
-            helper.setSubject("[WOOF] " + request.getAuthority().substring(5) + " 회원가입 인증 메일입니다.");
+//            helper.setSubject("[WOOF] " + request.getAuthority().substring(5) + " 회원가입 인증 메일입니다.");
+            helper.setSubject("[WOOF] 회원가입 인증 메일입니다.");
             String uuid = UUID.randomUUID().toString();
-            String url = "http://localhost:8080/member/confirm?email=" + request.getEmail() + "&uuid=" + uuid;
+            String url = "http://localhost:8080/user/confirm?email=" + request.getEmail() + "&uuid=" + uuid;
 
             // 이미지 파일 경로
             String imagePath = "https://github.com/hyungdoyou/devops/assets/148875644/f9dc322f-9d41-455d-b35c-e3cfcd7c008d";
