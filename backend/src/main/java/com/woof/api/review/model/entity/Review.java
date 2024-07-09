@@ -2,11 +2,13 @@ package com.woof.api.review.model.entity;
 
 
 import com.woof.api.common.BaseEntity;
-import com.woof.api.orders.model.Orders;
+import com.woof.api.member.model.entity.Member;
+import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.product.model.entity.ProductImage;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseEntity {
@@ -33,6 +35,10 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productManager_idx")
     ProductManager productManager; //상품 : 리뷰 = 1 : N
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_idx")
+    Member member; //상품 : 리뷰 = 1 : N
 
     @OneToMany(mappedBy = "review")
     private List<ReviewImage> reviewImages = new ArrayList<>();

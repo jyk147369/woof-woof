@@ -1,6 +1,7 @@
-package com.woof.api.orders.model;
+package com.woof.api.orders.model.entity;
 
 
+import com.woof.api.common.BaseEntity;
 import com.woof.api.member.model.entity.Ceo;
 import com.woof.api.member.model.entity.Manager;
 import com.woof.api.member.model.entity.Member;
@@ -8,19 +9,18 @@ import com.woof.api.payment.model.Payment;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
-public class Orders {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
+@SuperBuilder
+public class Orders extends BaseEntity {
 
     private String name;
     private String phoneNumber; //예약자 전화번호
@@ -28,7 +28,13 @@ public class Orders {
     private String place;//픽업 장소
     private String reservation_status; //예약 상태
     private String orderDetails;
+    private Integer price;
 
+    @Column(nullable=false)
+    private String impUid;
+
+    @Column(nullable=false)
+    private LocalDate orderDate;
 
 
     //

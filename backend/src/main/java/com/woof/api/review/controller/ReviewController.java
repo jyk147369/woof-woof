@@ -65,13 +65,6 @@ public class ReviewController {
         return ResponseEntity.ok().body(response);
     }
 
-    //    @ApiOperation(value="관리자 리뷰 목록 조회", notes="관리자가 작성한 리뷰를 조회한다.")
-    @RequestMapping(method = RequestMethod.GET, value = "/adminlist")
-    public ResponseEntity<BaseResponse<List<ReviewReadDto>>> adminList(Long adminIdx) {
-        BaseResponse<List<ReviewReadDto>> response = reviewService.myList(adminIdx);
-        return ResponseEntity.ok().body(response);
-    }
-
     //    @ApiOperation(value="리뷰 수정", notes="회원이 작성한 리뷰를 수정한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/update")
     public ResponseEntity<BaseResponse<Void>> update(@RequestPart ReviewUpdateReq reviewUpdateReq,

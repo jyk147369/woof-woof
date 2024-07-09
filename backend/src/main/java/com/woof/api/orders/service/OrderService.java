@@ -2,8 +2,13 @@ package com.woof.api.orders.service;
 
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.orders.model.Orders;
-import com.woof.api.orders.model.dto.*;
+import com.woof.api.orders.model.dto.OrderDto;
+import com.woof.api.orders.model.entity.CustomerInfo;
+import com.woof.api.orders.model.entity.Orders;
+import com.woof.api.orders.model.request.OrdersUpdateReq;
+import com.woof.api.orders.model.response.OrdersListRes;
+import com.woof.api.orders.model.response.OrdersReadRes;
+import com.woof.api.orders.model.response.OrdersReadRes2;
 import com.woof.api.orders.repository.OrderRepository;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
@@ -45,6 +50,7 @@ public class OrderService {
                         .time(orderDto.getTime())
                         .orderDetails(orderDto.getOrderDetails())
                         .place(orderDto.getPlace())
+
 //                        .reservation_status(orderDto.getReservation_status())
                         .build());
 

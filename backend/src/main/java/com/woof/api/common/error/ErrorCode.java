@@ -55,6 +55,10 @@ public enum ErrorCode {
     INVALID_DATETIME(HttpStatus.BAD_REQUEST, "CALENDAR_010", "등록할 수 없는 시간입니다."),
     EMPTY_INPUT(HttpStatus.BAD_REQUEST, "CALENDAR_011", "필수 입력값을 입력하지 않았습니다."),
     NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "CALENDAR_012", "검색 결과가 없습니다."),
+
+
+    // 주문
+    NOT_MATCH_ORDERS(HttpStatus.NOT_FOUND, "ORDERS_001", "일정을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus status;  // 헤더로 반환할 Http 상태 코드

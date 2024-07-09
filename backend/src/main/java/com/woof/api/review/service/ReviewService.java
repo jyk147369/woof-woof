@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
-//import com.woof.api.common.BaseRes;
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.review.model.entity.Review;
@@ -259,7 +258,7 @@ public class ReviewService {
     @Transactional
     public void saveFile(Long idx, String uploadPath) {
         reviewImageRepository.save(ReviewImage.builder()
-                .review(Review.builder().orderIdx(idx).build())
+                .review(Review.builder().idx(idx).build())
                 .filename(uploadPath)
                 .build());
     }
