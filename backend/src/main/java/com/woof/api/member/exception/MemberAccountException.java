@@ -17,7 +17,7 @@ public class MemberAccountException extends BusinessException {
     }
 
     public static MemberAccountException forInvalidAuthority() {
-        return new MemberAccountException(ErrorCode.INVALID_AUTHORITY, "토큰이 존재하지 않습니다. 로그인을 먼저 진행해주세요.");
+        return new MemberAccountException(ErrorCode.INVALID_AUTHORITY, "권한이 유효하지 않습니다.");
     }
 
     public static MemberAccountException forInvalidToken() {

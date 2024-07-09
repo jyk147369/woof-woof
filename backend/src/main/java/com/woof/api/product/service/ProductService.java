@@ -6,8 +6,9 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.woof.api.common.BaseResponse;
-import com.woof.api.member.model.entity.Ceo;
-import com.woof.api.member.model.entity.Manager;
+import com.woof.api.member.exception.MemberAccountException;
+import com.woof.api.member.exception.MemberNotFoundException;
+import com.woof.api.member.model.entity.Member;
 import com.woof.api.product.model.response.ProductFileDto;
 import com.woof.api.product.model.entity.ProductManager;
 import com.woof.api.product.model.entity.ProductSchool;
@@ -52,22 +53,27 @@ public class ProductService {
 
 
     public BaseResponse<ProductManagerCreateResult> createManager(ProductManagerCreateReq productManagerCreateReq) {
-        Manager manager = ((Manager) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ProductManager productManager = ProductManager.builder()
-                .managerName(manager.getNickname())             // 닉네임이 맞는지 (실명 안해도 되려나요)
-                .gender(productManagerCreateReq.getGender())    // 혹은 매니저 entity에 추가되면 거기서 가져오기
-                .businessNum(productManagerCreateReq.getBusinessNum()) // 혹 매 e 추 거 가
-                .price(productManagerCreateReq.getPrice())      // 혹은 매니저 entity에 추가되면 거기서 가져오기
-                .career(productManagerCreateReq.getCareer())    // 혹은 매니저 entity에 추가되면 거기서 가져오기
-                .contents(productManagerCreateReq.getContents())// 혹은 매니저 entity에 추가되면 거기서 가져오기
-                .status(0)
-                .build();
-        productManagerRepository.save(productManager);
+        Member manager = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if (manager.getAuthority().substring(5).equals("MANAGER")) {
 
-        ProductManagerCreateResult productManagerCreateResult = ProductManagerCreateResult.builder().build();
-        productManagerCreateResult.setIdx(productManager.getIdx());
+            ProductManager productManager = ProductManager.builder()
+                    .managerName(manager.getMemberName())             // 닉네임이 맞는지 (실명 안해도 되려나요)
+                    .gender(productManagerCreateReq.getGender())    // 혹은 매니저 entity에 추가되면 거기서 가져오기
+                    .businessNum(productManagerCreateReq.getBusinessNum()) // 혹 매 e 추 거 가
+                    .price(productManagerCreateReq.getPrice())      // 혹은 매니저 entity에 추가되면 거기서 가져오기
+                    .career(productManagerCreateReq.getCareer())    // 혹은 매니저 entity에 추가되면 거기서 가져오기
+                    .contents(productManagerCreateReq.getContents())// 혹은 매니저 entity에 추가되면 거기서 가져오기
+                    .status(0)
+                    .build();
+            productManagerRepository.save(productManager);
 
-        return BaseResponse.successRes("PRODUCT_001", true, "매니저가 등록되었습니다.", productManagerCreateResult);
+            ProductManagerCreateResult productManagerCreateResult = ProductManagerCreateResult.builder().build();
+            productManagerCreateResult.setIdx(productManager.getIdx());
+
+            return BaseResponse.successRes("PRODUCT_001", true, "매니저가 등록되었습니다.", productManagerCreateResult);
+        } else {
+            throw MemberAccountException.forInvalidAuthority();
+        }
     }
 
     @Transactional
@@ -211,21 +217,26 @@ public class ProductService {
 
     @Transactional
     public BaseResponse<ProductSchoolCreateResult> createSchool(ProductSchoolCreateReq productSchoolCreateReq) {
-        Ceo ceo = ((Ceo) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ProductSchool productSchool = ProductSchool.builder()
-                .storeName(ceo.getStoreName())
-                .businessNum(ceo.getBusinessnum())
-                .productName(productSchoolCreateReq.getProductName())
-                .price(productSchoolCreateReq.getPrice())
-                .contents(productSchoolCreateReq.getContents())
-                .status(0)
-                .build();
-        productSchoolRepository.save(productSchool);
+        Member ceo = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if (ceo.getAuthority().substring(5).equals("CEO")) {
+            ProductSchool productSchool = ProductSchool.builder()
+                    .ceoName(ceo.getMemberName())
+                    .storeName(productSchoolCreateReq.getStoreName())
+                    .businessNum(productSchoolCreateReq.getBusinessNum())
+                    .productName(productSchoolCreateReq.getProductName())
+                    .price(productSchoolCreateReq.getPrice())
+                    .contents(productSchoolCreateReq.getContents())
+                    .status(0)
+                    .build();
+            productSchoolRepository.save(productSchool);
 
-        ProductSchoolCreateResult productSchoolCreateResult = ProductSchoolCreateResult.builder().build();
-        productSchoolCreateResult.setIdx(productSchool.getIdx());
+            ProductSchoolCreateResult productSchoolCreateResult = ProductSchoolCreateResult.builder().build();
+            productSchoolCreateResult.setIdx(productSchool.getIdx());
 
-        return BaseResponse.successRes("PRODUCT_008", true, "업체가 등록되었습니다.", productSchoolCreateResult);
+            return BaseResponse.successRes("PRODUCT_008", true, "업체가 등록되었습니다.", productSchoolCreateResult);
+        } else {
+            throw MemberAccountException.forInvalidAuthority();
+        }
     }
 
     @Transactional
