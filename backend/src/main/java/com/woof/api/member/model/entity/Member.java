@@ -1,6 +1,8 @@
 package com.woof.api.member.model.entity;
 
+import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.common.BaseEntity;
+import com.woof.api.orders.model.entity.Orders;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,12 +34,11 @@ public class Member extends BaseEntity implements UserDetails {
     private Boolean status;
     private String profileImage;
 
-//    @OneToMany(mappedBy = "member")
-//    List<Bookmark> carts = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "member")
-//    List<Orders> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    List<Bookmark> carts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member")
+    List<Orders> orders = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
