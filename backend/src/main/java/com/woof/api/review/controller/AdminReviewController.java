@@ -1,6 +1,6 @@
 package com.woof.api.review.controller;
 
-import com.woof.api.review.model.dto.ReviewListRes;
+//import com.woof.api.review.model.dto.ReviewListRes;
 import com.woof.api.review.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +14,11 @@ public class AdminReviewController {
     public AdminReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/list")
-    public ResponseEntity<ReviewListRes> list() {
-        return ResponseEntity.ok().body(reviewService.adminList());
-    }
+//
+//    @RequestMapping(method = RequestMethod.GET, value = "/list")
+//    public ResponseEntity<ReviewListRes> list() {
+//        return ResponseEntity.ok().body(reviewService.adminList());
+//    }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/delete")
     public ResponseEntity<String> delete(@RequestParam Long idx) {

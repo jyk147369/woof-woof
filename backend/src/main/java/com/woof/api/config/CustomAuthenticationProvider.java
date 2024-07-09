@@ -1,13 +1,11 @@
 package com.woof.api.config;
 
-import com.woof.api.member.model.entity.Ceo;
-import com.woof.api.member.model.entity.Manager;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.member.service.CeoService;
-import com.woof.api.member.service.ManagerService;
 import com.woof.api.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -19,9 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private final ManagerService managerService;
     private final MemberService memberService;
-    private final CeoService ceoService;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -30,20 +26,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
+        UserDetails userDetails = memberService.loadUserByUsername(username);
 
-        UserDetails userDetails;
-        if (username.startsWith("manager_")) {
-            userDetails = (Manager) managerService.loadUserByUsername(username.substring(8,username.length()));
-        } else if(username.startsWith("ceo_")) {
-            userDetails = (Ceo) ceoService.loadUserByUsername(username.substring(4,username.length()));
-        } else {
-            userDetails = (Member) memberService.loadUserByUsername(username);
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new BadCredentialsException("Password does not match.");
         }
 
-        if (passwordEncoder.matches(password, userDetails.getPassword()) && userDetails.isEnabled()) {
-            return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+        if (!userDetails.isEnabled()) {
+            throw new DisabledException("User is disabled.");
         }
-        return null;
+
+        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }
 
     @Override

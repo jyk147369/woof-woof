@@ -14,8 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,7 +21,7 @@ import java.util.UUID;
 public class MemberProfileImageService {
     private final MemberProfileImageRepository memberProfileImageRepository;
 
-    @Value("${cloud.aws.s3.profile-bucket}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     private final AmazonS3 s3;
 

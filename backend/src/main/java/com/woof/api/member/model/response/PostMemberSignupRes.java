@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -13,14 +12,16 @@ import java.util.Map;
 @Builder
 public class PostMemberSignupRes {
     @NotBlank
-    private Long memberIdx;
+    private Long idx;
 
     @NotBlank
     @Size(max = 45)
-    private String memberEmail;
+    private String email;
 
     @NotBlank
     @Size(max = 20)
-    private String memberName;
+    private String name;
+
+    private String role;
 
 }

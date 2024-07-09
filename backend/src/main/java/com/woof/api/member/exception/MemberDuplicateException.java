@@ -1,5 +1,6 @@
 package com.woof.api.member.exception;
 
+
 import com.woof.api.common.error.ErrorCode;
 import com.woof.api.common.error.exception.EntityDuplicateException;
 
