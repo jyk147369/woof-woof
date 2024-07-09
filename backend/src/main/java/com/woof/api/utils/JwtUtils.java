@@ -1,13 +1,13 @@
 package com.woof.api.utils;
 
+import com.woof.api.member.exception.MemberAccountException;
 import com.woof.api.member.model.entity.Member;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.security.SignatureException;
 
 import java.security.Key;
 import java.util.Date;
@@ -59,30 +59,22 @@ public class JwtUtils {
         if (token.startsWith("Bearer ")) {
             token = token.split(" ")[1];
             return token;
-        } /*else {
+        } else {
             throw MemberAccountException.forInvalidToken();
-        }*/
-        return token;
+        }
     }
 
-    // 토근에서 정보를 가져오는 코드가 계속 중복되어 사용되기 때문에 별도의 메서드로 만들어서 사용하기 위한 것
     public static Claims extractAllClaims(String token, String key) {
+        try {
             return Jwts.parserBuilder()
                     .setSigningKey(getSignKey(key))
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-
-//        try {
-//            return Jwts.parserBuilder()
-//                    .setSigningKey(getSignKey(key))
-//                    .build()
-//                    .parseClaimsJws(token)
-//                    .getBody();
-//        } catch (SignatureException e) {
-//            throw MemberAccountException.forInvalidToken();
-//        } catch (ExpiredJwtException e) {
-//            throw MemberAccountException.forExpiredToken();
-//        }
+        } catch (SignatureException e) {
+            throw MemberAccountException.forInvalidToken();
+        } catch (ExpiredJwtException e) {
+            throw MemberAccountException.forExpiredToken();
+        }
     }
 }

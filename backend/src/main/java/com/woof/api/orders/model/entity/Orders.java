@@ -2,8 +2,6 @@ package com.woof.api.orders.model.entity;
 
 
 import com.woof.api.common.BaseEntity;
-import com.woof.api.member.model.entity.Ceo;
-import com.woof.api.member.model.entity.Manager;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.payment.model.Payment;
 import com.woof.api.product.model.entity.ProductSchool;
@@ -50,7 +48,7 @@ public class Orders extends BaseEntity {
     //업체 1 : 주문 N
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ceo_idx")
-    private Ceo ceo;
+    private Member ceo;
 
     //고객 1 : 주문 N
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,7 +62,7 @@ public class Orders extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_idx")
-    private Manager manager;
+    private Member manager;
 
     //리뷰 매핑 성공
 

@@ -13,7 +13,7 @@ public enum ErrorCode {
     TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "ACCOUNT_002", "토큰이 존재하지 않습니다."),
     INVALID_VERIFICATION_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT_003", "토큰이 유효하지 않습니다."),
     EXPIRED_VERIFICATION_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT_004", "토큰의 유효기간이 만료 되었습니다."),
-
+    INVALID_AUTHORITY(HttpStatus.UNAUTHORIZED, "ACCOUNT_005", "권한이 유효하지 않습니다."),
 
     // 회원
     DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "MEMBER_007", "회원 이메일이 중복된 경우"),
