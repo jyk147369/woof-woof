@@ -29,7 +29,7 @@ public class PaymentService {
 
     @Value("${imp.secretKey}")
     private String secretKey;
-    
+
     // 정기결제
     public void regularPayment() throws IamportResponseException, IOException {
         AgainPaymentData again_data = new AgainPaymentData("test14", new Date().toString(), BigDecimal.valueOf(1005));

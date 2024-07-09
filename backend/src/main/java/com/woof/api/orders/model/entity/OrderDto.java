@@ -17,6 +17,7 @@ public class OrderDto extends BaseEntity {
     private String place;//픽업 장소
     private String reservationStatus; //예약 상태
     private String orderDetails;
+    private Integer status;
 //    private String productName;
 
 //    private ProductManager productManager;

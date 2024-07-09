@@ -50,8 +50,7 @@ public class OrderService {
                         .time(orderDto.getTime())
                         .orderDetails(orderDto.getOrderDetails())
                         .place(orderDto.getPlace())
-
-//                        .reservation_status(orderDto.getReservation_status())
+                        .reservation_status(0)
                         .build());
 
         return BaseResponse.successRes("Orders_001", true, "주문을 완료했습니다", orderRepository);
@@ -116,9 +115,6 @@ public class OrderService {
                     .message("상품 불러오기를 실패했습니다")
                     .success(false)
                     .isSuccess(false)
-                    .result(OrdersReadRes.builder()
-                            .reservation_status("실패")
-                            .build())
                     .build();
         }
     }
@@ -158,7 +154,6 @@ public class OrderService {
                             .phoneNumber(result1.getPhoneNumber())
                             .place(result1.getPlace())
                             .time(result1.getTime())
-                            .reservation_status("주문 수정에 성공하였습니다.")
                             .build())
                     .build();
             //주문 요청 성공시 "주문 수정 성공"을 반환한다
@@ -171,24 +166,22 @@ public class OrderService {
                     .message("요청 실패.")
                     .success(false)
                     .isSuccess(false)
-                    .result(OrdersReadRes.builder()
-                            .reservation_status("주문 수정에 실패하였습니다.주문 ID가 유효하지 않습니다.")
-                            .build())
                     .build();
 
-            return BaseResponse.successRes("Orders_3", false, "주문 정보 수정에 실패하였습니다", responseFail);
+            return BaseResponse.successRes("Orders_003", false, "주문 정보 수정 실패", responseFail);
         }//주문 실패시 "주문 실패"를 반환한다
 
     }
 
-    @Transactional
-    public void delete(Long idx) {
-        orderRepository.delete(
-                Orders.builder()
-                        .idx(idx)
-                        .build());
+    public BaseResponse<Void> delete(Long idx) {
+        //  한 번에 삭제
+        orderRepository.deleteAllByOrdersIdx(idx);
+        //2=삭제
+        OrderDto orderDto = orderRepository.findByIdx(idx).get();
+        orderDto.setStatus(2);
 
 
+        return BaseResponse.successRes("Orders_004", true, "주문 삭제 성공.", null);
     }
 
     public List<CustomerInfo> getOrdersByMemberIdx(Long memberIdx) {
