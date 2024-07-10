@@ -27,7 +27,7 @@ public class ProductController {
 
     //    @ApiOperation(value="매니저 정보 등록", notes="매니저회원이 매니저 정보를 등록한다.")
     @RequestMapping(method = RequestMethod.POST, value = "/manager/create")
-    public ResponseEntity<BaseResponse<ProductManagerCreateResult>> createManager(
+    public ResponseEntity<Object> createManager(
             @RequestPart ProductManagerCreateReq productManagerCreateReq,
             @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
 
@@ -45,44 +45,37 @@ public class ProductController {
 
     //    @ApiOperation(value="매니저 목록 조회", notes="회원이 전체 매니저를 조회한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/manager/list")
-    public ResponseEntity<BaseResponse<List<ProductManagerReadRes>>> listManager() {
-        BaseResponse<List<ProductManagerReadRes>> response = productService.listManager();
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Object> listManager() {
+        return ResponseEntity.ok().body(productService.listManager());
     }
 
     //    @ApiOperation(value="특정 매니저 조회", notes="회원이 매니저 idx를 입력하여 특정 매니저를 조회한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/manager/read/{idx}")
-    public ResponseEntity<BaseResponse<ProductManagerReadRes>> readManager(@PathVariable Long idx) {
-        BaseResponse<ProductManagerReadRes> response = productService.readManager(idx);
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Object> readManager(@PathVariable Long idx) {
+        return ResponseEntity.ok().body(productService.readManager(idx));
     }
 
     //    @ApiOperation(value="매니저 정보 수정", notes="매니저회원이 매니저의 정보를 수정한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/manager/update")
-    public ResponseEntity<BaseResponse<Void>> updateManager(
-            @RequestBody ProductManagerUpdateReq productManagerUpdateReq) {
-
-        BaseResponse<Void> response = productService.updateManager(productManagerUpdateReq);
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Object> updateManager(@RequestBody ProductManagerUpdateReq productManagerUpdateReq) {
+        return ResponseEntity.ok().body(productService.updateManager(productManagerUpdateReq));
     }
 
     //    @ApiOperation(value="매니저 정보 삭제", notes="매니저회원이 매니저의 정보를 삭제한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/manager/delete")
-    public ResponseEntity<BaseResponse<Void>> deleteManager(@RequestParam Long idx) {
-        BaseResponse<Void> response = productService.deleteManager(idx);
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Object> deleteManager(@RequestParam Long idx) {
+        return ResponseEntity.ok().body(productService.deleteManager(idx));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/manager/files")
-    public ResponseEntity<List<ProductFileDto>> listFilesByProductManagerIdx(@RequestParam Long productManagerIdx) {
-        List<ProductFileDto> files = productService.listFilesByProductManagerIdx(productManagerIdx);
-        return ResponseEntity.ok().body(files);
+    public ResponseEntity<Object> listFilesByProductManagerIdx(@RequestParam Long productManagerIdx) {
+        return ResponseEntity.ok().body(productService.listFilesByProductManagerIdx(productManagerIdx));
     }
 
     // ----------------------------------------------------------------------------------------------- //
 
     @RequestMapping(method = RequestMethod.POST, value = "/school/create")
-    public ResponseEntity<BaseResponse<ProductSchoolCreateResult>> createSchool(
+    public ResponseEntity<Object> createSchool(
             @RequestPart ProductSchoolCreateReq productSchoolCreateReq,
             @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
 
@@ -100,39 +93,31 @@ public class ProductController {
 
     //    @ApiOperation(value="상품 목록 조회", notes="회원이 전체 상품을 조회한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/school/list")
-    public ResponseEntity<BaseResponse<List<ProductSchoolReadRes>>> listSchool() {
-        BaseResponse<List<ProductSchoolReadRes>> response = productService.listSchool();
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Object> listSchool() {
+        return ResponseEntity.ok().body(productService.listSchool());
     }
 
     //    @ApiOperation(value="특정 상품 조회", notes="회원이 상품 idx를 입력하여 특정 상품을 조회한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/school/read/{idx}")
-    public ResponseEntity<BaseResponse<ProductSchoolReadRes>> readSchool(@PathVariable Long idx) {
-        BaseResponse<ProductSchoolReadRes> response = productService.readSchool(idx);
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Object> readSchool(@PathVariable Long idx) {
+        return ResponseEntity.ok().body(productService.readSchool(idx));
     }
 
     //    @ApiOperation(value="상품 정보 수정", notes="업체회원이 상품의 정보를 수정한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/school/update")
-    public ResponseEntity<BaseResponse<Void>> updateSchool(
-            @RequestBody ProductSchoolUpdateReq productSchoolUpdateReq) {
-
-        BaseResponse<Void> response = productService.updateSchool(productSchoolUpdateReq);
-
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Object> updateSchool(@RequestBody ProductSchoolUpdateReq productSchoolUpdateReq) {
+        return ResponseEntity.ok().body(productService.updateSchool(productSchoolUpdateReq));
     }
 
     //    @ApiOperation(value="상품 정보 삭제", notes="업체회원이 상품의 정보를 삭제한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/school/delete")
-    public ResponseEntity<BaseResponse<Void>> deleteSchool(@RequestParam Long idx) {
-        BaseResponse<Void> response = productService.deleteSchool(idx);
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Object> deleteSchool(@RequestParam Long idx) {
+        return ResponseEntity.ok().body(productService.deleteSchool(idx));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/school/files")
-    public ResponseEntity<List<ProductFileDto>> listFilesByProductSchoolIdx(@RequestParam Long productSchoolIdx) {
-        List<ProductFileDto> files = productService.listFilesByProductSchoolIdx(productSchoolIdx);
-        return ResponseEntity.ok().body(files);
+    public ResponseEntity<Object> listFilesByProductSchoolIdx(@RequestParam Long productSchoolIdx) {
+        return ResponseEntity.ok().body(productService.listFilesByProductSchoolIdx(productSchoolIdx));
     }
 
     // ----------------------------------------------------------------------------------------------- //
