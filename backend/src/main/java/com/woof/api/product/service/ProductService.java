@@ -368,12 +368,18 @@ public class ProductService {
 
     @Transactional
     public BaseResponse<Void> checkSchool(Long idx) {
-        ProductSchool productSchool = productSchoolRepository.findByIdx(idx)
-                .orElseThrow(() -> new RuntimeException("해당 idx의 업체 정보를 찾을 수 없습니다."));
+        Member admin = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if (admin.getAuthority().substring(5).equals("ADMIN")) {
+            ProductSchool productSchool = productSchoolRepository.findByIdx(idx)
+                    .orElseThrow(() -> new RuntimeException("해당 idx의 업체 정보를 찾을 수 없습니다."));
+
         productSchool.setStatus(1);
         productSchoolRepository.save(productSchool);
 
         return BaseResponse.successRes("PRODUCT_014", true, "업체 승인 성공.", null);
+        } else {
+            throw MemberAccountException.forInvalidAuthority();
+        }
     }
 
     // ----------------------------------------------------------------------------------------------- //

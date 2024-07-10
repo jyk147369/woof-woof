@@ -8,6 +8,7 @@ import com.woof.api.product.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,7 @@ public class AdminProductController {
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/school/check")
-    public ResponseEntity<BaseResponse<Void>> checkSchool(@RequestParam Long idx) {
+    public ResponseEntity<BaseResponse<Void>> checkSchool(@RequestParam @Valid Long idx) {
         BaseResponse<Void> response = productService.checkSchool(idx);
         return ResponseEntity.ok().body(response);
     }
