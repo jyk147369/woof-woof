@@ -4,7 +4,7 @@ package com.woof.api.bookmark.service;
 import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.bookmark.model.dto.*;
 import com.woof.api.bookmark.repository.BookmarkRepository;
-import com.woof.api.bookmark.repository.querydsl.BookmarkRepositoryCustomImpl;
+//import com.woof.api.bookmark.repository.querydsl.BookmarkRepositoryCustomImpl;
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.product.model.entity.ProductSchool;
@@ -23,7 +23,7 @@ import java.util.*;
 public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
-    private final BookmarkRepositoryCustomImpl bookmarkRepositoryCustomImpl;
+//    private final BookmarkRepositoryCustomImpl bookmarkRepositoryCustomImpl;
 
     @Transactional(readOnly = false)
     public BaseResponse createBookmark(BookmarkCreateReq bookmarkCreateReq) {
@@ -55,7 +55,7 @@ public class BookmarkService {
 
 //     즐겨찾기 목록 조회
     public BaseResponse bookmarkList(Long memberIdx) {
-        List<Bookmark> result = bookmarkRepositoryCustomImpl.findList(memberIdx);
+        List<Bookmark> result = bookmarkRepository.findAllByMemberIdx(memberIdx);
         List<BookmarkListRes> list = new ArrayList<>();
 
         for (Bookmark bookmark : result) {

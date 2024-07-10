@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
-import com.woof.api.common.BaseRes;
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.review.model.entity.Review;

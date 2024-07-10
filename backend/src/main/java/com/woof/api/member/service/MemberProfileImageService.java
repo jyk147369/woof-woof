@@ -23,7 +23,7 @@ import java.util.UUID;
 public class MemberProfileImageService {
     private final MemberProfileImageRepository memberProfileImageRepository;
 
-    @Value("${cloud.aws.s3.profile-bucket}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     private final AmazonS3 s3;
 
