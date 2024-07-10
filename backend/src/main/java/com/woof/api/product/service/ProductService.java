@@ -7,7 +7,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.exception.MemberAccountException;
-import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.product.model.response.ProductFileDto;
 import com.woof.api.product.model.entity.ProductManager;
@@ -83,13 +82,12 @@ public class ProductService {
 
         for (ProductManager productManager : result) {
             List<ProductImage> productImages = productManager.getProductImages();
+            String filename = "";
 
-            String filenames = "";
-            for (ProductImage productImage : productImages) {
-                String filename = productImage.getFilename();
-                filenames += filename + ",";
+            if (!productImages.isEmpty()) {
+                ProductImage firstImage = productImages.get(0);
+                filename = generatePresignedUrl(firstImage.getFilename(), firstImage.getFilename());
             }
-            filenames = filenames.substring(0, filenames.length() - 1);
 
             ProductManagerReadRes productManagerReadRes = ProductManagerReadRes.builder()
                     .idx(productManager.getIdx())
@@ -99,7 +97,7 @@ public class ProductService {
                     .price(productManager.getPrice())
                     .career(productManager.getCareer())
                     .contents(productManager.getContents())
-//                    .filename(filenames)
+                    .filename(filename)  // 첫 번째 사진 파일명 추가
                     .build();
 
             productManagerReadResList.add(productManagerReadRes);
@@ -115,13 +113,12 @@ public class ProductService {
 
         for (ProductManager productManager : result) {
             List<ProductImage> productImages = productManager.getProductImages();
+            String filename = "";
 
-            String filenames = "";
-            for (ProductImage productImage : productImages) {
-                String filename = productImage.getFilename();
-                filenames += filename + ",";
+            if (!productImages.isEmpty()) {
+                ProductImage firstImage = productImages.get(0);
+                filename = generatePresignedUrl(firstImage.getFilename(), firstImage.getFilename());
             }
-            filenames = filenames.substring(0, filenames.length() - 1);
 
             ProductManagerReadRes productManagerReadRes = ProductManagerReadRes.builder()
                     .idx(productManager.getIdx())
@@ -131,7 +128,7 @@ public class ProductService {
                     .price(productManager.getPrice())
                     .career(productManager.getCareer())
                     .contents(productManager.getContents())
-//                    .filename(filenames)
+                    .filename(filename)
                     .build();
 
             productManagerReadResList.add(productManagerReadRes);
@@ -246,13 +243,12 @@ public class ProductService {
 
         for (ProductSchool productSchool : result) {
             List<ProductImage> productImages = productSchool.getProductImages();
+            String filename = "";
 
-            String filenames = "";
-            for (ProductImage productImage : productImages) {
-                String filename = productImage.getFilename();
-                filenames += filename + ",";
+            if (!productImages.isEmpty()) {
+                ProductImage firstImage = productImages.get(0);
+                filename = generatePresignedUrl(firstImage.getFilename(), firstImage.getFilename());
             }
-            filenames = filenames.substring(0, filenames.length() - 1);
 
             ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
                     .idx(productSchool.getIdx())
@@ -260,7 +256,7 @@ public class ProductService {
                     .businessNum(productSchool.getBusinessNum())
                     .price(productSchool.getPrice())
                     .contents(productSchool.getContents())
-//                    .filename(filenames)
+                    .filename(filename)
                     .build();
 
             productSchoolReadResList.add(productSchoolReadRes);
@@ -276,13 +272,12 @@ public class ProductService {
 
         for (ProductSchool productSchool : result) {
             List<ProductImage> productImages = productSchool.getProductImages();
+            String filename = "";
 
-            String filenames = "";
-            for (ProductImage productImage : productImages) {
-                String filename = productImage.getFilename();
-                filenames += filename + ",";
+            if (!productImages.isEmpty()) {
+                ProductImage firstImage = productImages.get(0);
+                filename = generatePresignedUrl(firstImage.getFilename(), firstImage.getFilename());
             }
-            filenames = filenames.substring(0, filenames.length() - 1);
 
             ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
                     .idx(productSchool.getIdx())
@@ -290,7 +285,7 @@ public class ProductService {
                     .businessNum(productSchool.getBusinessNum())
                     .price(productSchool.getPrice())
                     .contents(productSchool.getContents())
-//                    .filename(filenames)
+                    .filename(filename)
                     .build();
 
             productSchoolReadResList.add(productSchoolReadRes);

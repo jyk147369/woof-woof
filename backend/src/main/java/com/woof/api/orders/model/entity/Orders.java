@@ -24,9 +24,10 @@ public class Orders extends BaseEntity {
     private String phoneNumber; //예약자 전화번호
     private Integer time; //예약시간
     private String place;//픽업 장소
-    private String reservation_status; //예약 상태
-    private String orderDetails;
+    private Integer reservationStatus; //예약 상태
+    private String orderDetails; //세부 내용
     private Integer price;
+
 
     @Column(nullable=false)
     private String impUid;

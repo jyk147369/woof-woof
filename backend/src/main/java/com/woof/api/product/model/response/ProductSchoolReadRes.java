@@ -12,5 +12,5 @@ public class ProductSchoolReadRes {
     private String productName;
     private Integer price;
     private String contents;
-//    private String filename;
+    private String filename;
 }
