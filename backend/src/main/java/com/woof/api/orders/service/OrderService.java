@@ -50,7 +50,7 @@ public class OrderService {
                         .time(orderDto.getTime())
                         .orderDetails(orderDto.getOrderDetails())
                         .place(orderDto.getPlace())
-                        .reservation_status(0)
+                        .reservationStatus(0)
                         .build());
 
         return BaseResponse.successRes("Orders_001", true, "주문을 완료했습니다", orderRepository);
@@ -99,7 +99,7 @@ public class OrderService {
                     .phoneNumber(orders.getPhoneNumber())
                     .time(orders.getTime())
                     .place(orders.getPlace())
-                    .reservation_status(orders.getReservation_status())
+                    .reservationStatus(orders.getReservationStatus())
                     .build();
 
             return OrdersReadRes2.builder()
