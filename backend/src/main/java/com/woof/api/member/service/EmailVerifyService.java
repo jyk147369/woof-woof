@@ -19,7 +19,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EmailVerifyService {
     private final JavaMailSender emailSender;
-//    private final EmailVerifyService emailVerifyService;
     private final EmailVerifyRepository emailVerifyRepository;
     private final MemberRepository memberRepository;
     public void sendEmail(PostMemberSignupReq request) {

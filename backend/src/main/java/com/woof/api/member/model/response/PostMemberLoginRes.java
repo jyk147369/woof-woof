@@ -9,5 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class PostMemberLoginRes {
-    String accessToken;
+    private String accessToken;
 }

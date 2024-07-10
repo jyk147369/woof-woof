@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +41,7 @@ public class MemberService implements UserDetailsService {
     private final MemberProfileImageService memberProfileImageService;
     private final EmailVerifyService emailVerifyService;
     private final MemberProfileImageRepository memberProfileImageRepository;
+    private final PwEmailService pwEmailService;
 
     @Transactional
     public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq request, MultipartFile profileImage, String role) {
@@ -131,12 +135,27 @@ public class MemberService implements UserDetailsService {
         member.setMemberNickname(request.getNickname());
         member.setPhoneNumber(request.getPhoneNumber());
 
+        if(request.getPw()!=null){
+            // 기존 비밀번호랑 같을떄
+            if(passwordEncoder.matches(request.getPw(), member.getPassword())){
+                throw MemberAccountException.forDifferentPassword();
+                // 바꾸는 비밀번호와 확인 비밀번호가 다를때
+            } else if(!request.getPw().matches(request.getCheckPw())){
+                throw MemberAccountException.forDifferentEachPassword();
+            } else{
+                member.setMemberPw(passwordEncoder.encode(request.getPw()));
+            }
+        }
+
+        member.setUpdateAt(LocalDateTime.now());
+
         Member updateMember = memberRepository.save(member);
 
         PatchMemberUpdateRes response = PatchMemberUpdateRes.builder()
                 .nickname(updateMember.getMemberNickname())
                 .phoneNumber(updateMember.getPhoneNumber())
                 .petName(updateMember.getPetName())
+                .updatedAt(updateMember.getUpdateAt())
                 .build();
 
         return BaseResponse.successRes("MEMBER_002", true, "회원 정보 수정에 성공하였습니다.", response);
@@ -147,8 +166,13 @@ public class MemberService implements UserDetailsService {
         memberProfileImageService.updateMemberProfileImage(member, profileImage);
         MemberProfileImage newImage = memberProfileImageRepository.findByMemberIdx(member.getIdx());
 
+        member.setUpdateAt(LocalDateTime.now());
+
+        Member updateMember = memberRepository.save(member);
+
         PatchMemberUpdateImgRes response = PatchMemberUpdateImgRes.builder()
                 .profileImg(newImage.getMemberImageAddr())
+                .updatedAt(updateMember.getUpdateAt())
                 .build();
 
         return BaseResponse.successRes("MEMBER_002", true, "회원 프로필 이미지 수정에 성공하였습니다.", response);
@@ -158,7 +182,9 @@ public class MemberService implements UserDetailsService {
     public BaseResponse<PostMemberCheckPwRes> checkPassword(PostMemberCheckPwReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         if (passwordEncoder.matches(request.getPw(), member.getPassword())) {
-            PostMemberCheckPwRes response = PostMemberCheckPwRes.builder().build();
+            PostMemberCheckPwRes response = PostMemberCheckPwRes.builder()
+                    .email(member.getMemberEmail())
+                    .build();
             return BaseResponse.successRes("MEMBER_002", true, "비밀번호가 확인되었습니다.", response);
         } else {
             throw  MemberAccountException.forInvalidPassword();
@@ -172,11 +198,13 @@ public class MemberService implements UserDetailsService {
                 MemberNotFoundException.forMemberIdx(member.getIdx()));
 
         member.setStatus(false);
+        member.setUpdateAt(LocalDateTime.now());
 
         Member cancelMember = memberRepository.save(member);
 
         PatchMemberCancelRes response = PatchMemberCancelRes.builder()
                 .status(cancelMember.getStatus())
+                .updatedAt(cancelMember.getUpdateAt())
                 .build();
 
         return BaseResponse.successRes("MEMBER_002", true, "회원탈퇴가 완료되었습니다.", response);
@@ -192,6 +220,22 @@ public class MemberService implements UserDetailsService {
                 .build();
 
         return BaseResponse.successRes("MEMBER_002", true, "이메일 찾기에 성공하였습니다.", response);
+    }
+
+    // 비밀번호 찾기
+    public BaseResponse<PostMemberFindPwRes> findPw(PostMemberFindPwReq request){
+        Member member = memberRepository.findByMemberEmail(request.getEmail()).orElseThrow(() ->
+                MemberNotFoundException.forMemberEmail(request.getEmail()));
+
+        pwEmailService.findPassword(member.getMemberEmail(), member.getMemberName());
+
+        Member updateMember = memberRepository.findByMemberEmail(member.getMemberEmail()).get();
+
+        PostMemberFindPwRes response = PostMemberFindPwRes.builder()
+                .updatedAt(updateMember.getUpdateAt())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "임시 비밀번호 전송에 성공하였습니다.", response);
     }
 
     //이창훈용 야매 메소드

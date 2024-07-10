@@ -3,11 +3,13 @@ package com.woof.api.member.model.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostMemberCheckPwRes {
-    private String email;
+public class PostMemberFindPwRes {
+    private LocalDateTime updatedAt;
 }

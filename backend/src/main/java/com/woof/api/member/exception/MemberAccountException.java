@@ -35,4 +35,8 @@ public class MemberAccountException extends BusinessException {
     public static MemberAccountException forDifferentPassword() {
         return new MemberAccountException(ErrorCode.SAME_MEMBER_PASSWORD, "기존에 사용하던 비밀번호와 같습니다. 다른 비밀번호를 입력해주세요.");
     }
+
+    public static MemberAccountException forDifferentEachPassword() {
+        return new MemberAccountException(ErrorCode.SAME_MEMBER_PASSWORD, "비밀번호가 서로 다릅니다. 다시 비밀번호를 입력해주세요.");
+    }
 }

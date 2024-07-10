@@ -9,5 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class PostMemberFindEmailRes {
-    String email;
+    private String email;
 }

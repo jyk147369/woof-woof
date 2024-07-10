@@ -2,6 +2,8 @@ package com.woof.api.member.model.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -10,5 +12,6 @@ import lombok.*;
 public class PatchMemberUpdateImgRes {
 
     private String profileImg;
+    private LocalDateTime updatedAt;
 
 }

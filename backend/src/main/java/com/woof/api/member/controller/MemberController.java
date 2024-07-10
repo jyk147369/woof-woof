@@ -91,21 +91,10 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.findEmail(request));
     }
 
-
-//    @ApiOperation(value="일반회원 마이페이지 조회", notes="일반회원이 이메일을 입력하고 정보를 조회한다.")
-//    @GetMapping("/member/{email}")
-//    public ResponseEntity read(@PathVariable String email) {
-//        GetMemberReadRes response = memberService.readMember(email);
-//        return ResponseEntity.ok().body(response);
-//    }
-
-//    @ApiOperation(value="일반회원 정보 수정", notes="일반회원이 정보를 수정한다.")
-//    @RequestMapping(method = RequestMethod.PATCH, value = "/member/update")
-//    public ResponseEntity update (@RequestBody PatchMemberUpdateReq request) {
-//        PatchMemberUpdateRes response = memberService.updateMember(request);
-//        return ResponseEntity.ok().body(response);
-//    }
-
+    @RequestMapping(method = RequestMethod.PATCH, value = "/find/pw")
+    public ResponseEntity<Object> findPw(@RequestBody @Valid PostMemberFindPwReq request) {
+        return ResponseEntity.ok().body(memberService.findPw(request));
+    }
 
     //이창훈 전용 야매 가입승인 코드
     @RequestMapping(method = RequestMethod.PATCH, value = "/lch/{idx}")

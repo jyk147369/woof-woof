@@ -12,5 +12,7 @@ public class PatchMemberUpdateReq {
     private String nickname;
     private String petName;
     private String phoneNumber;
+    private String pw;
+    private String checkPw;
 
 }
