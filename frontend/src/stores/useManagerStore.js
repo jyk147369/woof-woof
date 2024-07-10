@@ -2,7 +2,8 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import { toRaw } from "vue";
 
-const backend = "http://www.woofwoof.kro.kr/api";
+// const backend = "http://www.woofwoof.kro.kr/api";
+const backend = "http://localhost:8080";
 
 export const useManagerStore = defineStore("manager", {
   state: () => ({ isLoading: false, isLoggedIn: false }),

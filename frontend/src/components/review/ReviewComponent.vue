@@ -30,7 +30,8 @@ export default {
         async getOrdersIdx() {
             const ordersIdx = sessionStorage.getItem('ordersIdx');
   try {
-    const response = await axios.get(`http://www.woofwoof.kro.kr/api/orders/${ordersIdx}`);
+    // const response = await axios.get(`http://www.woofwoof.kro.kr/api/orders/${ordersIdx}`);
+    const response = await axios.get(`http://localhost:8080/orders/${ordersIdx}`);
     this.review.ordersIdx = response.data.ordersIdx;
   } catch (error) {
     console.error(error);
@@ -38,7 +39,8 @@ export default {
 },
         async createReview() {
             try {
-                await axios.post("http://www.woofwoof.kro.kr/api/review/create", this.review, {
+                // await axios.post("http://www.woofwoof.kro.kr/api/review/create", this.review, {
+              await axios.post("http://localhost:8080/review/create", this.review, {
                     headers: { "Content-Type": "application/json" },
                 });
                 alert("리뷰가 성공적으로 등록되었습니다.");

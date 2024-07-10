@@ -222,7 +222,8 @@ export default {
     async loadProductInfo() {
       try {
         const response = await axios.get(
-          `http://www.woofwoof.kro.kr/api/productCeo/${this.idx}`
+          // `http://www.woofwoof.kro.kr/api/productCeo/${this.idx}`
+              `http://localhost:8080/productCeo/${this.idx}`
         );
         const data = response.data;
         if (data && data.code === 1000) {
@@ -246,7 +247,8 @@ export default {
     deleteProduct() {
       if (confirm("정말로 이 상품을 삭제하시겠습니까?")) {
         axios
-          .delete(`http://www.woofwoof.kro.kr/api/productCeo/deleteCeo?idx=${this.idx}`)
+          // .delete(`http://www.woofwoof.kro.kr/api/productCeo/deleteCeo?idx=${this.idx}`)
+            .delete(`http://localhost:8080/productCeo/deleteCeo?idx=${this.idx}`)
           .then(() => {
             alert("상품이 성공적으로 삭제되었습니다.");
             this.$router.push("/productCeo/list"); // 예를 들어, 상품 목록 페이지로 리디렉션

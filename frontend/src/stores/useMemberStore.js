@@ -2,7 +2,9 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import { toRaw } from "vue";
 
-const backend = "http://www.woofwoof.kro.kr/api";
+// const backend = "http://www.woofwoof.kro.kr/api";
+// const backend = "http://www.woofwoof.kro.kr/api";
+const backend = "http://localhost:8080";
 
 export const useMemberStore = defineStore("member", {
   state: () => ({ isLoading: false, isLoggedIn: false }),
@@ -11,7 +13,7 @@ export const useMemberStore = defineStore("member", {
       this.isLoading = true;
       try {
         let response = await axios.post(
-          backend + "/member/login",
+          backend + "/user/login",
           toRaw(memberLogin)
         );
         if (response.status === 200 && response.data.accessToken != null) {
@@ -35,7 +37,7 @@ export const useMemberStore = defineStore("member", {
       this.isLoading = true;
       try {
         let response = await axios.post(
-          backend + "/member/signup",
+          backend + "/user/member/signup",
           toRaw(memberSignup)
         );
         this.isLoading = false;
