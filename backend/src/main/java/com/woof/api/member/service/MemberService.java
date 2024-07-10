@@ -79,6 +79,7 @@ public class MemberService implements UserDetailsService {
 
         emailVerifyService.sendEmail(request);
 
+
         return BaseResponse.successRes("MEMBER_001", true, "회원이 등록되었습니다.", response);
     }
 

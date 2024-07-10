@@ -103,7 +103,8 @@ export default {
 
       try {
         let response = await axios.patch(
-          "http://www.woofwoof.kro.kr/api/member/update",
+          // "http://www.woofwoof.kro.kr/api/member/update",
+            "http://localhost:8080/member/update",
           memberUpdateReq,
           {
             headers: {
@@ -142,7 +143,8 @@ export default {
 
   // 디코드된 이메일로 사용자 정보 가져오기
   try {
-    const response = await axios.get(`http://www.woofwoof.kro.kr/api/member/${email}`);
+    // const response = await axios.get(`http://www.woofwoof.kro.kr/api/member/${email}`);
+    const response = await axios.get(`http://localhost:8080/member/${email}`);
     console.log(response.data);
     this.memberList = response.data;
   } catch (error) {

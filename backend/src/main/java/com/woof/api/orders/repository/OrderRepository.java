@@ -15,7 +15,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 
     public Optional<OrderDto> findByPhoneNumber(Long phoneNumber);
     List<Orders> findByMemberIdx(Long memberIdx);
-    public Optional<OrderDto> findByIdx(Long idx);
+    public Orders findByIdx(Long idx);
 
 }
 
