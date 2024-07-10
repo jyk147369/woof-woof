@@ -173,9 +173,8 @@ public class OrderService {
 
     }
 
+
     public BaseResponse<Void> delete(Long idx) {
-        //  한 번에 삭제
-        orderRepository.deleteAllByOrdersIdx(idx);
         //2=삭제
         OrderDto orderDto = orderRepository.findByIdx(idx).get();
         orderDto.setStatus(2);
