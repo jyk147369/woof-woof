@@ -36,7 +36,8 @@
     async created() {
       const idx = this.$route.query.idx;
       try {
-        const response = await axios.get(`http://www.woofwoof.kro.kr/api/orders/read?idx=${idx}`);
+        // const response = await axios.get(`http://www.woofwoof.kro.kr/api/orders/read?idx=${idx}`);
+        const response = await axios.get(`http://localhost:8080/orders/read?idx=${idx}`);
         this.order = response.data.result;
       } catch (error) {
         console.error(error);

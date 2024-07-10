@@ -1,6 +1,7 @@
 package com.woof.api.orders.service;
 
 import com.woof.api.common.BaseResponse;
+import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.orders.model.entity.OrderDto;
 import com.woof.api.orders.model.entity.CustomerInfo;
@@ -35,7 +36,6 @@ public class OrderService {
                         .productSchool(
                                 ProductSchool.builder()
                                         .idx(orderDto.getProductCeoIdx())
-//                                        .productName(orderDto.getProductName())
                                         .build())
                         .productManager(
                                 ProductManager.builder()
@@ -50,11 +50,18 @@ public class OrderService {
                         .time(orderDto.getTime())
                         .orderDetails(orderDto.getOrderDetails())
                         .place(orderDto.getPlace())
-                        .reservationStatus(0)
+                        .reservationStatus(false)
                         .build());
 
         return BaseResponse.successRes("Orders_001", true, "주문을 완료했습니다", orderRepository);
     }
+
+    public void createAccept(Long idx) {
+        OrderDto orderDto = orderRepository.findByIdx(idx)
+                .orElseThrow(() -> MemberNotFoundException.forMemberIdx(idx));
+        orderDto.setStatus(true);
+    }
+}
 //
     public OrdersListRes list() {
         List<Orders> result = orderRepository.findAll();
@@ -99,7 +106,7 @@ public class OrderService {
                     .phoneNumber(orders.getPhoneNumber())
                     .time(orders.getTime())
                     .place(orders.getPlace())
-                    .reservationStatus(orders.getReservationStatus())
+                    .reservationStatus(false)
                     .build();
 
             return OrdersReadRes2.builder()

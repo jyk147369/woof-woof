@@ -13,5 +13,5 @@ public class OrdersReadRes {
     private String phoneNumber;
     private Integer time;
     private String place;
-    private Integer reservationStatus;
+    private Boolean reservationStatus;
 }
