@@ -82,6 +82,11 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.checkPassword(request));
     }
 
+    @RequestMapping(method = RequestMethod.PATCH, value = "/cancel")
+    public ResponseEntity<Object> checkPassword() {
+        return ResponseEntity.ok().body(memberService.cancel());
+    }
+
 
 //    @ApiOperation(value="일반회원 마이페이지 조회", notes="일반회원이 이메일을 입력하고 정보를 조회한다.")
 //    @GetMapping("/member/{email}")

@@ -105,7 +105,7 @@ public class MemberService implements UserDetailsService {
     }
     public BaseResponse<GetMemberReadRes> read(){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        Member result = memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
+        memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
                 MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
         MemberProfileImage image = memberProfileImageRepository.findByMemberIdx(member.getIdx());
 
@@ -114,12 +114,12 @@ public class MemberService implements UserDetailsService {
         }
 
         GetMemberReadRes response = GetMemberReadRes.builder()
-                .email(result.getMemberEmail())
-                .name(result.getMemberName())
-                .nickname(result.getMemberNickname())
-                .authority(result.getAuthority())
-                .phoneNumber(result.getPhoneNumber())
-                .petName(result.getPetName())
+                .email(member.getMemberEmail())
+                .name(member.getMemberName())
+                .nickname(member.getMemberNickname())
+                .authority(member.getAuthority())
+                .phoneNumber(member.getPhoneNumber())
+                .petName(member.getPetName())
                 .profileImage(image.getMemberImageAddr())
                 .build();
 
@@ -127,14 +127,14 @@ public class MemberService implements UserDetailsService {
     }
     public BaseResponse<PatchMemberUpdateRes> update(PatchMemberUpdateReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        Member result = memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
+        memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
                 MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
 
-        result.setPetName(request.getPetName());
-        result.setMemberNickname(request.getNickname());
-        result.setPhoneNumber(request.getPhoneNumber());
+        member.setPetName(request.getPetName());
+        member.setMemberNickname(request.getNickname());
+        member.setPhoneNumber(request.getPhoneNumber());
 
-        Member updateMember = memberRepository.save(result);
+        Member updateMember = memberRepository.save(member);
 
         PatchMemberUpdateRes response = PatchMemberUpdateRes.builder()
                 .nickname(updateMember.getMemberNickname())
@@ -168,7 +168,22 @@ public class MemberService implements UserDetailsService {
         }
     }
 
-    //
+    // 회원 탈퇴
+    public BaseResponse<PatchMemberCancelRes> cancel(){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        memberRepository.findById(member.getIdx()).orElseThrow(() ->
+                MemberNotFoundException.forMemberIdx(member.getIdx()));
+
+        member.setStatus(false);
+
+        Member cancelMember = memberRepository.save(member);
+
+        PatchMemberCancelRes response = PatchMemberCancelRes.builder()
+                .status(cancelMember.getStatus())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "회원탈퇴가 완료되었습니다.", response);
+    }
 
     //이창훈용 야매 메소드
     public void lch(Long idx) {
