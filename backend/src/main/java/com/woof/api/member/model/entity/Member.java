@@ -3,12 +3,16 @@ package com.woof.api.member.model.entity;
 import com.woof.api.bookmark.model.Bookmark;
 import com.woof.api.common.BaseEntity;
 import com.woof.api.orders.model.entity.Orders;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +39,6 @@ public class Member extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member")
     List<Orders> orders = new ArrayList<>();
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

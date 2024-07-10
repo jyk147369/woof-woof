@@ -1,5 +1,5 @@
 package com.woof.api.payment.model;
-
+import com.woof.api.common.Constants;
 import lombok.Getter;
 
 @Getter
@@ -14,5 +14,4 @@ public enum SubscribeInfo {
         this.type = type;
         this.price = price;
     }
-
 }

@@ -10,8 +10,9 @@ import lombok.*;
 public class GetMemberReadRes {
 
     private String email;
-    private String password;
+    private String name;
     private String nickname;
     private String authority;
+    private String profileImage;
 
 }

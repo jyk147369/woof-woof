@@ -22,25 +22,14 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     // 정기 결제
-    @ApiOperation(value="정기 결제", notes="회원이 매달 정기적으로 일정 금액을 결제한다.")
+    @ApiOperation(value = "정기 결제", notes = "회원이 매달 정기적으로 일정 금액을 결제한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/validation/subscribe")
     public BaseResponse validationSubscribe(String impUid) throws IamportResponseException, IOException {
-        if(paymentService.subscribeValidation(impUid)) {
-            return BaseResponse.successRes("PAYMENT_001",true,"결제가 완료되었습니다.","결제 성공");
+        if (paymentService.subscribeValidation(impUid)) {
+            return BaseResponse.successRes("PAYMENT_001", true, "결제가 완료되었습니다.", "결제 성공");
 
         }
 
-        return BaseResponse.error("PAYMENT_002",true,"결제 실패하였습니다.","결제 실패");
-    }
-
-    // 구독 취소
-    @RequestMapping(method = RequestMethod.POST, value = "/subscribe/cancel")
-    public IamportResponse<com.siot.IamportRestClient.response.Payment> cancelSubscription(@RequestParam String customerUid) {
-        try {
-            return paymentService.cancelSubscription(customerUid);
-        } catch (IamportResponseException | IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return BaseResponse.error("PAYMENT_002", true, "결제 실패하였습니다.", "결제 실패");
     }
 }

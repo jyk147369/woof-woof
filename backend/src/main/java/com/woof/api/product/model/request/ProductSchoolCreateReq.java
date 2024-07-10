@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class ProductSchoolCreateReq {
     private String storeName;
+    private String businessNum;
     private String productName;
     private Integer phoneNumber;
     private Integer price;

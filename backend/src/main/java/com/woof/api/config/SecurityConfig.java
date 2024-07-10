@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -47,7 +48,14 @@ public class SecurityConfig{
                     .antMatchers("/test/member").hasRole("MEMBER")
                     .antMatchers("/orders/**").permitAll() // 인증된 사용자만 접근 허용
                     .antMatchers("/**").permitAll()
-                    .anyRequest().permitAll();
+                    .anyRequest().permitAll()
+                    .and()
+                    .exceptionHandling()
+                    .accessDeniedHandler(customAccessDeniedHandler) // 인가에 대한 예외 처리
+                    .and()
+                    .addFilterBefore(new JwtFilter(secretKey,memberRepository), UsernamePasswordAuthenticationFilter.class)
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
 
 //            http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 

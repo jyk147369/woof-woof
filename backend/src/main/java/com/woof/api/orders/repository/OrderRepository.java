@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Orders, Long> {
 
 
-    public Optional<OrderDto> findByPhoneNumber(Long phoneNumber);
+    public Optional<com.woof.api.orders.model.dto.OrderDto> findByPhoneNumber(Long phoneNumber);
     List<Orders> findByMemberIdx(Long memberIdx);
     public void deleteAllByOrdersIdx(Long idx);
     public Optional<OrderDto> findByIdx(Long idx);

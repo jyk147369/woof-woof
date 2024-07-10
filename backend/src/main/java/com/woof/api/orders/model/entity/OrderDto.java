@@ -1,7 +1,6 @@
-package com.woof.api.orders.model.entity;
+package com.woof.api.orders.model.dto;
 
-
-import com.woof.api.common.BaseEntity;
+import com.woof.api.member.model.entity.Member;
 import lombok.*;
 
 import javax.persistence.Id;
@@ -24,11 +23,13 @@ public class OrderDto {
 
 //    private ProductManager productManager;
 //    private ProductCeo productCeo;
-//    private Member member;
+    private Member member;
 
     private Long productManagerIdx;
     private Long productCeoIdx;
     private Long memberIdx;
+
+    private String impUid;
 
 
 

@@ -13,5 +13,5 @@ public class ProductManagerReadRes {
     private Integer price;          // 매니저 1달 이용 가격
     private String career;          // 매니저 경력
     private String contents;        // 인사글
-//    private String filename;
+    private String filename;        // 대표사진 파일명 추가
 }
