@@ -38,15 +38,15 @@ public class SecurityConfig{
         try {
             http.csrf().disable()
                     .authorizeRequests()
-                    .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                    //.antMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
-                    .antMatchers("/member/*").permitAll()
-                    .antMatchers("/ceo/*").permitAll()
-                    .antMatchers("/productCeo/*").permitAll()
-                    .antMatchers("/productManager/*").permitAll()
+                    .antMatchers("/swagger-ui.html", "/swagger-ui/", "/v3/api-docs/").permitAll()
+                    //.antMatchers("/v2/api-docs/", "/swagger-ui/", "/swagger-resources/").permitAll()
+                    .antMatchers("/member/").permitAll()
+                    .antMatchers("/ceo/").permitAll()
+                    .antMatchers("/productCeo/").permitAll()
+                    .antMatchers("/productManager/").permitAll()
                     .antMatchers("/test/ceo").hasRole("CEO")
                     .antMatchers("/test/member").hasRole("MEMBER")
-                    .antMatchers("/orders/**").permitAll() // 인증된 사용자만 접근 허용
+                    .antMatchers("/orders/").permitAll() // 인증된 사용자만 접근 허용
                     .antMatchers("/**").permitAll()
                     .anyRequest().permitAll()
                     .and()
@@ -55,9 +55,6 @@ public class SecurityConfig{
                     .and()
                     .addFilterBefore(new JwtFilter(secretKey,memberRepository), UsernamePasswordAuthenticationFilter.class)
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-
-//            http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
             http.formLogin().disable();
 
