@@ -5,11 +5,10 @@ import com.woof.api.member.exception.MemberAccountException;
 import com.woof.api.member.exception.MemberDuplicateException;
 import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.member.model.request.PostMemberLoginReq;
-import com.woof.api.member.model.request.PostMemberSignupReq;
-import com.woof.api.member.model.response.GetMemberReadRes;
-import com.woof.api.member.model.response.PostMemberLoginRes;
-import com.woof.api.member.model.response.PostMemberSignupRes;
+import com.woof.api.member.model.entity.MemberProfileImage;
+import com.woof.api.member.model.request.*;
+import com.woof.api.member.model.response.*;
+import com.woof.api.member.repository.MemberProfileImageRepository;
 import com.woof.api.member.repository.MemberRepository;
 import com.woof.api.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +33,11 @@ public class MemberService implements UserDetailsService {
     @Value("${jwt.token.expired-time-ms}")
     private Long expiredTimeMs;
 
-    private final MemberRepository memberRepository;
+    public final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberProfileImageService memberProfileImageService;
     private final EmailVerifyService emailVerifyService;
+    private final MemberProfileImageRepository memberProfileImageRepository;
 
     @Transactional
     public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq request, MultipartFile profileImage, String role) {
@@ -50,6 +50,8 @@ public class MemberService implements UserDetailsService {
                 .memberPw(passwordEncoder.encode(request.getPw()))
                 .memberName(request.getName())
                 .memberNickname(request.getNickname())
+                .phoneNumber(request.getPhoneNumber())
+                .petName(request.getPetName())
                 .authority(role)
                 .createAt(LocalDateTime.now())
                 .updateAt(LocalDateTime.now())
@@ -60,9 +62,11 @@ public class MemberService implements UserDetailsService {
 
         if (profileImage != null) {
             memberProfileImageService.registerMemberProfileImage(member, profileImage);
+        } else {
+
         }
 
-        PostMemberSignupRes response =  PostMemberSignupRes.builder()
+        PostMemberSignupRes response = PostMemberSignupRes.builder()
                 .idx(member.getIdx())
                 .email(member.getMemberEmail())
                 .name(member.getMemberName())
@@ -96,68 +100,99 @@ public class MemberService implements UserDetailsService {
 
         return member;
     }
-
-    public BaseResponse<GetMemberReadRes> read(Member member){
-        Member result = memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
+    public BaseResponse<GetMemberReadRes> read(){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
                 MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
+        MemberProfileImage image = memberProfileImageRepository.findByMemberIdx(member.getIdx());
+
+        if(image == null){
+           image = memberProfileImageRepository.findByIdx(1L);
+        }
 
         GetMemberReadRes response = GetMemberReadRes.builder()
-                .email(result.getMemberEmail())
-                .name(result.getMemberName())
-                .nickname(result.getMemberNickname())
-                .authority(result.getAuthority())
-                .profileImage(result.getProfileImage())
+                .email(member.getMemberEmail())
+                .name(member.getMemberName())
+                .nickname(member.getMemberNickname())
+                .authority(member.getAuthority())
+                .phoneNumber(member.getPhoneNumber())
+                .petName(member.getPetName())
+                .profileImage(image.getMemberImageAddr())
                 .build();
 
         return BaseResponse.successRes("MEMBER_002", true, "회원조회에 성공하였습니다.", response);
     }
+    public BaseResponse<PatchMemberUpdateRes> update(PatchMemberUpdateReq request){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
+                MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
 
-//    // read
-//    // 내 정보 조회
-//    public GetMemberReadRes readMember (String username) {
-//        Optional<Member> result = memberRepository.findByEmail(username);
-//
-//        Member member = result.get();
-//
-//        GetMemberReadRes response = GetMemberReadRes.builder()
-//                .email(member.getEmail())
-//                .nickname(member.getNickname())
-//                .authority(member.getAuthority())
-//                .build();
-//
-//        if (result.isPresent()) {
-//            return response;
-//        } else {
-//            return null;
-//        }
-//
-//    }
-//
-//    // update
-//    public PatchMemberUpdateRes updateMember (PatchMemberUpdateReq request) {
-//        Optional<Member> result = memberRepository.findByEmail(request.getEmail());
-//
-//        if (result.isPresent()) {
-//
-//            Member member = result.get();
-//
-//            member.setNickname(request.getNickname());
-//            member.setPassword(passwordEncoder.encode(request.getPassword()));
-//
-//            Member updateMember = memberRepository.save(member);
-//
-//            PatchMemberUpdateRes response = PatchMemberUpdateRes.builder()
-//                    .nickname(updateMember.getNickname())
-//                    .password(updateMember.getPassword())
-//                    .build();
-//            return response;
-//        } else {
-//            return null;
-//        }
-//
-//    }
+        member.setPetName(request.getPetName());
+        member.setMemberNickname(request.getNickname());
+        member.setPhoneNumber(request.getPhoneNumber());
 
-    // delete
+        Member updateMember = memberRepository.save(member);
+
+        PatchMemberUpdateRes response = PatchMemberUpdateRes.builder()
+                .nickname(updateMember.getMemberNickname())
+                .phoneNumber(updateMember.getPhoneNumber())
+                .petName(updateMember.getPetName())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "회원 정보 수정에 성공하였습니다.", response);
+    }
+
+    public BaseResponse<PatchMemberUpdateImgRes> updateImg(MultipartFile profileImage){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        memberProfileImageService.updateMemberProfileImage(member, profileImage);
+        MemberProfileImage newImage = memberProfileImageRepository.findByMemberIdx(member.getIdx());
+
+        PatchMemberUpdateImgRes response = PatchMemberUpdateImgRes.builder()
+                .profileImg(newImage.getMemberImageAddr())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "회원 프로필 이미지 수정에 성공하였습니다.", response);
+    }
+
+    // 회원정보 수정시 비밀번호 확인
+    public BaseResponse<PostMemberCheckPwRes> checkPassword(PostMemberCheckPwReq request){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if (passwordEncoder.matches(request.getPw(), member.getPassword())) {
+            PostMemberCheckPwRes response = PostMemberCheckPwRes.builder().build();
+            return BaseResponse.successRes("MEMBER_002", true, "비밀번호가 확인되었습니다.", response);
+        } else {
+            throw  MemberAccountException.forInvalidPassword();
+        }
+    }
+
+    // 회원 탈퇴
+    public BaseResponse<PatchMemberCancelRes> cancel(){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        memberRepository.findById(member.getIdx()).orElseThrow(() ->
+                MemberNotFoundException.forMemberIdx(member.getIdx()));
+
+        member.setStatus(false);
+
+        Member cancelMember = memberRepository.save(member);
+
+        PatchMemberCancelRes response = PatchMemberCancelRes.builder()
+                .status(cancelMember.getStatus())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "회원탈퇴가 완료되었습니다.", response);
+    }
+
+    // 이메일 찾기
+    public BaseResponse<PostMemberFindEmailRes> findEmail(PostMemberFindEmailReq request){
+        Member member = memberRepository.findByMemberNameAndPhoneNumber(request.getName(), request.getPhoneNumber()).orElseThrow(() ->
+                MemberNotFoundException.forMemberNameAndPhoneNumber(request.getName(), request.getPhoneNumber()));
+
+        PostMemberFindEmailRes response = PostMemberFindEmailRes.builder()
+                .email(member.getMemberEmail())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "이메일 찾기에 성공하였습니다.", response);
+    }
 
     //이창훈용 야매 메소드
     public void lch(Long idx) {

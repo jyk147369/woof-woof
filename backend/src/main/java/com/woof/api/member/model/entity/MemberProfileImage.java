@@ -1,6 +1,8 @@
 package com.woof.api.member.model.entity;
 
+import com.woof.api.common.BaseEntity;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,13 +14,9 @@ import javax.persistence.Id;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class MemberProfileImage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberImageIdx;
+@SuperBuilder
+public class MemberProfileImage extends BaseEntity {
 
     private Long memberIdx;
-
     private String memberImageAddr;
 }

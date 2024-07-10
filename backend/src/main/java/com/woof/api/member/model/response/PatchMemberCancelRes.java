@@ -7,10 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatchMemberUpdateRes {
+public class PatchMemberCancelRes {
 
-    private String nickname;
-    private String petName;
-    private String phoneNumber;
+    private Boolean status;
 
 }

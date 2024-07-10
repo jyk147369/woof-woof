@@ -7,10 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class GetEmailConfirmReq {
-
-    private String email;
-    private String uuid;
+@NoArgsConstructor
+public class PostMemberFindEmailReq {
+    private String phoneNumber;
+    private String name;
 }
