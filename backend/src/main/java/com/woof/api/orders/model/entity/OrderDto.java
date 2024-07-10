@@ -1,4 +1,4 @@
-package com.woof.api.orders.model.dto;
+package com.woof.api.orders.model.entity;
 
 import com.woof.api.member.model.entity.Member;
 import lombok.*;
