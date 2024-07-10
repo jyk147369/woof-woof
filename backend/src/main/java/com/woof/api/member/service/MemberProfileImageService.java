@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -61,6 +62,8 @@ public class MemberProfileImageService {
         MemberProfileImage createMemberProfileImage = MemberProfileImage.builder()
                 .memberImageAddr(saveFileName)
                 .memberIdx(member.getIdx())
+                .createAt(LocalDateTime.now())
+                .updateAt(LocalDateTime.now())
                 .build();
         memberProfileImageRepository.save(createMemberProfileImage);
         return saveFileName.replace(File.separator, "/");

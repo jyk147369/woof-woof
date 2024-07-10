@@ -5,11 +5,15 @@ import com.woof.api.member.exception.MemberAccountException;
 import com.woof.api.member.exception.MemberDuplicateException;
 import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
+import com.woof.api.member.model.entity.MemberProfileImage;
+import com.woof.api.member.model.request.PatchMemberUpdateReq;
 import com.woof.api.member.model.request.PostMemberLoginReq;
 import com.woof.api.member.model.request.PostMemberSignupReq;
 import com.woof.api.member.model.response.GetMemberReadRes;
+import com.woof.api.member.model.response.PatchMemberUpdateRes;
 import com.woof.api.member.model.response.PostMemberLoginRes;
 import com.woof.api.member.model.response.PostMemberSignupRes;
+import com.woof.api.member.repository.MemberProfileImageRepository;
 import com.woof.api.member.repository.MemberRepository;
 import com.woof.api.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +38,11 @@ public class MemberService implements UserDetailsService {
     @Value("${jwt.token.expired-time-ms}")
     private Long expiredTimeMs;
 
-    private final MemberRepository memberRepository;
+    public final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberProfileImageService memberProfileImageService;
     private final EmailVerifyService emailVerifyService;
+    private final MemberProfileImageRepository memberProfileImageRepository;
 
     @Transactional
     public BaseResponse<PostMemberSignupRes> signup(PostMemberSignupReq request, MultipartFile profileImage, String role) {
@@ -50,6 +55,8 @@ public class MemberService implements UserDetailsService {
                 .memberPw(passwordEncoder.encode(request.getPw()))
                 .memberName(request.getName())
                 .memberNickname(request.getNickname())
+                .phoneNumber(request.getPhoneNumber())
+                .petName(request.getPetName())
                 .authority(role)
                 .createAt(LocalDateTime.now())
                 .updateAt(LocalDateTime.now())
@@ -62,7 +69,7 @@ public class MemberService implements UserDetailsService {
             memberProfileImageService.registerMemberProfileImage(member, profileImage);
         }
 
-        PostMemberSignupRes response =  PostMemberSignupRes.builder()
+        PostMemberSignupRes response = PostMemberSignupRes.builder()
                 .idx(member.getIdx())
                 .email(member.getMemberEmail())
                 .name(member.getMemberName())
@@ -96,68 +103,44 @@ public class MemberService implements UserDetailsService {
 
         return member;
     }
-
-    public BaseResponse<GetMemberReadRes> read(Member member){
+    public BaseResponse<GetMemberReadRes> read(){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Member result = memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
                 MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
+        MemberProfileImage image = memberProfileImageRepository.findByMemberIdx(member.getIdx());
 
         GetMemberReadRes response = GetMemberReadRes.builder()
                 .email(result.getMemberEmail())
                 .name(result.getMemberName())
                 .nickname(result.getMemberNickname())
                 .authority(result.getAuthority())
-                .profileImage(result.getProfileImage())
+                .phoneNumber(result.getPhoneNumber())
+                .petName(result.getPetName())
+                .profileImage(image.getMemberImageAddr())
                 .build();
 
         return BaseResponse.successRes("MEMBER_002", true, "회원조회에 성공하였습니다.", response);
     }
+    public BaseResponse<PatchMemberUpdateRes> update(PatchMemberUpdateReq request){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member result = memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
+                MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
 
-//    // read
-//    // 내 정보 조회
-//    public GetMemberReadRes readMember (String username) {
-//        Optional<Member> result = memberRepository.findByEmail(username);
-//
-//        Member member = result.get();
-//
-//        GetMemberReadRes response = GetMemberReadRes.builder()
-//                .email(member.getEmail())
-//                .nickname(member.getNickname())
-//                .authority(member.getAuthority())
-//                .build();
-//
-//        if (result.isPresent()) {
-//            return response;
-//        } else {
-//            return null;
-//        }
-//
-//    }
-//
-//    // update
-//    public PatchMemberUpdateRes updateMember (PatchMemberUpdateReq request) {
-//        Optional<Member> result = memberRepository.findByEmail(request.getEmail());
-//
-//        if (result.isPresent()) {
-//
-//            Member member = result.get();
-//
-//            member.setNickname(request.getNickname());
-//            member.setPassword(passwordEncoder.encode(request.getPassword()));
-//
-//            Member updateMember = memberRepository.save(member);
-//
-//            PatchMemberUpdateRes response = PatchMemberUpdateRes.builder()
-//                    .nickname(updateMember.getNickname())
-//                    .password(updateMember.getPassword())
-//                    .build();
-//            return response;
-//        } else {
-//            return null;
-//        }
-//
-//    }
+        result.setPetName(request.getPetName());
+        result.setMemberNickname(request.getNickname());
+        result.setPhoneNumber(request.getPhoneNumber());
 
-    // delete
+        Member updateMember = memberRepository.save(result);
+
+        PatchMemberUpdateRes response = PatchMemberUpdateRes.builder()
+                .nickname(updateMember.getMemberNickname())
+                .phoneNumber(updateMember.getPhoneNumber())
+                .petName(updateMember.getPetName())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "회원 정보 수정에 성공하였습니다.", response);
+    }
+
 
     //이창훈용 야매 메소드
     public void lch(Long idx) {

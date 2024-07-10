@@ -15,5 +15,7 @@ public class PostMemberSignupReq {
     private String pw;
     private String name;
     private String nickname;
+    private String petName;
+    private String phoneNumber;
 
 }

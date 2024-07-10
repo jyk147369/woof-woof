@@ -9,9 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 public class PatchMemberUpdateReq {
 
-    private String email;
-    private String password;
     private String nickname;
-    private String authority;
+    private String petName;
+    private String phoneNumber;
 
 }

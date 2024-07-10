@@ -13,6 +13,8 @@ public class GetMemberReadRes {
     private String name;
     private String nickname;
     private String authority;
+    private String phoneNumber;
+    private String petName;
     private String profileImage;
 
 }
