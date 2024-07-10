@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 @Data
 public class ProductManagerCreateReq {
-    private Long idx;
     private String managerName;     // 매니저 이름
     private String gender;          // 매니저 성별
     private String businessNum;     // 매니저 번호

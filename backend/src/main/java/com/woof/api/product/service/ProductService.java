@@ -35,6 +35,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,12 +57,14 @@ public class ProductService {
         if (manager.getAuthority().substring(5).equals("MANAGER")) {
 
             ProductManager productManager = ProductManager.builder()
-                    .managerName(manager.getMemberName())             // 닉네임이 맞는지 (실명 안해도 되려나요)
-                    .gender(productManagerCreateReq.getGender())    // 혹은 매니저 entity에 추가되면 거기서 가져오기
-                    .businessNum(productManagerCreateReq.getBusinessNum()) // 혹 매 e 추 거 가
-                    .price(productManagerCreateReq.getPrice())      // 혹은 매니저 entity에 추가되면 거기서 가져오기
-                    .career(productManagerCreateReq.getCareer())    // 혹은 매니저 entity에 추가되면 거기서 가져오기
-                    .contents(productManagerCreateReq.getContents())// 혹은 매니저 entity에 추가되면 거기서 가져오기
+                    .managerName(manager.getMemberName())
+                    .gender(productManagerCreateReq.getGender())
+                    .businessNum(productManagerCreateReq.getBusinessNum())
+                    .price(productManagerCreateReq.getPrice())
+                    .career(productManagerCreateReq.getCareer())
+                    .contents(productManagerCreateReq.getContents())
+                    .createAt(LocalDateTime.now())
+                    .updateAt(LocalDateTime.now())
                     .status(0)
                     .build();
             productManagerRepository.save(productManager);
@@ -166,6 +169,7 @@ public class ProductService {
         productManager.setPrice(productManagerUpdateReq.getPrice());
         productManager.setCareer(productManagerUpdateReq.getCareer());
         productManager.setContents(productManagerUpdateReq.getContents());
+        productManager.setUpdateAt(LocalDateTime.now());
 
         productManagerRepository.save(productManager);
 
@@ -189,14 +193,17 @@ public class ProductService {
         List<ProductImage> productImages = productImageRepository.findByProductManagerIdx(productManagerIdx);
 
         // 조회된 파일 목록을 BoardFileDto 리스트로 변환
-        List<ProductFileDto> fileDtos = productImages.stream().map(file -> {
-            // 각 파일에 대한 Presigned URL 생성
-            String downloadUrl = generatePresignedUrl(file.getFilename(), file.getOriginalFilename());
+        List<ProductFileDto> fileDtos = new ArrayList<>();
 
-            // 파일의 원본 이름과 다운로드 URL을 사용하여 GooutFileDto 객체 생성
-            return new ProductFileDto(file.getIdx(), file.getOriginalFilename(), downloadUrl);
-        }).collect(Collectors.toList());
+        for (ProductImage productImage : productImages){
+            ProductFileDto productFileDto = ProductFileDto.builder()
+                    .idx(productImage.getIdx())
+                    .originalFilename(productImage.getOriginalFilename())
+                    .downloadUrl(productImage.getFilename())
+                    .build();
 
+            fileDtos.add(productFileDto);
+        }
         return fileDtos;
     }
 
@@ -223,6 +230,8 @@ public class ProductService {
                     .productName(productSchoolCreateReq.getProductName())
                     .price(productSchoolCreateReq.getPrice())
                     .contents(productSchoolCreateReq.getContents())
+                    .createAt(LocalDateTime.now())
+                    .updateAt(LocalDateTime.now())
                     .status(0)
                     .build();
             productSchoolRepository.save(productSchool);
@@ -314,10 +323,12 @@ public class ProductService {
         ProductSchool productSchool = productSchoolRepository.findById(productSchoolUpdateReq.getIdx())
                 .orElseThrow(() -> new RuntimeException("해당 idx의 상품을 찾을 수 없습니다."));
 
+        productSchool.setStoreName(productSchoolUpdateReq.getStoreName());
         productSchool.setProductName(productSchoolUpdateReq.getProductName());
         productSchool.setPrice(productSchoolUpdateReq.getPrice());
         productSchool.setBusinessNum(productSchoolUpdateReq.getBusinessNum());
         productSchool.setContents(productSchoolUpdateReq.getContents());
+        productSchool.setUpdateAt(LocalDateTime.now());
 
         productSchoolRepository.save(productSchool);
 
@@ -341,14 +352,17 @@ public class ProductService {
         List<ProductImage> productImages = productImageRepository.findByProductSchoolIdx(productSchoolIdx);
 
         // 조회된 파일 목록을 BoardFileDto 리스트로 변환
-        List<ProductFileDto> fileDtos = productImages.stream().map(file -> {
-            // 각 파일에 대한 Presigned URL 생성
-            String downloadUrl = generatePresignedUrl(file.getFilename(), file.getOriginalFilename());
+        List<ProductFileDto> fileDtos = new ArrayList<>();
 
-            // 파일의 원본 이름과 다운로드 URL을 사용하여 GooutFileDto 객체 생성
-            return new ProductFileDto(file.getIdx(), file.getOriginalFilename(), downloadUrl);
-        }).collect(Collectors.toList());
+        for (ProductImage productImage : productImages){
+            ProductFileDto productFileDto = ProductFileDto.builder()
+                    .idx(productImage.getIdx())
+                    .originalFilename(productImage.getOriginalFilename())
+                    .downloadUrl(productImage.getFilename())
+                    .build();
 
+            fileDtos.add(productFileDto);
+        }
         return fileDtos;
     }
 
@@ -373,11 +387,11 @@ public class ProductService {
     }
 
     @Transactional
-    public String uploadFile(MultipartFile file, Long productIdx) {
+    public ProductImage uploadFile(MultipartFile file) {
         String originalName = file.getOriginalFilename();
         String folderPath = makeFolder();
         String uuid = UUID.randomUUID().toString();
-        String saveFileName = folderPath + File.separator + uuid + "_" + originalName;
+        String saveFileName = folderPath + File.separator + uuid + "_";
         InputStream input = null;
         try {
             input = file.getInputStream();
@@ -387,6 +401,15 @@ public class ProductService {
 
             s3.putObject(bucket, saveFileName.replace(File.separator, "/"), input, metadata);
 
+            ProductImage productImage = ProductImage.builder()
+                    .filename(saveFileName)
+                    .originalFilename(originalName)
+                    .createAt(LocalDateTime.now())
+                    .build();
+
+            productImageRepository.save(productImage);
+
+            return productImage;
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -396,15 +419,24 @@ public class ProductService {
                 throw new RuntimeException(e);
             }
         }
-        return s3.getUrl(bucket, saveFileName.replace(File.separator, "/")).toString();
     }
 
     @Transactional
-    public void saveFile(Long idx, String uploadPath) {
-        productImageRepository.save(ProductImage.builder()
-                .productSchool(ProductSchool.builder().idx(idx).build())
-                .filename(uploadPath)
-                .build());
+    public void saveFileM(Long idx, ProductImage productImage) {
+        ProductManager productManager = productManagerRepository.findByIdx(idx)
+                .orElseThrow(() -> new RuntimeException("해당 idx의 ProductManager를 찾을 수 없습니다."));
+
+        productImage.setProductManager(productManager);
+        productImageRepository.save(productImage);
+    }
+
+    @Transactional
+    public void saveFileS(Long idx, ProductImage productImage) {
+        ProductSchool productSchool = productSchoolRepository.findByIdx(idx)
+                .orElseThrow(() -> new RuntimeException("해당 idx의 ProductSchool을 찾을 수 없습니다."));
+
+        productImage.setProductSchool(productSchool);
+        productImageRepository.save(productImage);
     }
 
     @Transactional

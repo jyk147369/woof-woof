@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class ProductSchoolUpdateReq {
     private Long idx;
+    private String storeName;
     private String productName;
     private String businessNum;
     private Integer price;

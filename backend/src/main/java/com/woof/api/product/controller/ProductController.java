@@ -1,6 +1,7 @@
 package com.woof.api.product.controller;
 
 import com.woof.api.common.BaseResponse;
+import com.woof.api.product.model.entity.ProductImage;
 import com.woof.api.product.model.response.*;
 import com.woof.api.product.model.request.ProductManagerCreateReq;
 import com.woof.api.product.model.request.ProductManagerUpdateReq;
@@ -35,8 +36,8 @@ public class ProductController {
 
         if (uploadFiles != null) {
             for (MultipartFile uploadFile : uploadFiles) {
-                String uploadPath = productService.uploadFile(uploadFile, productManagerCreateResult.getIdx());
-                productService.saveFile(productManagerCreateResult.getIdx(), uploadPath);
+                ProductImage productImage = productService.uploadFile(uploadFile);
+                productService.saveFileM(productManagerCreateResult.getIdx(), productImage);
             }
         }
         return ResponseEntity.ok().body(baseResponse);
@@ -50,7 +51,7 @@ public class ProductController {
     }
 
     //    @ApiOperation(value="특정 매니저 조회", notes="회원이 매니저 idx를 입력하여 특정 매니저를 조회한다.")
-    @RequestMapping(method = RequestMethod.GET, value ="/manager/read/{idx}")
+    @RequestMapping(method = RequestMethod.GET, value = "/manager/read/{idx}")
     public ResponseEntity<BaseResponse<ProductManagerReadRes>> readManager(@PathVariable Long idx) {
         BaseResponse<ProductManagerReadRes> response = productService.readManager(idx);
         return ResponseEntity.ok().body(response);
@@ -59,17 +60,9 @@ public class ProductController {
     //    @ApiOperation(value="매니저 정보 수정", notes="매니저회원이 매니저의 정보를 수정한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/manager/update")
     public ResponseEntity<BaseResponse<Void>> updateManager(
-            @RequestPart ProductManagerUpdateReq productManagerUpdateReq,
-            @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
+            @RequestBody ProductManagerUpdateReq productManagerUpdateReq) {
 
         BaseResponse<Void> response = productService.updateManager(productManagerUpdateReq);
-
-        if (uploadFiles != null) {
-            for (MultipartFile uploadFile : uploadFiles) {
-                String uploadPath = productService.uploadFile(uploadFile, productManagerUpdateReq.getIdx());
-                productService.saveFile(productManagerUpdateReq.getIdx(), uploadPath);
-            }
-        }
         return ResponseEntity.ok().body(response);
     }
 
@@ -80,8 +73,8 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/manager/files/{productManagerIdx}")
-    public ResponseEntity<List<ProductFileDto>> listFilesByProductManagerIdx(@PathVariable Long productManagerIdx) {
+    @RequestMapping(method = RequestMethod.GET, value = "/manager/files")
+    public ResponseEntity<List<ProductFileDto>> listFilesByProductManagerIdx(@RequestParam Long productManagerIdx) {
         List<ProductFileDto> files = productService.listFilesByProductManagerIdx(productManagerIdx);
         return ResponseEntity.ok().body(files);
     }
@@ -98,8 +91,8 @@ public class ProductController {
 
         if (uploadFiles != null) {
             for (MultipartFile uploadFile : uploadFiles) {
-                String uploadPath = productService.uploadFile(uploadFile, productSchoolCreateResult.getIdx());
-                productService.saveFile(productSchoolCreateResult.getIdx(), uploadPath);
+                ProductImage productImage = productService.uploadFile(uploadFile);
+                productService.saveFileS(productSchoolCreateResult.getIdx(), productImage);
             }
         }
         return ResponseEntity.ok().body(baseResponse);
@@ -113,7 +106,7 @@ public class ProductController {
     }
 
     //    @ApiOperation(value="특정 상품 조회", notes="회원이 상품 idx를 입력하여 특정 상품을 조회한다.")
-    @RequestMapping(method = RequestMethod.GET, value ="/school/read/{idx}")
+    @RequestMapping(method = RequestMethod.GET, value = "/school/read/{idx}")
     public ResponseEntity<BaseResponse<ProductSchoolReadRes>> readSchool(@PathVariable Long idx) {
         BaseResponse<ProductSchoolReadRes> response = productService.readSchool(idx);
         return ResponseEntity.ok().body(response);
@@ -122,44 +115,45 @@ public class ProductController {
     //    @ApiOperation(value="상품 정보 수정", notes="업체회원이 상품의 정보를 수정한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/school/update")
     public ResponseEntity<BaseResponse<Void>> updateSchool(
-            @RequestPart ProductSchoolUpdateReq productSchoolUpdateReq,
-            @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
+            @RequestBody ProductSchoolUpdateReq productSchoolUpdateReq) {
 
         BaseResponse<Void> response = productService.updateSchool(productSchoolUpdateReq);
 
-        if (uploadFiles != null) {
-            for (MultipartFile uploadFile : uploadFiles) {
-                String uploadPath = productService.uploadFile(uploadFile, productSchoolUpdateReq.getIdx());
-                productService.saveFile(productSchoolUpdateReq.getIdx(), uploadPath);
-            }
-        }
         return ResponseEntity.ok().body(response);
     }
 
     //    @ApiOperation(value="상품 정보 삭제", notes="업체회원이 상품의 정보를 삭제한다.")
     @RequestMapping(method = RequestMethod.PATCH, value = "/school/delete")
-    public ResponseEntity<BaseResponse<Void>>  deleteSchool(@RequestParam Long idx) {
+    public ResponseEntity<BaseResponse<Void>> deleteSchool(@RequestParam Long idx) {
         BaseResponse<Void> response = productService.deleteSchool(idx);
         return ResponseEntity.ok().body(response);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/school/files/{productSchoolIdx}")
-    public ResponseEntity<List<ProductFileDto>> listFilesByProductSchoolIdx(@PathVariable Long productSchoolIdx) {
+    @RequestMapping(method = RequestMethod.GET, value = "/school/files")
+    public ResponseEntity<List<ProductFileDto>> listFilesByProductSchoolIdx(@RequestParam Long productSchoolIdx) {
         List<ProductFileDto> files = productService.listFilesByProductSchoolIdx(productSchoolIdx);
         return ResponseEntity.ok().body(files);
     }
 
     // ----------------------------------------------------------------------------------------------- //
 
-    @RequestMapping(method = RequestMethod.POST, value = "/uploadFile")
-    private void uploadFile(MultipartFile uploadFile, Long productIdx) {
-        String uploadPath = productService.uploadFile(uploadFile, productIdx);
-        productService.saveFile(productIdx, uploadPath);
+    @RequestMapping(method = RequestMethod.POST, value = "/uploadFileM")
+    private ResponseEntity<String> uploadFileM(MultipartFile uploadFile, Long productManagerIdx) {
+        ProductImage productImage = productService.uploadFile(uploadFile);
+        productService.saveFileM(productManagerIdx, productImage);
+        return ResponseEntity.ok("ProductManager 사진이 성공적으로 업로드되었습니다.");
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/uploadFileS")
+    private ResponseEntity<String> uploadFileS(MultipartFile uploadFile, Long productSchoolIdx) {
+        ProductImage productImage = productService.uploadFile(uploadFile);
+        productService.saveFileS(productSchoolIdx, productImage);
+        return ResponseEntity.ok("ProductSchool 사진이 성공적으로 업로드되었습니다.");
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteFile")
     public ResponseEntity<String> deleteFile(@RequestParam Long fileId) {
         productService.deleteFile(fileId);
-        return ResponseEntity.ok("파일 id " + fileId + " 삭제 완료");
+        return ResponseEntity.ok("파일 idx " + fileId + " 삭제 완료");
     }
 }

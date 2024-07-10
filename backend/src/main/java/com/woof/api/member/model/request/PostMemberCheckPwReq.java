@@ -9,13 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostMemberSignupReq {
-
-    private String email;
+public class PostMemberCheckPwReq {
     private String pw;
-    private String name;
-    private String nickname;
-    private String petName;
-    private String phoneNumber;
-
 }

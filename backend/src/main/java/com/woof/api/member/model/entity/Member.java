@@ -32,7 +32,9 @@ public class Member extends BaseEntity implements UserDetails {
     private String memberNickname;
     private String authority;
     private Boolean status;
-    private String profileImage;
+    //private String profileImage;
+    private String petName;
+    private String phoneNumber;
 
     @OneToMany(mappedBy = "member")
     List<Bookmark> carts = new ArrayList<>();

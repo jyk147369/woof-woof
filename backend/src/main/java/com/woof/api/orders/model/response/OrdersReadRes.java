@@ -13,5 +13,5 @@ public class OrdersReadRes {
     private String phoneNumber;
     private Integer time;
     private String place;
-    private Boolean reservationStatus;
+    private Integer reservationStatus; // 0 (대기), 1 (확정), 2 (delete), 3 (완료)
 }

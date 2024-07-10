@@ -7,15 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class PostMemberSignupReq {
+@AllArgsConstructor
+public class GetMemberEmailConfirmReq {
 
     private String email;
-    private String pw;
-    private String name;
-    private String nickname;
-    private String petName;
-    private String phoneNumber;
-
+    private String uuid;
 }
