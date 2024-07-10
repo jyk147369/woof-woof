@@ -1,6 +1,5 @@
 package com.woof.api.member.model.request;
 
-
 import lombok.*;
 
 @Getter

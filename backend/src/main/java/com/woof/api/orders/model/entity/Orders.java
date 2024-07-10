@@ -1,13 +1,13 @@
-package com.woof.api.orders.model;
+package com.woof.api.orders.model.entity;
 
 
-import com.woof.api.member.model.entity.Ceo;
-import com.woof.api.member.model.entity.Manager;
+import com.woof.api.common.BaseEntity;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.payment.model.Payment;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,11 +17,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
-public class Orders {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
+@SuperBuilder
+public class Orders extends BaseEntity {
 
     private String name;
     private String phoneNumber; //예약자 전화번호
@@ -51,7 +48,7 @@ public class Orders {
     //업체 1 : 주문 N
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ceo_idx")
-    private Ceo ceo;
+    private Member ceo;
 
     //고객 1 : 주문 N
     @ManyToOne(fetch = FetchType.LAZY)
@@ -65,7 +62,7 @@ public class Orders {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_idx")
-    private Manager manager;
+    private Member manager;
 
     //리뷰 매핑 성공
 

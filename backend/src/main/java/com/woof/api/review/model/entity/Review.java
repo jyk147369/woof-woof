@@ -3,7 +3,7 @@ package com.woof.api.review.model.entity;
 
 import com.woof.api.common.BaseEntity;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.orders.model.Orders;
+import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.product.model.entity.ProductImage;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;

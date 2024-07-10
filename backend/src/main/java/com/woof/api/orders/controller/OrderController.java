@@ -4,8 +4,14 @@ package com.woof.api.orders.controller;
 import com.woof.api.common.BaseResponse;
 import com.woof.api.common.error.ErrorCode;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.orders.model.Orders;
-import com.woof.api.orders.model.dto.*;
+import com.woof.api.orders.exception.OrdersException;
+import com.woof.api.orders.model.dto.OrderDto;
+import com.woof.api.orders.model.entity.Orders;
+import com.woof.api.orders.model.response.*;
+import com.woof.api.orders.model.response.PostOrderInfoRes;
+import com.woof.api.orders.model.entity.CustomerInfo;
+import com.woof.api.orders.model.request.OrdersUpdateReq;
+import com.woof.api.orders.model.response.OrdersReadRes2;
 import com.woof.api.orders.service.OrderService;
 import com.woof.api.payment.service.PaymentService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -97,7 +103,7 @@ public class OrderController {
                 return orderService.create(orderDto);
             } else {
                 log.error("Payment validation failed for impUid: {}", impUid);
-                throw new OrdersException(ErrorCode.NOT_MATCH_AMOUNT);
+                throw new OrdersException(ErrorCode.NOT_MATCH_ORDERS);
             }
         } catch (Exception e) {
             log.error("Server error occurred", e);
@@ -114,5 +120,4 @@ public class OrderController {
     public BaseResponse<String> orderCancel(String impUid) throws IOException {
         return paymentService.paymentCancel(impUid);
     }
-
 }

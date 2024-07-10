@@ -14,5 +14,4 @@ public enum SubscribeInfo {
         this.type = type;
         this.price = price;
     }
-
 }

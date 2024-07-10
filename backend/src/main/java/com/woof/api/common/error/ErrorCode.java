@@ -13,7 +13,7 @@ public enum ErrorCode {
     TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "ACCOUNT_002", "토큰이 존재하지 않습니다."),
     INVALID_VERIFICATION_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT_003", "토큰이 유효하지 않습니다."),
     EXPIRED_VERIFICATION_TOKEN(HttpStatus.UNAUTHORIZED, "ACCOUNT_004", "토큰의 유효기간이 만료 되었습니다."),
-
+    INVALID_AUTHORITY(HttpStatus.UNAUTHORIZED, "ACCOUNT_005", "권한이 유효하지 않습니다."),
 
     // 회원
     DUPLICATE_SIGNUP_ID(HttpStatus.BAD_REQUEST, "MEMBER_007", "회원 이메일이 중복된 경우"),
@@ -55,6 +55,10 @@ public enum ErrorCode {
     INVALID_DATETIME(HttpStatus.BAD_REQUEST, "CALENDAR_010", "등록할 수 없는 시간입니다."),
     EMPTY_INPUT(HttpStatus.BAD_REQUEST, "CALENDAR_011", "필수 입력값을 입력하지 않았습니다."),
     NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "CALENDAR_012", "검색 결과가 없습니다."),
+
+
+    // 주문
+    NOT_MATCH_ORDERS(HttpStatus.NOT_FOUND, "ORDERS_001", "일정을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus status;  // 헤더로 반환할 Http 상태 코드
