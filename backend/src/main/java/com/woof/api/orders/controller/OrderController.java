@@ -11,6 +11,7 @@ import com.woof.api.orders.model.response.*;
 import com.woof.api.orders.model.entity.CustomerInfo;
 import com.woof.api.orders.model.request.OrdersUpdateReq;
 import com.woof.api.orders.model.response.OrdersReadRes2;
+import com.woof.api.orders.service.OrderService;
 import com.woof.api.payment.service.PaymentService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -54,13 +55,6 @@ public class OrderController {
         orderService.accept(idx);
     }
 
-
-    //예약승인 코드
-    @RequestMapping(method = RequestMethod.PATCH, value = "/create/{idx}")
-    public void lch(@PathVariable Long idx) {
-
-    }
-}
 
     @ApiOperation(value="예약 목록 조회", notes="회원이 예약한 전체 목록을 조회한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/list")
