@@ -97,9 +97,7 @@ public class MemberService implements UserDetailsService {
         return member;
     }
 
-    public BaseResponse<GetMemberReadRes> read(){
-        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
+    public BaseResponse<GetMemberReadRes> read(Member member){
         Member result = memberRepository.findByMemberEmail(member.getMemberEmail()).orElseThrow(() ->
                 MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
 

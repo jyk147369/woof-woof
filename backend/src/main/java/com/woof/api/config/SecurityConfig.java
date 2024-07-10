@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -37,19 +38,23 @@ public class SecurityConfig{
         try {
             http.csrf().disable()
                     .authorizeRequests()
-                    .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                    //.antMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
-                    .antMatchers("/member/*").permitAll()
-                    .antMatchers("/ceo/*").permitAll()
-                    .antMatchers("/productCeo/*").permitAll()
-                    .antMatchers("/productManager/*").permitAll()
+                    .antMatchers("/swagger-ui.html", "/swagger-ui/", "/v3/api-docs/").permitAll()
+                    //.antMatchers("/v2/api-docs/", "/swagger-ui/", "/swagger-resources/").permitAll()
+                    .antMatchers("/member/").permitAll()
+                    .antMatchers("/ceo/").permitAll()
+                    .antMatchers("/productCeo/").permitAll()
+                    .antMatchers("/productManager/").permitAll()
                     .antMatchers("/test/ceo").hasRole("CEO")
                     .antMatchers("/test/member").hasRole("MEMBER")
-                    .antMatchers("/orders/**").permitAll() // 인증된 사용자만 접근 허용
+                    .antMatchers("/orders/").permitAll() // 인증된 사용자만 접근 허용
                     .antMatchers("/**").permitAll()
-                    .anyRequest().permitAll();
-
-//            http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+                    .anyRequest().permitAll()
+                    .and()
+                    .exceptionHandling()
+                    .accessDeniedHandler(customAccessDeniedHandler) // 인가에 대한 예외 처리
+                    .and()
+                    .addFilterBefore(new JwtFilter(secretKey,memberRepository), UsernamePasswordAuthenticationFilter.class)
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
             http.formLogin().disable();
 
