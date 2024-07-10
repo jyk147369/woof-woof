@@ -1,4 +1,4 @@
-package com.woof.api.orders.model.dto;
+package com.woof.api.orders.model.response;
 
 import lombok.*;
 

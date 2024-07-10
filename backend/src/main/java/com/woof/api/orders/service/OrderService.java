@@ -2,7 +2,7 @@ package com.woof.api.orders.service;
 
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
-import com.woof.api.orders.model.dto.OrderDto;
+import com.woof.api.orders.model.entity.OrderDto;
 import com.woof.api.orders.model.entity.CustomerInfo;
 import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.orders.model.request.OrdersUpdateReq;
@@ -173,9 +173,8 @@ public class OrderService {
 
     }
 
+
     public BaseResponse<Void> delete(Long idx) {
-        //  한 번에 삭제
-        orderRepository.deleteAllByOrdersIdx(idx);
         //2=삭제
         OrderDto orderDto = orderRepository.findByIdx(idx).get();
         orderDto.setStatus(2);

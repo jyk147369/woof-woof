@@ -5,7 +5,7 @@ import com.woof.api.common.BaseResponse;
 import com.woof.api.common.error.ErrorCode;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.orders.exception.OrdersException;
-import com.woof.api.orders.model.dto.OrderDto;
+import com.woof.api.orders.model.entity.OrderDto;
 import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.orders.model.response.*;
 import com.woof.api.orders.model.response.PostOrderInfoRes;
