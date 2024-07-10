@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseEntity {
  
-    private String nickname;    // 작성자 닉네임
+    //private String nickname;    // 작성자 닉네임
     private String text;        // 리뷰 내용
     private Long orderIdx;      // 주문 idx
     private Integer status;     // 등록시 1, 삭제 요청시 2로 변경후 1년 뒤 삭제

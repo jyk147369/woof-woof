@@ -69,6 +69,7 @@ public class JwtFilter extends OncePerRequestFilter {
             } else {
                 filterChain.doFilter(request, response);
                 return;
+
             }
 
             String authority = JwtUtils.getAuthority(token, secretKey);
