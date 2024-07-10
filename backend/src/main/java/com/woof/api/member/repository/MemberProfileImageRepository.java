@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface MemberProfileImageRepository extends JpaRepository<MemberProfileImage,Long> {
     MemberProfileImage findByMemberIdx(Long idx);
+
+    MemberProfileImage findByIdx(Long idx);
 }

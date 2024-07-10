@@ -9,10 +9,7 @@ import com.woof.api.member.model.entity.MemberProfileImage;
 import com.woof.api.member.model.request.PatchMemberUpdateReq;
 import com.woof.api.member.model.request.PostMemberLoginReq;
 import com.woof.api.member.model.request.PostMemberSignupReq;
-import com.woof.api.member.model.response.GetMemberReadRes;
-import com.woof.api.member.model.response.PatchMemberUpdateRes;
-import com.woof.api.member.model.response.PostMemberLoginRes;
-import com.woof.api.member.model.response.PostMemberSignupRes;
+import com.woof.api.member.model.response.*;
 import com.woof.api.member.repository.MemberProfileImageRepository;
 import com.woof.api.member.repository.MemberRepository;
 import com.woof.api.utils.JwtUtils;
@@ -67,6 +64,8 @@ public class MemberService implements UserDetailsService {
 
         if (profileImage != null) {
             memberProfileImageService.registerMemberProfileImage(member, profileImage);
+        } else {
+
         }
 
         PostMemberSignupRes response = PostMemberSignupRes.builder()
@@ -109,6 +108,10 @@ public class MemberService implements UserDetailsService {
                 MemberNotFoundException.forMemberEmail(member.getMemberEmail()));
         MemberProfileImage image = memberProfileImageRepository.findByMemberIdx(member.getIdx());
 
+        if(image == null){
+           image = memberProfileImageRepository.findByIdx(1L);
+        }
+
         GetMemberReadRes response = GetMemberReadRes.builder()
                 .email(result.getMemberEmail())
                 .name(result.getMemberName())
@@ -141,7 +144,17 @@ public class MemberService implements UserDetailsService {
         return BaseResponse.successRes("MEMBER_002", true, "회원 정보 수정에 성공하였습니다.", response);
     }
 
+    public BaseResponse<PatchMemberUpdateImgRes> updateImg(MultipartFile profileImage){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        memberProfileImageService.updateMemberProfileImage(member, profileImage);
+        MemberProfileImage newImage = memberProfileImageRepository.findByMemberIdx(member.getIdx());
 
+        PatchMemberUpdateImgRes response = PatchMemberUpdateImgRes.builder()
+                .profileImg(newImage.getMemberImageAddr())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "회원 프로필 이미지 수정에 성공하였습니다.", response);
+    }
     //이창훈용 야매 메소드
     public void lch(Long idx) {
         Member member = memberRepository.findById(idx)
