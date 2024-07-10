@@ -9,6 +9,7 @@ import com.woof.api.payment.model.Payment;
 import com.woof.api.product.model.entity.ProductSchool;
 import com.woof.api.product.model.entity.ProductManager;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
@@ -17,7 +18,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class Orders extends BaseEntity {
 
     private String name;

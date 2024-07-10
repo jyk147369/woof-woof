@@ -4,13 +4,15 @@ package com.woof.api.orders.model.entity;
 import com.woof.api.common.BaseEntity;
 import lombok.*;
 
+import javax.persistence.Id;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
-public class OrderDto extends BaseEntity {
+public class OrderDto {
     private String name;
     private String phoneNumber; //예약자 전화번호
     private Integer time; //예약시간
