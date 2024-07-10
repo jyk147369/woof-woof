@@ -1,6 +1,7 @@
 package com.woof.api.orders.service;
 
 import com.woof.api.common.BaseResponse;
+import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.orders.model.entity.OrderDto;
 import com.woof.api.orders.model.entity.CustomerInfo;
@@ -16,11 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-;
+;import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,6 @@ public class OrderService {
                         .productSchool(
                                 ProductSchool.builder()
                                         .idx(orderDto.getProductCeoIdx())
-//                                        .productName(orderDto.getProductName())
                                         .build())
                         .productManager(
                                 ProductManager.builder()
@@ -51,11 +52,35 @@ public class OrderService {
                         .orderDetails(orderDto.getOrderDetails())
                         .place(orderDto.getPlace())
                         .reservationStatus(0)
+                        .createAt(LocalDateTime.now())
+                        .updateAt(LocalDateTime.now())
                         .build());
 
         return BaseResponse.successRes("Orders_001", true, "주문을 완료했습니다", orderRepository);
     }
-//
+
+    public BaseResponse accept(Long idx) {
+        Optional<Orders> result = orderRepository.findById(idx);
+        if (result.isPresent()) {
+            Orders orders = result.get();
+            orders.setReservationStatus(1);  // 예약 상태를 변경
+            Orders updatedOrder = orderRepository.save(orders); // 변경된 객체를 저장합니다.
+            //예약 상태  0 (대기/create), 1 (확정/accept), 2 (삭제/delete), 3 (완료)
+
+            return BaseResponse.successRes("Orders_002", true, "주문상태를 변경했습니다", updatedOrder);
+        } else {
+            return BaseResponse.error("Orders_101",false,"올바르지 않은 경로입니다","상태 업데이트 실패");
+        }
+    }
+
+//    public void lch(Long idx) {
+//        Member member = memberRepository.findById(idx)
+//                .orElseThrow(() -> MemberNotFoundException.forMemberIdx(idx));
+//        member.setStatus(true);
+//        memberRepository.save(member);
+//    }
+
+
     public OrdersListRes list() {
         List<Orders> result = orderRepository.findAll();
         List<OrdersReadRes> orderDtos = new ArrayList<>();
@@ -128,15 +153,7 @@ public class OrderService {
         if (result.isPresent()) {
             //만약 result에 값이 있다면
             Orders orders = result.get();
-            //orders에 result를 저장한다
 
-//            orders.setStatus(orderDto.getStatus());
-            //orders의 status는 orderDto의 status를 찾아 가져온다
-
-//            Orders orders1 = Orders.builder()
-//                    .idx(ordersUpdateReq.getIdx())
-//                    .time(ordersUpdateReq.getTime())
-//                    .build();
             orders.setTime(ordersUpdateReq.getTime());
             orders.setOrderDetails(ordersUpdateReq.getOrderDetails());
             orders.setPlace(ordersUpdateReq.getPlace());
@@ -158,7 +175,7 @@ public class OrderService {
                     .build();
             //주문 요청 성공시 "주문 수정 성공"을 반환한다
 
-            return BaseResponse.successRes("Orders_2", true, "주문 정보 수정에 성공하였습니다", response);
+            return BaseResponse.successRes("Orders_003", true, "주문 정보 수정에 성공하였습니다", response);
 
         } else {
             OrdersReadRes2 responseFail = OrdersReadRes2.builder()
@@ -168,7 +185,7 @@ public class OrderService {
                     .isSuccess(false)
                     .build();
 
-            return BaseResponse.successRes("Orders_003", false, "주문 정보 수정 실패", responseFail);
+            return BaseResponse.successRes("Orders_004", false, "주문 정보 수정 실패", responseFail);
         }//주문 실패시 "주문 실패"를 반환한다
 
     }
@@ -176,8 +193,11 @@ public class OrderService {
 
     public BaseResponse<Void> delete(Long idx) {
         //2=삭제
-        OrderDto orderDto = orderRepository.findByIdx(idx).get();
-        orderDto.setStatus(2);
+        Orders orders = orderRepository.findByIdx(idx);
+
+        orders.setReservationStatus(2);
+        orderRepository.save(orders);
+        //예약 상태  0 (대기), 1 (확정), 2 (delete), 3 (완료)
 
 
         return BaseResponse.successRes("Orders_004", true, "주문 삭제 성공.", null);
