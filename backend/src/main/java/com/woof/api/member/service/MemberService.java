@@ -6,10 +6,7 @@ import com.woof.api.member.exception.MemberDuplicateException;
 import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.member.model.entity.MemberProfileImage;
-import com.woof.api.member.model.request.PatchMemberUpdateReq;
-import com.woof.api.member.model.request.PostCheckPwReq;
-import com.woof.api.member.model.request.PostMemberLoginReq;
-import com.woof.api.member.model.request.PostMemberSignupReq;
+import com.woof.api.member.model.request.*;
 import com.woof.api.member.model.response.*;
 import com.woof.api.member.repository.MemberProfileImageRepository;
 import com.woof.api.member.repository.MemberRepository;
@@ -158,10 +155,10 @@ public class MemberService implements UserDetailsService {
     }
 
     // 회원정보 수정시 비밀번호 확인
-    public BaseResponse<PostCheckPwRes> checkPassword(PostCheckPwReq request){
+    public BaseResponse<PostMemberCheckPwRes> checkPassword(PostMemberCheckPwReq request){
         Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         if (passwordEncoder.matches(request.getPw(), member.getPassword())) {
-            PostCheckPwRes response = PostCheckPwRes.builder().build();
+            PostMemberCheckPwRes response = PostMemberCheckPwRes.builder().build();
             return BaseResponse.successRes("MEMBER_002", true, "비밀번호가 확인되었습니다.", response);
         } else {
             throw  MemberAccountException.forInvalidPassword();
@@ -183,6 +180,18 @@ public class MemberService implements UserDetailsService {
                 .build();
 
         return BaseResponse.successRes("MEMBER_002", true, "회원탈퇴가 완료되었습니다.", response);
+    }
+
+    // 이메일 찾기
+    public BaseResponse<PostMemberFindEmailRes> findEmail(PostMemberFindEmailReq request){
+        Member member = memberRepository.findByMemberNameAndPhoneNumber(request.getName(), request.getPhoneNumber()).orElseThrow(() ->
+                MemberNotFoundException.forMemberNameAndPhoneNumber(request.getName(), request.getPhoneNumber()));
+
+        PostMemberFindEmailRes response = PostMemberFindEmailRes.builder()
+                .email(member.getMemberEmail())
+                .build();
+
+        return BaseResponse.successRes("MEMBER_002", true, "이메일 찾기에 성공하였습니다.", response);
     }
 
     //이창훈용 야매 메소드

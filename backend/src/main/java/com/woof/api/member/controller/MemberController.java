@@ -6,7 +6,6 @@ import com.woof.api.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
@@ -44,10 +43,10 @@ public class MemberController {
 
     @ApiOperation(value="일반회원 이메일 인증확인", notes="일반회원이 회원가입시 이메일 인증한다.")
     @RequestMapping(method = RequestMethod.GET, value = "/confirm")
-    public RedirectView memberConfirm(GetEmailConfirmReq getEmailConfirmReq) {
+    public RedirectView memberConfirm(GetMemberEmailConfirmReq getMemberEmailConfirmReq) {
 
-        if (emailVerifyService.confirm(getEmailConfirmReq.getEmail(), getEmailConfirmReq.getUuid())) {
-            emailVerifyService.updateStatus(getEmailConfirmReq.getEmail());
+        if (emailVerifyService.confirm(getMemberEmailConfirmReq.getEmail(), getMemberEmailConfirmReq.getUuid())) {
+            emailVerifyService.updateStatus(getMemberEmailConfirmReq.getEmail());
 
             return new RedirectView("http://localhost:3000/" );
         } else {
@@ -78,13 +77,18 @@ public class MemberController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/checkpw")
-    public ResponseEntity<Object> checkPassword(@RequestBody @Valid PostCheckPwReq request) {
+    public ResponseEntity<Object> checkPassword(@RequestBody @Valid PostMemberCheckPwReq request) {
         return ResponseEntity.ok().body(memberService.checkPassword(request));
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/cancel")
     public ResponseEntity<Object> checkPassword() {
         return ResponseEntity.ok().body(memberService.cancel());
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/find/email")
+    public ResponseEntity<Object> findEmail(@RequestBody @Valid PostMemberFindEmailReq request) {
+        return ResponseEntity.ok().body(memberService.findEmail(request));
     }
 
 

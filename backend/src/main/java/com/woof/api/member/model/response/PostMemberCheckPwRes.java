@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostCheckPwRes {
+public class PostMemberCheckPwRes {
     String accessToken;
 }

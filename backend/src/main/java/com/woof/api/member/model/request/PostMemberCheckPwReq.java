@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostCheckPwReq {
+public class PostMemberCheckPwReq {
     private String pw;
 }

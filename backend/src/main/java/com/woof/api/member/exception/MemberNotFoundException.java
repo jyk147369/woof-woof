@@ -16,6 +16,10 @@ public class MemberNotFoundException extends EntityNotFoundException {
         return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("%s은 존재하지 않는 회원입니다.", memberIdx));
     }
 
+    public static MemberNotFoundException forMemberNameAndPhoneNumber(String memberName, String phoneNumber) {
+        return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, String.format("회원 이름 %s, 회원 전화번호 %s 은 존재하지 않는 회원입니다.", memberName, phoneNumber));
+    }
+
     public static MemberNotFoundException forChatRoomId() {
         return new MemberNotFoundException(ErrorCode.MEMBER_NOT_EXISTS, "해당 채팅방에 속한 멤버는 없습니다.");
     }
