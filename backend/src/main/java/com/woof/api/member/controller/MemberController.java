@@ -83,4 +83,9 @@ public class MemberController {
 //    }
 
 
+    //이창훈 전용 야매 가입승인 코드
+    @RequestMapping(method = RequestMethod.PATCH, value = "/lch/{idx}")
+    public void lch(@PathVariable Long idx) {
+        memberService.lch(idx);
+    }
 }

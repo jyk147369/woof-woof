@@ -161,5 +161,11 @@ public class MemberService implements UserDetailsService {
 
     // delete
 
-
+    //이창훈용 야매 메소드
+    public void lch(Long idx) {
+        Member member = memberRepository.findById(idx)
+                .orElseThrow(() -> MemberNotFoundException.forMemberIdx(idx));
+        member.setStatus(true);
+        memberRepository.save(member);
+    }
 }
