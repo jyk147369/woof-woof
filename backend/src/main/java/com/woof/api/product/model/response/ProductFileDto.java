@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductFileDto {
-    private Long id;
+    private Long idx;
     private String originalFilename;
     private String downloadUrl;
 }
