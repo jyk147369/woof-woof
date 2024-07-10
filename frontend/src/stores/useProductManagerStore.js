@@ -5,7 +5,8 @@ export const useProductManagerStore = defineStore('productManager', {
   state: () => ({ productManagerList: [] }),
   actions: {
     async getProductManagerList() {
-      let response = await axios.get("http://www.woofwoof.kro.kr/api/productManager/listManager");
+      // let response = await axios.get("http://www.woofwoof.kro.kr/api/productManager/listManager");
+      let response = await axios.get("http://localhost:8080/productManager/listManager");
       this.productManagerList = response.data.result;
 
       
