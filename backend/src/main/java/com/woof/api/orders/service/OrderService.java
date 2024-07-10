@@ -80,7 +80,6 @@ public class OrderService {
 //        memberRepository.save(member);
 //    }
 
-
     public OrdersListRes list() {
         List<Orders> result = orderRepository.findAll();
         List<OrdersReadRes> orderDtos = new ArrayList<>();
@@ -124,7 +123,7 @@ public class OrderService {
                     .phoneNumber(orders.getPhoneNumber())
                     .time(orders.getTime())
                     .place(orders.getPlace())
-                    .reservationStatus(orders.getReservationStatus())
+                    .reservationStatus(false)
                     .build();
 
             return OrdersReadRes2.builder()

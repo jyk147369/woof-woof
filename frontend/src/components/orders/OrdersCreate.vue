@@ -96,7 +96,9 @@ export default {
       };
 
       try {
-        await axios.post("http://www.woofwoof.kro.kr/api/orders/create", data, {
+        // await axios.post("http://www.woofwoof.kro.kr/api/orders/create"
+        await axios.post("http://localhost:8080/api/orders/create"
+            , data, {
           headers: { "Content-Type": "application/json" },
         });
         alert("주문이 완료되었습니다.");

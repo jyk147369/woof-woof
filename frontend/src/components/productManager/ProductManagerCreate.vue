@@ -42,7 +42,8 @@ import axios from 'axios';
 export default {
   data() {
       return {
-          backend: "http://www.woofwoof.kro.kr/api",
+          // backend: "http://www.woofwoof.kro.kr/api",
+        backend: "http://localhost:8080",
           managerName: "",
           gender: "",
           phoneNumber: "",
