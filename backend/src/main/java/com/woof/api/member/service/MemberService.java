@@ -7,6 +7,7 @@ import com.woof.api.member.exception.MemberNotFoundException;
 import com.woof.api.member.model.entity.Member;
 import com.woof.api.member.model.entity.MemberProfileImage;
 import com.woof.api.member.model.request.PatchMemberUpdateReq;
+import com.woof.api.member.model.request.PostCheckPwReq;
 import com.woof.api.member.model.request.PostMemberLoginReq;
 import com.woof.api.member.model.request.PostMemberSignupReq;
 import com.woof.api.member.model.response.*;
@@ -155,6 +156,20 @@ public class MemberService implements UserDetailsService {
 
         return BaseResponse.successRes("MEMBER_002", true, "회원 프로필 이미지 수정에 성공하였습니다.", response);
     }
+
+    // 회원정보 수정시 비밀번호 확인
+    public BaseResponse<PostCheckPwRes> checkPassword(PostCheckPwReq request){
+        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if (passwordEncoder.matches(request.getPw(), member.getPassword())) {
+            PostCheckPwRes response = PostCheckPwRes.builder().build();
+            return BaseResponse.successRes("MEMBER_002", true, "비밀번호가 확인되었습니다.", response);
+        } else {
+            throw  MemberAccountException.forInvalidPassword();
+        }
+    }
+
+    //
+
     //이창훈용 야매 메소드
     public void lch(Long idx) {
         Member member = memberRepository.findById(idx)

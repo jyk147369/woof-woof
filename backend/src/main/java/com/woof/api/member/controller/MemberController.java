@@ -1,14 +1,12 @@
 package com.woof.api.member.controller;
 
-import com.woof.api.member.model.request.GetEmailConfirmReq;
-import com.woof.api.member.model.request.PatchMemberUpdateReq;
-import com.woof.api.member.model.request.PostMemberLoginReq;
-import com.woof.api.member.model.request.PostMemberSignupReq;
+import com.woof.api.member.model.request.*;
 import com.woof.api.member.service.EmailVerifyService;
 import com.woof.api.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
@@ -79,6 +77,10 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.updateImg(memberProfileImage));
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/checkpw")
+    public ResponseEntity<Object> checkPassword(@RequestBody @Valid PostCheckPwReq request) {
+        return ResponseEntity.ok().body(memberService.checkPassword(request));
+    }
 
 
 //    @ApiOperation(value="일반회원 마이페이지 조회", notes="일반회원이 이메일을 입력하고 정보를 조회한다.")
