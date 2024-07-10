@@ -24,16 +24,16 @@ public class Orders extends BaseEntity {
     private String phoneNumber; //예약자 전화번호
     private Integer time; //예약시간
     private String place;//픽업 장소
-    private Integer reservationStatus; //예약 상태
+    private Integer reservationStatus; //예약 상태  0 (대기), 1 (확정), 2 (delete), 3 (완료)
     private String orderDetails; //세부 내용
     private Integer price;
 
 
-    @Column(nullable=false)
-    private String impUid;
+//    @Column(nullable=false)
+//    private String impUid;
 
-    @Column(nullable=false)
-    private LocalDate orderDate;
+//    @Column(nullable=false)
+//    private LocalDate orderDate;
 
 
     //
@@ -46,10 +46,6 @@ public class Orders extends BaseEntity {
     @JoinColumn(name = "productManager_idx")
     private ProductManager productManager;
 
-    //업체 1 : 주문 N
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ceo_idx")
-    private Member ceo;
 
     //고객 1 : 주문 N
     @ManyToOne(fetch = FetchType.LAZY)
@@ -61,9 +57,6 @@ public class Orders extends BaseEntity {
     @JoinColumn(name = "payment_idx")
     private Payment payment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "manager_idx")
-    private Member manager;
 
     //리뷰 매핑 성공
 
