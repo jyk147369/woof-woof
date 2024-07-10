@@ -63,11 +63,10 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
-    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{memberIdx}")
-    public ResponseEntity<BaseResponse> delete(@PathVariable @NotNull @Positive Integer idx) {
+    @RequestMapping(method = RequestMethod.PATCH, value = "/delete/{memberIdx}")
+    public ResponseEntity<BaseResponse> delete() {
         BaseResponse baseRes = memberService.cancel();
 
         return ResponseEntity.ok().body(baseRes);
     }
-
 }
