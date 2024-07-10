@@ -58,33 +58,16 @@ public class AdminController {
         return ResponseEntity.ok().body(baseRes);
     }
 
-//    @Operation(summary = "관리자 정보 수정",
-//            description = "관리자가 본인의 회원 정보를 수정한다.")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "성공"),
-//            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-//    })
-//
-//
-//    @RequestMapping(method = RequestMethod.PATCH, value = "/update")
-//    public ResponseEntity<BaseResponse> update(@RequestPart(value = "admin") @Valid PatchMemberUpdateReq patchMemberUpdateReq
-//    ) {
-//        Member member = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-//        BaseResponse baseRes = memberService.update(member.getEmail(), patchMemberUpdateReq);
-//
-//        return ResponseEntity.ok().body(baseRes);
-//    }
-//
-//    @Operation(summary = "관리자 삭제", description = "관리자 정보를 삭제한다.")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "성공"),
-//            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-//    })
-//    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{userIdx}")
-//    public ResponseEntity<BaseResponse> delete(@PathVariable @NotNull @Positive Integer idx) {
-//        BaseResponse baseRes = memberService.delete(idx);
-//
-//        return ResponseEntity.ok().body(baseRes);
-//    }
+    @Operation(summary = "관리자 삭제", description = "관리자 정보를 삭제한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{memberIdx}")
+    public ResponseEntity<BaseResponse> delete(@PathVariable @NotNull @Positive Integer idx) {
+        BaseResponse baseRes = memberService.cancel();
+
+        return ResponseEntity.ok().body(baseRes);
+    }
 
 }
