@@ -25,7 +25,7 @@ public class Orders extends BaseEntity {
     private String phoneNumber; //예약자 전화번호
     private Integer time; //예약시간
     private String place;//픽업 장소
-    private Integer reservation_status; //예약 상태
+    private Integer reservationStatus; //예약 상태
     private String orderDetails; //세부 내용
 
 
