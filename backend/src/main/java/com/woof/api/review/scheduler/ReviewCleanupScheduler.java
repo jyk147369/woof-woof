@@ -2,6 +2,7 @@ package com.woof.api.review.scheduler;
 
 import com.woof.api.review.model.entity.Review;
 import com.woof.api.review.repository.ReviewRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -11,10 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ReviewCleanupScheduler {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     @Scheduled(fixedRate = 3600000) // 매 1시간마다 실행
