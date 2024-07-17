@@ -47,6 +47,7 @@ public class SecurityConfig{
                     .antMatchers("/test/ceo").hasRole("CEO")
                     .antMatchers("/test/member").hasRole("MEMBER")
                     .antMatchers("/orders/").permitAll() // 인증된 사용자만 접근 허용
+                    .antMatchers("/admin/product/").hasRole("ADMIN")
                     .antMatchers("/**").permitAll()
                     .anyRequest().permitAll()
                     .and()
