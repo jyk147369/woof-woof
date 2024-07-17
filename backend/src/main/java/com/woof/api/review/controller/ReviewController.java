@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,6 @@ public class ReviewController {
     public ResponseEntity<BaseResponse<ReviewCreateResult>> createReview(
             @RequestPart ReviewCreateReq reviewCreateReq,
             @RequestPart(name = "uploadFiles", required = false) MultipartFile[] uploadFiles) {
-
 
         BaseResponse<ReviewCreateResult> baseResponse = reviewService.create(reviewCreateReq);
         ReviewCreateResult reviewCreateResult = baseResponse.getResult();

@@ -11,6 +11,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,15 @@ public class Review extends BaseEntity {
     private Integer status;     // 등록시 1, 삭제 요청시 2로 변경후 1년 뒤 삭제
     private Integer rating;     // 리뷰 평점 (프론트에서 1~5만 주게 할거임)
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now(); //리뷰 작성 시간 계산
+    }
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productSchool_idx")
     ProductSchool productSchool; //상품 : 리뷰 = 1 : N
@@ -43,7 +53,7 @@ public class Review extends BaseEntity {
     @OneToMany(mappedBy = "review")
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "orders_idx")
-//    Orders orders; //주문 : 리뷰 = 1 : N
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "orders_idx")
+    Orders orders; //주문 : 리뷰 = 1 : N
 }
