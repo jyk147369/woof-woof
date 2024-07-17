@@ -207,7 +207,7 @@ export default {
     goToReservation() {
     // 로컬 스토리지에 선택 정보 저장
     localStorage.setItem('storeName', this.product.storeName);
-    localStorage.setItem('productCeoIdx', this.idx);
+    localStorage.setItem('idx', this.idx);
 
     // 예약 페이지로 라우팅, URL 쿼리 파라미터에 선택 정보 포함
     this.$router.push({
@@ -223,7 +223,7 @@ export default {
       try {
         const response = await axios.get(
           // `http://www.woofwoof.kro.kr/api/productCeo/${this.idx}`
-              `http://localhost:8080/productCeo/${this.idx}`
+               `http://localhost:8080/product/school/read/${this.idx}`
         );
         const data = response.data;
         if (data && data.code === 1000) {

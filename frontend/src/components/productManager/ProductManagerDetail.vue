@@ -214,7 +214,7 @@ export default {
       try {
         const response = await axios.get(
           // `http://www.woofwoof.kro.kr/api/productManager/${this.idx}`
-          `http://localhost:8080/productManager/${this.idx}`
+          `http://localhost:8080/product/manager/read/${this.idx}`
         );
         const data = response.data;
         if (data && data.code === 1000) {
