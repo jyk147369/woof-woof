@@ -20,6 +20,7 @@ public enum ErrorCode {
     MEMBER_NOT_EXISTS(HttpStatus.NOT_FOUND, "MEMBER_008", "회원을 찾을 수 없는 경우"),
     DIFFERENT_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_009", "회원의 패스워드가 저장된 데이터와 다른 경우"),
     SAME_MEMBER_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_010", "회원정보 변경시 기존 비밀번호가 일치하지 않은 경우"),
+    DIFFERENT_EACH_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER_011", "회원 비밀번호 변경시 비밀번호와 확인 비밀번호가 일치하지 않은 경우"),
 
     // 주문
 
