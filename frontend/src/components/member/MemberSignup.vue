@@ -12,13 +12,18 @@
       </div>
 
       <div class="loginform">
-        <label for="password">비밀번호</label><br>
-        <input type="password" id="password" v-model="memberSignup.password" maxlength="100">
+        <label for="pw">비밀번호</label><br>
+        <input type="pw" id="pw" v-model="memberSignup.pw" maxlength="100">
       </div>
 
       <div class="loginform">
         <label for="nickname">닉네임</label><br>
         <input type="text" id="nickname" v-model="memberSignup.nickname" maxlength="100">
+      </div>
+
+      <div class="loginform">
+        <label for="name">이름</label><br>
+        <input type="text" id="name" v-model="memberSignup.name" maxlength="100">
       </div>
 
       <div class="loginform">
@@ -28,7 +33,12 @@
 
       <div class="loginform">
         <label for="pet">반려동물 정보</label><br>
-        <input type="text" id="pet" v-model="memberSignup.pet" maxlength="100">
+        <input type="text" id="pet" v-model="memberSignup.petName" maxlength="100">
+      </div>
+
+      <div class="loginform">
+        <label for="profileImage">사진등록</label><br>
+          <input type="file" ref="filename" accept="image/*" class="pictureUpload"><br>
       </div>
     </div>
 
@@ -49,10 +59,11 @@ export default {
     return {
       memberSignup: {
         email: '',
-        password: '',
+        pw: '',
         nickname: '',
+        name: '',
         phoneNumber: '',
-        pet: ''
+        petName: ''
       }
 
     };
@@ -75,10 +86,11 @@ export default {
         alert("회원 가입 실패");
         this.memberSignup = {
           email: '',
-          password: '',
+          pw: '',
           nickname: '',
+          name: '',
           phoneNumber: '',
-          pet: ''
+          petName: ''
         }
       }
     }

@@ -41,9 +41,6 @@ public class PaymentService {
     @Value("${imp.imp_secret}")
     private String secretKey;
 
-
-    // 정기결제
-
     //PortOne 토큰 발급
     private String getToken() throws IOException {
         HttpsURLConnection conn = null;
