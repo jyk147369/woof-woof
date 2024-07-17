@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.model.entity.Member;
+import com.woof.api.orders.model.entity.Orders;
 import com.woof.api.review.model.entity.Review;
 import com.woof.api.review.model.entity.ReviewImage;
 import com.woof.api.review.model.request.ReviewCreateReq;
@@ -23,6 +24,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.woof.api.orders.repository.OrderRepository;
+
 
 import javax.transaction.Transactional;
 import java.io.File;
@@ -32,6 +35,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,8 +45,9 @@ import static com.woof.api.common.BaseResponse.successRes;
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
-    ReviewRepository reviewRepository;
-    ReviewImageRepository reviewImageRepository;
+    private final ReviewRepository reviewRepository;
+    private final ReviewImageRepository reviewImageRepository;
+    private final OrderRepository orderRepository;
 
     private final AmazonS3 s3;
 
@@ -57,18 +62,24 @@ public class ReviewService {
                 .text(reviewCreateReq.getText())
                 .rating(reviewCreateReq.getRating())
                 .orderIdx(reviewCreateReq.getOrderIdx())
+                .productManager(orderRepository.findByIdx(reviewCreateReq.getOrderIdx()).getProductManager())
+                .productSchool(orderRepository.findByIdx(reviewCreateReq.getOrderIdx()).getProductSchool())
+                .member(orderRepository.findByIdx(reviewCreateReq.getOrderIdx()).getMember())
+                .createAt(LocalDateTime.now()).updateAt(LocalDateTime.now())
                 .status(1)
                 .build();
         reviewRepository.save(review);
 
-        ReviewCreateResult reviewCreateResult = ReviewCreateResult.builder().build();
-        reviewCreateResult.setIdx(review.getIdx());
+        ReviewCreateResult reviewCreateResult = ReviewCreateResult.builder()
+                .idx(review.getIdx())
+                .build();
 
         return BaseResponse.successRes("REVEIW_001",
                 true,
                 "리뷰가 등록되었습니다.",
                 reviewCreateResult);
     }
+
 
     @Transactional
     public BaseResponse<List<ReviewReadDto>> listByManager(Long managerIdx) {
@@ -89,7 +100,7 @@ public class ReviewService {
 
             ReviewReadDto reviewReadDto = ReviewReadDto.builder()
                     .idx(review.getIdx())
-                    .nickname(review.getNickname())
+                    //.nickname(review.getNickname())
                     .text(review.getText())
                     .rating(review.getRating())
                     .orderIdx(review.getOrderIdx())
@@ -122,7 +133,7 @@ public class ReviewService {
 
             ReviewReadDto reviewReadDto = ReviewReadDto.builder()
                     .idx(review.getIdx())
-                    .nickname(review.getNickname())
+                    //.nickname(review.getNickname())
                     .text(review.getText())
                     .rating(review.getRating())
                     .orderIdx(review.getOrderIdx())
@@ -153,7 +164,7 @@ public class ReviewService {
 
             ReviewReadDto reviewReadDto = ReviewReadDto.builder()
                     .idx(review.getIdx())
-                    .nickname(review.getNickname())
+                    //.nickname(review.getNickname())
                     .text(review.getText())
                     .rating(review.getRating())
                     .orderIdx(review.getOrderIdx())
@@ -184,7 +195,7 @@ public class ReviewService {
 
             ReviewReadDto reviewReadDto = ReviewReadDto.builder()
                     .idx(review.getIdx())
-                    .nickname(review.getNickname())
+                    //.nickname(review.getNickname())
                     .text(review.getText())
                     .rating(review.getRating())
                     .orderIdx(review.getOrderIdx())
@@ -203,19 +214,28 @@ public class ReviewService {
 
         review.setText(reviewUpdateReq.getText());
         review.setRating(reviewUpdateReq.getRating());
+        review.setUpdateAt(LocalDateTime.now());
         reviewRepository.save(review);
 
         return BaseResponse.successRes("REVIEW_006", true, "리뷰 업데이트 성공.", null);
     }
 
-    public  BaseResponse<Void> delete(Long idx) {
+    @Transactional
+    public BaseResponse<Void> delete(Long idx) {
         // 해당 idx의 ReviewImage를 한 번에 삭제
         reviewImageRepository.deleteAllByReviewIdx(idx);
-        // ProductSchool의 status를 2로 변경
-        Review review = reviewRepository.findByIdx(idx).get();
-        review.setStatus(2);
 
-        return BaseResponse.successRes("REVIEW_007", true,"리뷰 삭제 성공.", null);
+        // 리뷰 조회
+        Review review = reviewRepository.findByIdx(idx)
+                .orElseThrow(() -> new RuntimeException("해당 idx의 리뷰를 찾을 수 없습니다."));
+        // 리뷰 상태 변경
+        review.setStatus(2);
+        // 변경사항 저장
+        reviewRepository.save(review);
+        // 강제로 영속성 컨텍스트 동기화
+        reviewRepository.flush();
+
+        return BaseResponse.successRes("REVIEW_007", true, "리뷰 삭제 성공.", null);
     }
 
 // ----------------------------------------------------------------------------------------------- //
