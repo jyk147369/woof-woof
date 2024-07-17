@@ -69,8 +69,9 @@ public class ProductService {
                     .build();
             productManagerRepository.save(productManager);
 
-            ProductManagerCreateResult productManagerCreateResult = ProductManagerCreateResult.builder().build();
-            productManagerCreateResult.setIdx(productManager.getIdx());
+            ProductManagerCreateResult productManagerCreateResult = ProductManagerCreateResult.builder()
+                    .idx(productManager.getIdx())
+                    .build();
 
             return BaseResponse.successRes("PRODUCT_001", true, "매니저가 등록되었습니다.", productManagerCreateResult);
         } else {
@@ -208,7 +209,7 @@ public class ProductService {
     }
 
     @Transactional
-    public BaseResponse<Void> checkManager(Long idx) {
+    public BaseResponse<Void> checkManager(Long idx) {  
         Member admin = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         if (admin.getAuthority().substring(5).equals("ADMIN")) {
             ProductManager productManager = productManagerRepository.findByIdx(idx)
@@ -216,10 +217,7 @@ public class ProductService {
             productManager.setStatus(1);
             productManagerRepository.save(productManager);
 
-            return BaseResponse.successRes("PRODUCT_007", true, "매니저 승인 성공.", null);
-        } else {
-            throw MemberAccountException.forInvalidAuthority();
-        }
+        return BaseResponse.successRes("PRODUCT_007", true, "매니저 승인 성공.", null);
     }
 
         // ----------------------------------------------------------------------------------------------- //
@@ -241,8 +239,9 @@ public class ProductService {
                         .build();
                 productSchoolRepository.save(productSchool);
 
-                ProductSchoolCreateResult productSchoolCreateResult = ProductSchoolCreateResult.builder().build();
-                productSchoolCreateResult.setIdx(productSchool.getIdx());
+                ProductSchoolCreateResult productSchoolCreateResult = ProductSchoolCreateResult.builder()
+                    .idx(productSchool.getIdx())
+                    .build();
 
                 return BaseResponse.successRes("PRODUCT_008", true, "업체가 등록되었습니다.", productSchoolCreateResult);
             } else {
