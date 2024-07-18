@@ -67,8 +67,8 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.deleteManager(idx));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/manager/files")
-    public ResponseEntity<Object> listFilesByProductManagerIdx(@RequestParam Long productManagerIdx) {
+    @RequestMapping(method = RequestMethod.GET, value = "/manager/files/{productManagerIdx}")
+    public ResponseEntity<Object> listFilesByProductManagerIdx(@PathVariable Long productManagerIdx) {
         return ResponseEntity.ok().body(productService.listFilesByProductManagerIdx(productManagerIdx));
     }
 
@@ -115,8 +115,8 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.deleteSchool(idx));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/school/files")
-    public ResponseEntity<Object> listFilesByProductSchoolIdx(@RequestParam Long productSchoolIdx) {
+    @RequestMapping(method = RequestMethod.GET, value = "/school/files/{productSchoolIdx}")
+    public ResponseEntity<Object> listFilesByProductSchoolIdx(@PathVariable Long productSchoolIdx) {
         return ResponseEntity.ok().body(productService.listFilesByProductSchoolIdx(productSchoolIdx));
     }
 
