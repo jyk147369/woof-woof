@@ -31,7 +31,7 @@ export default {
     },
     methods:{
         goToProductCreatePage() {
-      this.$router.push("/productManager/create");
+      this.$router.push("/product/manager/create");
     },  
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <div @click="navigateToDetail(productManager.idx)" class="card">
-    <a class="page-item" :href="'/productManager/detail/' + productManager?.idx">
+    <a class="page-item" :href="'/product/manager/detail/' + productManager?.idx">
         <div class="item-wrapper">
             <div class="item-image-wrapper">
             

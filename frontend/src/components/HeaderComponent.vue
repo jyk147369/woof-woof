@@ -36,10 +36,10 @@
         <div class="innerheaderDown">
             <ul class="gnb">
                 <li>
-                    <a href="/productCeo/list">업체</a>
+                    <a href="/product/school/list">업체</a>
                 </li>
                 <li>
-                    <a href="/productManager/list">매니저</a>
+                    <a href="/product/manager/list">매니저</a>
                 </li>
                 <li>
                     <a href="/orders/create">예약하기</a>
