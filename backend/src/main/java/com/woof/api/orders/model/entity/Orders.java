@@ -52,7 +52,7 @@ public class Orders extends BaseEntity {
     private Member member;
 
     //결제 1 : 주문 N
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_idx")
     private Payment payment;
 
