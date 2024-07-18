@@ -79,7 +79,7 @@
 
 .service> #userPlace>label > input{
     color: black;
-    background-color: #faef71;
+    background-color: #ffe300;
     width: 26px;
     height: 26px;
     border: none;

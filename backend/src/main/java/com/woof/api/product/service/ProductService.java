@@ -209,17 +209,16 @@ public class ProductService {
     }
 
     @Transactional
-    public BaseResponse<Void> checkManager(Long idx) {  
+    public BaseResponse<Void> checkManager(Long idx) {
         Member admin = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         if (admin.getAuthority().substring(5).equals("ADMIN")) {
             ProductManager productManager = productManagerRepository.findByIdx(idx)
                     .orElseThrow(() -> new RuntimeException("해당 idx의 업체 정보를 찾을 수 없습니다."));
             productManager.setStatus(1);
             productManagerRepository.save(productManager);
-
+        }
         return BaseResponse.successRes("PRODUCT_007", true, "매니저 승인 성공.", null);
     }
-
         // ----------------------------------------------------------------------------------------------- //
 
         @Transactional

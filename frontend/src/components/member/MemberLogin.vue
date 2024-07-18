@@ -4,7 +4,7 @@
     <h4>일반 회원 로그인 정보를 입력하세요.</h4>
   </div>
 
-  <form class="loginform" @submit.prevent>
+  <form class="loginform" @submit.prevent="login">
     <div class="formbox">
       <div class="loginform">
         <label for="email">이메일</label><br>
@@ -13,54 +13,52 @@
 
       <div class="loginform">
         <label for="password">비밀번호</label><br>
-        <input type="password" id="password" maxlength="100" v-model="memberLogin.password">
+        <input type="password" id="password" maxlength="100" v-model="memberLogin.pw">
       </div>
     </div>
 
     <div>
-      <input class="loginsubmit" type="submit" value="로그인" @click="login()">
+      <input class="loginsubmit" type="submit" value="로그인">
     </div>
   </form>
 </template>
-  
+
 <script>
 import { useMemberStore } from '@/stores/useMemberStore';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
-  data() {
-    return {
-      memberLogin: {
-        email: '',
-        password: '',
-      }
-    };
-  },
-  methods: {
-    async login() {
-      const memberStore = useMemberStore(); // 스토어 직접 사용
-      const result = await memberStore.login(this.memberLogin);
-      // 로그인 성공이면 메인 페이지로 이동 및 localStorage에 저장
+  setup() {
+    const memberStore = useMemberStore();
+    const router = useRouter();
+    const memberLogin = ref({
+      email: '',
+      pw: '',
+    });
+
+    const login = async () => {
+      const result = await memberStore.login(memberLogin.value);
       if (result) {
-        // sessionStorage에서 memberIdx를 읽어와 localStorage에 저장
         const memberIdx = sessionStorage.getItem('memberIdx');
         localStorage.setItem('memberIdx', memberIdx);
-        
-        // 메인 페이지로 리다이렉트
-        this.$router.push("/productCeo/list");
+        router.push("/");
       } else {
-        // 로그인 실패 시 사용자에게 알림
         alert("로그인 실패");
-        // 로그인 폼 초기화
-        this.memberLogin = {
-          email: '',
-          password: ''
-        };
+        memberLogin.value = { email: '', pw: '' };
       }
-    }
-  }
+    };
+
+    return {
+      memberLogin,
+      login,
+    };
+  },
 };
 </script>
-  
+
+
+
 <style>
 .specialsalebanner {
   text-align: center;
