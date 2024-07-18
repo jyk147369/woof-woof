@@ -22,6 +22,7 @@ import com.woof.api.product.repository.ProductImageRepository;
 import com.woof.api.product.repository.ProductManagerRepository;
 import com.woof.api.product.repository.ProductSchoolRepository;
 import com.woof.api.review.model.entity.Review;
+import com.woof.api.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -48,11 +49,11 @@ public class ProductService {
     private final ProductSchoolRepository productSchoolRepository;
     private final ProductManagerRepository productManagerRepository;
     private final ProductImageRepository productImageRepository;
+    private final ReviewRepository reviewRepository;
     private final AmazonS3 s3;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
 
     public BaseResponse<ProductManagerCreateResult> createManager(ProductManagerCreateReq productManagerCreateReq) {
         Member manager = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -109,7 +110,6 @@ public class ProductService {
 
             productManagerReadResList.add(productManagerReadRes);
         }
-
         return BaseResponse.successRes("PRODUCT_002", true, "매니저 목록 조회 성공.", productManagerReadResList);
     }
 
@@ -127,6 +127,18 @@ public class ProductService {
                 filename = generatePresignedUrl(firstImage.getFilename());
             }
 
+            // 리뷰 목록을 가져와서 평균 평점 계산
+            List<Review> reviews = reviewRepository.findByProductManagerIdxAndStatus(productManager.getIdx(), 1);
+            double totalRating = 0.0;
+            double averageRating = 0.0;
+
+            if (!reviews.isEmpty()) {
+                for (Review review : reviews) {
+                    totalRating += review.getRating();
+                }
+                averageRating = totalRating / reviews.size();
+            }
+
             ProductManagerReadRes productManagerReadRes = ProductManagerReadRes.builder()
                     .idx(productManager.getIdx())
                     .managerName(productManager.getManagerName())
@@ -136,6 +148,7 @@ public class ProductService {
                     .career(productManager.getCareer())
                     .contents(productManager.getContents())
                     .filename(filename)
+                    .averageRating(averageRating)
                     .build();
 
             productManagerReadResList.add(productManagerReadRes);
@@ -149,6 +162,20 @@ public class ProductService {
     public BaseResponse<ProductManagerReadRes> readManager(Long idx) {
         ProductManager productManager = productManagerRepository.findByIdx(idx);
 
+        // 리뷰 목록을 가져와서 평균 평점 계산
+        List<Review> reviews = reviewRepository.findByProductManagerIdxAndStatus(productManager.getIdx(), 1);
+        double totalRating = 0.0;
+        double averageRating = 0.0;
+
+        if (!reviews.isEmpty()) {
+            for (Review review : reviews) {
+                totalRating += review.getRating();
+            }
+            averageRating = totalRating / reviews.size();
+        }
+
+        List<ProductFileDto> productFileDtos = listFilesByProductManagerIdx(productManager.getIdx());
+
         ProductManagerReadRes productManagerReadRes = ProductManagerReadRes.builder()
                 .idx(productManager.getIdx())
                 .managerName(productManager.getManagerName())
@@ -157,6 +184,8 @@ public class ProductService {
                 .price(productManager.getPrice())
                 .career(productManager.getCareer())
                 .contents(productManager.getContents())
+                .averageRating(averageRating)
+                .filenames(productFileDtos)
                 .build();
 
         return BaseResponse.successRes("PRODUCT_004", true, "매니저 조회 성공.", productManagerReadRes);
@@ -309,6 +338,17 @@ public class ProductService {
                 filename = generatePresignedUrl(firstImage.getFilename());
             }
 
+            List<Review> reviews = reviewRepository.findByProductSchoolIdxAndStatus(productSchool.getIdx(), 1);
+            double totalRating = 0.0;
+            double averageRating = 0.0;
+
+            if (!reviews.isEmpty()) {
+                for (Review review : reviews) {
+                    totalRating += review.getRating();
+                }
+                averageRating = totalRating / reviews.size();
+            }
+
             ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
                     .idx(productSchool.getIdx())
                     .storeName(productSchool.getStoreName())
@@ -317,6 +357,7 @@ public class ProductService {
                     .price(productSchool.getPrice())
                     .contents(productSchool.getContents())
                     .filename(filename)
+                    .averageRating(averageRating)
                     .build();
 
             productSchoolReadResList.add(productSchoolReadRes);
@@ -329,6 +370,19 @@ public class ProductService {
     public BaseResponse<ProductSchoolReadRes> readSchool(Long idx) {
         ProductSchool productSchool = productSchoolRepository.findByIdx(idx);
 
+        List<Review> reviews = reviewRepository.findByProductSchoolIdxAndStatus(productSchool.getIdx(), 1);
+        double totalRating = 0.0;
+        double averageRating = 0.0;
+
+        if (!reviews.isEmpty()) {
+            for (Review review : reviews) {
+                totalRating += review.getRating();
+            }
+            averageRating = totalRating / reviews.size();
+        }
+
+        List<ProductFileDto> productFileDtos = listFilesByProductManagerIdx(productSchool.getIdx());
+
         ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
                 .idx(productSchool.getIdx())
                 .storeName(productSchool.getStoreName())
@@ -336,6 +390,8 @@ public class ProductService {
                 .productName(productSchool.getProductName())
                 .price(productSchool.getPrice())
                 .contents(productSchool.getContents())
+                .filenames(productFileDtos)
+                .averageRating(averageRating)
                 .build();
 
         return BaseResponse.successRes("PRODUCT_011", true, "업체 조회 성공.", productSchoolReadRes);
