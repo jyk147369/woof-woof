@@ -17,5 +17,6 @@ public class ProductManagerReadRes {
     private String contents;                // 매니저 설명
     private String filename;                // list 메소드에서는 대표사진 한장
     private List<ProductFileDto> filenames; // read 메소드에서는 사진 여러장
-    private Double averageRating;           // 평점
+    private Double averageRating;           // 리뷰 평점
+    private Integer reviewCount;            // 리뷰 갯수
 }

@@ -4,7 +4,6 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.woof.api.common.BaseResponse;
 import com.woof.api.member.exception.MemberAccountException;
 import com.woof.api.member.model.entity.Member;
@@ -35,13 +34,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -97,6 +93,18 @@ public class ProductService {
                 filename = generatePresignedUrl(firstImage.getFilename());
             }
 
+            // 리뷰 목록을 가져와서 평균 평점 계산
+            List<Review> reviews = reviewRepository.findByProductManagerIdxAndStatus(productManager.getIdx(), 1);
+            double totalRating = 0.0;
+            double averageRating = 0.0;
+
+            if (!reviews.isEmpty()) {
+                for (Review review : reviews) {
+                    totalRating += review.getRating();
+                }
+                averageRating = totalRating / reviews.size();
+            }
+
             ProductManagerReadRes productManagerReadRes = ProductManagerReadRes.builder()
                     .idx(productManager.getIdx())
                     .managerName(productManager.getManagerName())
@@ -106,6 +114,8 @@ public class ProductService {
                     .career(productManager.getCareer())
                     .contents(productManager.getContents())
                     .filename(filename)  // 첫 번째 사진 파일명 추가
+                    .averageRating(averageRating)
+                    .reviewCount(reviews.size())
                     .build();
 
             productManagerReadResList.add(productManagerReadRes);
@@ -149,6 +159,7 @@ public class ProductService {
                     .contents(productManager.getContents())
                     .filename(filename)
                     .averageRating(averageRating)
+                    .reviewCount(reviews.size())
                     .build();
 
             productManagerReadResList.add(productManagerReadRes);
@@ -185,6 +196,7 @@ public class ProductService {
                 .career(productManager.getCareer())
                 .contents(productManager.getContents())
                 .averageRating(averageRating)
+                .reviewCount(reviews.size())
                 .filenames(productFileDtos)
                 .build();
 
@@ -195,7 +207,7 @@ public class ProductService {
         ProductManager productManager = productManagerRepository.findByIdx(productManagerUpdateReq.getIdx());
         Member manager = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        if (manager.getIdx() == productManager.getManagerIdx()) {
+        if (manager.getIdx().equals(productManager.getManagerIdx())) {
             productManager.setManagerName(productManagerUpdateReq.getManagerName());
             productManager.setGender(productManagerUpdateReq.getGender());
             productManager.setBusinessNum(productManagerUpdateReq.getBusinessNum());
@@ -216,7 +228,7 @@ public class ProductService {
         ProductManager productManager = productManagerRepository.findByIdx(idx);
         Member manager = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        if (manager.getIdx() == productManager.getManagerIdx()) {
+        if (manager.getIdx().equals(productManager.getManagerIdx())) {
 
             // 해당 idx의 ProductManagerImage를 한 번에 삭제
             productImageRepository.deleteAllByProductManagerIdx(idx);
@@ -309,13 +321,27 @@ public class ProductService {
                 filename = generatePresignedUrl(firstImage.getFilename());
             }
 
+            List<Review> reviews = reviewRepository.findByProductSchoolIdxAndStatus(productSchool.getIdx(), 1);
+            double totalRating = 0.0;
+            double averageRating = 0.0;
+
+            if (!reviews.isEmpty()) {
+                for (Review review : reviews) {
+                    totalRating += review.getRating();
+                }
+                averageRating = totalRating / reviews.size();
+            }
+
             ProductSchoolReadRes productSchoolReadRes = ProductSchoolReadRes.builder()
                     .idx(productSchool.getIdx())
                     .storeName(productSchool.getStoreName())
+                    .productName(productSchool.getProductName())
                     .businessNum(productSchool.getBusinessNum())
                     .price(productSchool.getPrice())
                     .contents(productSchool.getContents())
                     .filename(filename)
+                    .averageRating(averageRating)
+                    .reviewCount(reviews.size())
                     .build();
 
             productSchoolReadResList.add(productSchoolReadRes);
@@ -358,6 +384,7 @@ public class ProductService {
                     .contents(productSchool.getContents())
                     .filename(filename)
                     .averageRating(averageRating)
+                    .reviewCount(reviews.size())
                     .build();
 
             productSchoolReadResList.add(productSchoolReadRes);
@@ -392,6 +419,7 @@ public class ProductService {
                 .contents(productSchool.getContents())
                 .filenames(productFileDtos)
                 .averageRating(averageRating)
+                .reviewCount(reviews.size())
                 .build();
 
         return BaseResponse.successRes("PRODUCT_011", true, "업체 조회 성공.", productSchoolReadRes);
@@ -400,7 +428,7 @@ public class ProductService {
     public BaseResponse<Void> updateSchool(ProductSchoolUpdateReq productSchoolUpdateReq) {
         Member ceo = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ProductSchool productSchool = productSchoolRepository.findByIdx(productSchoolUpdateReq.getIdx());
-        if (ceo.getIdx() == productSchool.getCeoIdx()) {
+        if (ceo.getIdx().equals(productSchool.getCeoIdx())) {
 
             productSchool.setStoreName(productSchoolUpdateReq.getStoreName());
             productSchool.setProductName(productSchoolUpdateReq.getProductName());
@@ -421,7 +449,7 @@ public class ProductService {
     public BaseResponse<Void> deleteSchool(Long idx) {
         Member ceo = ((Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ProductSchool productSchool = productSchoolRepository.findByIdx(idx);
-        if (ceo.getIdx() == productSchool.getCeoIdx()) {
+        if (ceo.getIdx().equals(productSchool.getCeoIdx())) {
             // 해당 idx의 ProductSchoolImage를 한 번에 삭제
             productImageRepository.deleteAllByProductSchoolIdx(idx);
             // ProductSchool의 status를 2로 변경
