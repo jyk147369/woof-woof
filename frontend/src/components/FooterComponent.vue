@@ -78,12 +78,7 @@ export default {
     color: white;
 }
 
-.footDown {
-    background: #fae14a;
 
-    /* height: 200px;
-    padding: 30px 0; */
-}
 
 .innerfootDown {
     width: 100%;
@@ -91,6 +86,7 @@ export default {
     margin: 0 auto;
     display: flex;
     position: relative;
+  border-top: 1px solid #80808052;
 }
 
 .footTxt {

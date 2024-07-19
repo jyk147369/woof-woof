@@ -1,257 +1,162 @@
 <template>
-    <header>
-        <div class="innerheader">
-            <div class="top">
-                <a class="menubars" href="#">
-                    <i class="fa-solid fa-bars"></i>
-                </a>
-                <h1 class="logo">
-                    <a href="/"><img class="woofpic" src="/static/images/logo.png" alt="" /></a>
-                </h1>
-                <input type="text" name="" value="" placeholder="Search.." />
-                <a class="search" href="#">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </a>
-                <ul class="topMenu">
-                    <li v-show="!isLoggedIn">
-                        <a href="/signup/member">SignUp</a>
-                    </li>
-                    <li v-show="!isLoggedIn">
-                        <a href="/login/member">Login</a>
-                    </li>
-                    <li v-show="isLoggedIn">
-                        <a @click="logout()">로그아웃</a>
-                    </li>
-                    <li >
-                        <!-- v-show="isLoggedIn" -->
-                        <a href="/mypage">My Page</a>
-                    </li>
-
-                    <!-- <li>
-                        <a href="/#">About </a>
-                    </li> -->
-                </ul>
-            </div>
-        </div>
-        <div class="innerheaderDown">
-            <ul class="gnb">
-                <li>
-                    <a href="/productCeo/list">업체</a>
-                </li>
-                <li>
-                    <a href="/productManager/list">매니저</a>
-                </li>
-                <li>
-                    <a href="/orders/create">예약하기</a>
-                </li>
-                <li>
-                    <a href="/about">About Us</a>
-                </li>
-            </ul>
-        </div>
-    </header>
+  <header>
+    <div class="top-bar">
+      <div class="logo-container">
+        <h1 class="logo">
+          <a href="/">
+            <span class="logo-text">WOOF</span>
+            <img class="woofpic" src="https://github.com/user-attachments/assets/0e52bd0c-a21f-4365-9c5d-d28012b633b2" alt="Woof Logo" />
+          </a>
+        </h1>
+      </div>
+      <ul class="top-menu">
+        <li>
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </li>
+        <li v-show="!isLoggedIn">
+          <a href="/signup/member">SignUp</a>
+        </li>
+        <li v-show="!isLoggedIn">
+          <a href="/login/member">Login</a>
+        </li>
+        <li v-show="isLoggedIn">
+          <a @click="logout()">로그아웃</a>
+        </li>
+        <li>
+          <a href="/mypage">My Page</a>
+        </li>
+      </ul>
+    </div>
+    <div class="bottom-bar">
+      <ul class="gnb">
+        <li>
+          <a href="/productCeo/list">가게</a>
+        </li>
+        <li>
+          <a href="/productManager/list">매니저</a>
+        </li>
+        <li>
+          <a href="/orders/create">예약</a>
+        </li>
+      </ul>
+    </div>
+  </header>
 </template>
-  
-  
+
 <script setup>
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const logout = () => {
-    sessionStorage.removeItem("atoken");
-    router.push("");
-    router.go();
+  sessionStorage.removeItem("atoken");
+  router.push("");
+  router.go();
 }
 
 const isLoggedIn = computed(() => {
-    if (sessionStorage.getItem("atoken") !== null) {
-        return true;
-    } else {
-        return false;
-    }
-
+  return sessionStorage.getItem("atoken") !== null;
 });
-
 </script>
-  
+
 <style>
-/* 헤더 */
-/* .topMenu {
-    background-color: #fae14a;
-} */
-
-.innerheaderDown {
-    background-color: #fae14a;
-}
-
-/* 줄바꿈 해결 */
-.topMenu li {
-    white-space: nowrap;
-}
-
-/* .innerheader {
-    background-color: #fae14a;
-} */
-
-
-header.mobile {
-    display: none;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
 
 header {
-    width: 100%;
-    /* height: 140px; */
+  width: 100%;
+  height: 200px;
 }
 
-.innerheader {
-    /* background: black; */
-    width: 100%;
+.top-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white;
+  position: relative;
+  height: 50%;
+  overflow: hidden;
 }
 
-.top {
-    width: 100%;
-    height: 70px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-}
-
-.menubars {
-    display: none;
+.logo-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
 }
 
 .logo {
-    width: 200px;
-    height: 70px;
-    /* background: #fae14a; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex; /* flex를 사용하여 WOOF 텍스트와 이미지를 한 줄로 정렬 */
+  align-items: center;
+  gap: 8px; /* 텍스트와 이미지 사이의 간격을 조절 */
 }
 
-.top>input {
-    width: 112px;
-    height: 19px;
-    padding-left: 6px;
-    padding-right: 25px;
-    font-size: 10px;
-    /* border: 0; */
-    outline: none;
-    margin-top: 10px;
-    border-radius: 10px;
-    position: absolute;
-    right: 22%;
-    top: 16px;
-    background: white;
+.logo .logo-text {
+  font-size: 4rem;
+  color: black;
+  font-weight: 500;
+  line-height: 1; /* 텍스트의 위아래 간격을 일정하게 조절 */
 }
 
-.top>.search {
-    position: absolute;
-    right: 23%;
-    top: 26px;
-    font-size: 12px;
+.logo img {
+  width: 80px; /* 이미지의 너비를 80px로 설정 */
+  height: 80px; /* 이미지의 높이를 80px로 설정 */
+  overflow: hidden;
 }
 
-.topMenu {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    width: 20%;
-    font-size: 13px;
+.top-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: absolute;
+  right: 20px;
 }
 
-.topMenu>li {
-    margin-right: 14px;
-    /* color: #cccccc; */
-    transition: all 0.2s ease 0s;
+.top-menu li {
+  list-style: none;
 }
 
-.topMenu>li:hover {
-    color: #d2ba32;
+.top-menu a {
+  text-decoration: none;
+  color: black;
+  font-weight: 400;
 }
 
-.topMenu>li:last-of-type {
-    margin-right: 0;
+.bottom-bar {
+  background-color: white;
+  border-top: 1px solid #ddd;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  height: 60px;
+  align-items: center;
 }
-
-.innerheaderDown {
-    /* background: #191919; */
-    height: 70px;
-    width: 100%;
-}
-
-
 
 .gnb {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    margin: 0 auto;
+  display: flex;
+  gap: 100px;
 }
 
-.gnb>li {
-    flex: 1;
-    text-align: center;
-    /* color: white; */
-    position: relative;
-    transition: all 0.s ease 0s;
-}
-.gnb>li:hover{
-    background-color: #ebebeb6e;
+.gnb li {
+  list-style: none;
 }
 
-
-.gnb>li>a {
-    display: block;
-    line-height: 70px;
-    transition: all 0.1s ease 0s;
+.gnb a {
+  text-decoration: none;
+  color: black;
+  font-size: 20px;
+  font-weight: 400;
 }
 
-.gnb>li:hover>a {
-    color: black;
+.gnb li:hover a {
+  color: #d2ba32;
 }
 
-.gnb>li>ul>li:hover {
-    background: #ebebeb6e;
-    color: black;
-}
-
-.gnb>li>ul {
-    position: absolute;
-    top: 70px;
-    left: 0;
-    width: 100%;
-    height: 0;
-    overflow: hidden;
-    transition: all 0.1s ease 0s;
-}
-
-.gnb>li>ul::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1px;
-    height: 93%;
-    border-left: 1px solid gray;
-}
-
-
-
-.gnb>li>ul>li {
-    padding: 8px 15px;
-    transition: all 0.1s ease 0s;
-    /* color: #fff */
-}
-
-.gnb>li>ul>li>a {
-    display: block;
-}
-
-.gnb>li>ul>li>a:hover {
-    color: black;
+.fa-magnifying-glass {
+  font-size: 18px;
 }
 </style>
-  
