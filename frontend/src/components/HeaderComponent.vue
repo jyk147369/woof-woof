@@ -10,8 +10,15 @@
         </h1>
       </div>
       <ul class="top-menu">
-        <li>
-          <i class="fa-solid fa-magnifying-glass"></i>
+        <li class="search-container">
+          <input
+              v-model="searchQuery"
+              @keyup.enter="performSearch"
+              type="text"
+              placeholder="Search..."
+              class="search-box"
+          />
+          <i class="fa-solid fa-magnifying-glass" @click="performSearch"></i>
         </li>
         <li v-show="!isLoggedIn">
           <a href="/signup/member">SignUp</a>
@@ -44,15 +51,23 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const searchQuery = ref('');
+
+const performSearch = () => {
+  if (searchQuery.value.trim() !== '') {
+    router.push({ path: '/search', query: { q: searchQuery.value } });
+  }
+};
+
 const logout = () => {
   sessionStorage.removeItem("atoken");
   router.push("");
   router.go();
-}
+};
 
 const isLoggedIn = computed(() => {
   return sessionStorage.getItem("atoken") !== null;
@@ -90,21 +105,21 @@ header {
 }
 
 .logo {
-  display: flex; /* flex를 사용하여 WOOF 텍스트와 이미지를 한 줄로 정렬 */
+  display: flex;
   align-items: center;
-  gap: 8px; /* 텍스트와 이미지 사이의 간격을 조절 */
+  gap: 8px;
 }
 
 .logo .logo-text {
   font-size: 4rem;
   color: black;
   font-weight: 500;
-  line-height: 1; /* 텍스트의 위아래 간격을 일정하게 조절 */
+  line-height: 1;
 }
 
 .logo img {
-  width: 80px; /* 이미지의 너비를 80px로 설정 */
-  height: 80px; /* 이미지의 높이를 80px로 설정 */
+  width: 80px;
+  height: 80px;
   overflow: hidden;
 }
 
@@ -113,7 +128,7 @@ header {
   align-items: center;
   gap: 20px;
   position: absolute;
-  right: 20px;
+  right: 50px;
 }
 
 .top-menu li {
@@ -134,6 +149,7 @@ header {
   justify-content: center;
   height: 60px;
   align-items: center;
+  border-bottom: 1px solid #00000017;
 }
 
 .gnb {
@@ -158,5 +174,21 @@ header {
 
 .fa-magnifying-glass {
   font-size: 18px;
+  cursor: pointer;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-box {
+  width: 150px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  margin-right: 10px;
+  transition: all 0.3s ease;
 }
 </style>

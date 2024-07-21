@@ -36,21 +36,20 @@
         </a>
       </div>
       <img
-          src="../../public/static/images/baby.jpeg"
+          src="https://github.com/user-attachments/assets/fe32bf1e-55c2-4119-bee6-d450af2bca1b"
           alt="baby"
           style="width: 500px; height: 450px; border-radius: 2px"
       />
     </div>
     <div class="box11 hidden-content">
       <img
-          src="../../public/static/images/clinic.jpeg"
+          src="https://github.com/user-attachments/assets/6600253c-385a-4d1b-ba14-a05c4195071c"
           style="width: 570px; height: 450px; border-radius: 2px"
       />
       <div class="text4">
-        <h2 class="text5">믿을 수 있는<br />업체!</h2>
+        <h2 class="text5">믿을 수 있는 업체!</h2>
         <h3 class="text6">
-          WOOF가 엄선한 업체<br />
-          실제 후기 보고 선택하세요
+          WOOF가 엄선한 업체 믿고 맡겨보세요
         </h3>
         <a href="/productCeo/list"
         ><div class="text7">
@@ -75,7 +74,7 @@
         ></a>
       </div>
       <img
-          src="../../public/static/images/salon.jpg"
+          src="https://github.com/user-attachments/assets/07b9c749-8279-460d-a3f9-f2da1094c167"
           style="width: 500px; height: 450px; border-radius: 2px"
       />
     </div>
@@ -83,6 +82,7 @@
 
   <div class="review2 hidden-content">
     <div class="review3">
+      <img class="partner2" src="https://github.com/user-attachments/assets/0c651c6f-3b6e-4516-83a9-2ee2ac26ad2d">
       <div class="review4">
         <h2 class="review5">WOOF 파트너로 함께해요!</h2>
         <h3 class="banner1">
@@ -99,8 +99,8 @@
       </div>
     </div>
   </div>
-  <ul class="productCeo-list"></ul>
-  <br /><br /><br />
+
+
 </template>
 
 <script>
@@ -439,6 +439,7 @@ export default {
   width: 1116px;
   margin: 0px auto;
   height: 100%;
+  display: flex;
 }
 
 .review4 {
@@ -449,7 +450,7 @@ export default {
 .review5 {
   font-weight: 600;
   letter-spacing: 0.2px;
-  font-size: 47px;
+  font-size: 46px;
   line-height: 70px;
   color: #333333;
 }
@@ -524,7 +525,7 @@ export default {
   top: 0;
   right: -19px;
   z-index: 1;
-overflow: hidden;
+  overflow: hidden;
 }
 .cat{
   object-fit: contain;
@@ -606,5 +607,9 @@ overflow: hidden;
   left: 200px;
   transform: rotate(30deg);
 }
-
+.partner2{
+  width: 500px;
+  height: 500px;
+  transform: translateX(-30px);
+}
 </style>
