@@ -196,7 +196,7 @@ public class ProductService {
         // 조회된 파일 목록을 BoardFileDto 리스트로 변환
         List<ProductFileDto> fileDtos = new ArrayList<>();
 
-        for (ProductImage productImage : productImages){
+        for (ProductImage productImage : productImages) {
             ProductFileDto productFileDto = ProductFileDto.builder()
                     .idx(productImage.getIdx())
                     .originalFilename(productImage.getOriginalFilename())
@@ -216,8 +216,10 @@ public class ProductService {
                     .orElseThrow(() -> new RuntimeException("해당 idx의 업체 정보를 찾을 수 없습니다."));
             productManager.setStatus(1);
             productManagerRepository.save(productManager);
+            return BaseResponse.successRes("PRODUCT_007", true, "매니저 승인 성공.", null);
+        } else {
+            throw MemberAccountException.forInvalidAuthority();
         }
-        return BaseResponse.successRes("PRODUCT_007", true, "매니저 승인 성공.", null);
     }
         // ----------------------------------------------------------------------------------------------- //
 
@@ -239,8 +241,8 @@ public class ProductService {
                 productSchoolRepository.save(productSchool);
 
                 ProductSchoolCreateResult productSchoolCreateResult = ProductSchoolCreateResult.builder()
-                    .idx(productSchool.getIdx())
-                    .build();
+                        .idx(productSchool.getIdx())
+                        .build();
 
                 return BaseResponse.successRes("PRODUCT_008", true, "업체가 등록되었습니다.", productSchoolCreateResult);
             } else {
