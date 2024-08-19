@@ -277,7 +277,6 @@ public class ProductService {
         }
     }
 
-    // ----------------------------------------------------------------------------------------------- //
 
     @Transactional
     public BaseResponse<ProductSchoolCreateResult> createSchool(ProductSchoolCreateReq productSchoolCreateReq) {
@@ -499,7 +498,6 @@ public class ProductService {
         }
     }
 
-    // ----------------------------------------------------------------------------------------------- //
 
     @Transactional
     public String makeFolder() {

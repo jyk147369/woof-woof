@@ -47,7 +47,7 @@
     </div>
   </form>
 </template>
-  
+
 <script>
 
 import { mapStores } from 'pinia'
@@ -97,7 +97,7 @@ export default {
   }
 };
 </script>
-  
+
 <style scoped>
 .specialsalebanner {
   text-align: center;

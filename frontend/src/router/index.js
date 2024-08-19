@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import AboutPage from "@/pages/AboutPage.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainPage from "@/pages/MainPage.vue";
+import SearchResults from '@/pages/SearchResults.vue';
+
 
 
 import SignupPage from "@/pages/SignupPage.vue";
@@ -105,9 +106,9 @@ const routes = [
       { path: "mylist", component: OrdersMyList },
     ],
   },
-  { path: "/about", component: AboutPage  },
   { path: "/mypage", component: MyPage  },
   { path: "/", component: MainPage  },
+  { path: "/search", component: SearchResults },
 ];
 
 const router = createRouter({

@@ -1,19 +1,11 @@
 <template>
-    <div class="all">
-<div class="ordersBanner">
-    <!-- <img src= alt="earbudsbanner"> -->
-    <div class="ordersBannerTxt">
-        <h1>새로운 일상을 위하여</h1>
-        <h2>반려가족의 일상에 우프가 함께하겠습니다</h2>
-    </div>
-</div>
-</div>
+
 <router-view></router-view>
 </template>
 
 <script>
     export default {
-        
+
     }
 </script>
 
@@ -28,7 +20,7 @@
     background-image: url(https://media.istockphoto.com/id/1356431581/ko/%EC%82%AC%EC%A7%84/%EC%95%A0%EC%99%84-%EB%8F%99%EB%AC%BC-%EC%86%8C%EC%9C%A0%EC%9E%90-%EC%9E%AC%EC%83%9D-%EC%99%80-%EA%B7%B8%EB%85%80%EC%9D%98-%EA%B5%AD%EA%B2%BD-%EC%BD%9C%EB%A6%AC-%EC%95%BC%EC%99%B8.jpg?s=2048x2048&w=is&k=20&c=tMPhUV9VW3lNRiuja8YJ_Qi6yJ2MVNVJwiKeWoyGKto=);
     background-size: cover;
     background-position: 50% 30%;
-  
+
   }
   .ordersBanner>img:nth-of-type(1){
     position: absolute;
@@ -79,14 +71,14 @@
 
 .service> #userPlace>label > input{
     color: black;
-    background-color: #faef71;
+    background-color: #ffe300;
     width: 26px;
     height: 26px;
     border: none;
     border-radius: 10px;
     margin-left: 19px;
     margin-right: 7px;
-    accent-color: #faef71;
+    accent-color: #ffcc00;
 }
 
 .userservice:first-child{
