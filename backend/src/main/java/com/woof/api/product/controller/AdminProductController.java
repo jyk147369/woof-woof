@@ -1,7 +1,6 @@
 package com.woof.api.product.controller;
 
 import com.woof.api.common.BaseResponse;
-import com.woof.api.product.model.response.ProductManagerListRes;
 import com.woof.api.product.model.response.ProductManagerReadRes;
 import com.woof.api.product.model.response.ProductSchoolReadRes;
 import com.woof.api.product.service.ProductService;

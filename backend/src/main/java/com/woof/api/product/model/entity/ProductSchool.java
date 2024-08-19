@@ -19,6 +19,7 @@ import java.util.List;
 @SuperBuilder
 public class ProductSchool extends BaseEntity {
     private String ceoName;         // 유치원장님 이름
+    private Long ceoIdx;
     private String storeName;       // 유치원 이름
     private String businessNum;     // 유치원 번호
     private String productName;     // 코스 이름

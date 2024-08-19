@@ -19,6 +19,7 @@ import java.util.List;
 @SuperBuilder
 public class ProductManager extends BaseEntity {
     private String managerName;     // 매니저 이름
+    private Long managerIdx;
     private String gender;          // 매니저 성별
     private String businessNum;     // 매니저 번호
     private Integer price;          // 매니저 1달 이용 가격

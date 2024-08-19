@@ -1,9 +1,9 @@
 <template>
-  <a class="page-item" :href="'/productCeo/detail/' + productCeo?.idx">
+  <a class="page-item" :href="'/product/school/detail/' + productSchool?.idx">
     <div class="item-wrapper">
       <div class="item-image-wrapper">
         <div class="item-image">
-          <img class="item-back-image" :src="productCeo.filename" />
+          <img class="item-back-image" :src="productSchool.filename" />
         </div>
       </div>
       <div class="item-info-wrapper">
@@ -18,10 +18,10 @@
           </div>
           <!-- 나중에 프로필사진 추가로 넣는 기능 만들면 추가 -->
           <p class="item-info-profille-name">
-            {{ productCeo.storeName }}
+            {{ productSchool.storeName }}
           </p>
           <p class="item-info-profille-message">
-            {{ productCeo.contents }}
+            {{ productSchool.contents }}
           </p>
           <div class="item-info-review-wrapper">
             <div class="item-info-review">
@@ -40,7 +40,7 @@
           <div class="item-bottom-type-wrapper">
             <p class="item-bottom-type">영상 / 방문</p>
           </div>
-          <p class="item-bottom-price">₩{{ productCeo.price }}</p>
+          <p class="item-bottom-price">₩{{ productSchool.price }}</p>
         </div>
       </div>
     </div>
@@ -50,7 +50,7 @@
 <script>
 export default {
   name: "CardComponent",
-  props: ["productCeo"],
+  props: ["productSchool"],
 };
 </script>
 
