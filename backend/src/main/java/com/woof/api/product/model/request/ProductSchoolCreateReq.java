@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 public class ProductSchoolCreateReq {
     private String storeName;
-    private String businessNum;
+//    private String businessNum; // 매니저 번호 > member에서 가져오기 때문에 주석처리
     private String productName;
-    private Integer phoneNumber;
+//    private Integer phoneNumber; // 매니저 번호 > member에서 가져오기 때문에 주석처리
     private Integer price;
     private String contents;
 }

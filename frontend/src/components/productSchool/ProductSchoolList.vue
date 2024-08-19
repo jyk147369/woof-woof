@@ -6,30 +6,30 @@
     </div>
 
   <div id="ceo-page-list">
-    <ProductCeoCardComponent v-for="productCeo in productStore.productCeoList" :key="productCeo.idx" :productCeo="productCeo"/>
+    <ProductSchoolCardComponent v-for="productSchool in productSchoolStore.productSchoolList" :key="productSchool.idx" :productSchool="productSchool"/>
   </div>
 </template>
 
-  
+
 <script>
 import { mapStores } from 'pinia'
-import { useProductStore } from '@/stores/useProductStore';
+import { useProductSchoolStore } from '@/stores/useProductSchoolStore';
 
-import ProductCeoCardComponent from '@/components/productCeo/ProductCeoCardComponent.vue'
+import ProductSchoolCardComponent from '@/components/productSchool/ProductSchoolCardComponent.vue'
 export default {
-    name: 'ProductCeoPage',
+    name: 'ProductSchoolPage',
     components: {
-      ProductCeoCardComponent
+      ProductSchoolCardComponent
     },
     computed: {
-        ...mapStores(useProductStore)
+        ...mapStores(useProductSchoolStore)
     },
     mounted() {
-        this.productStore.getProductCeoList()
+        this.productSchoolStore.getProductSchoolList()
     },
     methods: {
       goToProductCreatePage() {
-      this.$router.push("/productCeo/create");
+      this.$router.push("/product/school/create");
     },
     }
 }

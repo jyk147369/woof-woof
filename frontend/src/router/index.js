@@ -28,11 +28,11 @@ import OrdersMyList from "@/components/orders/OrdersMyList.vue";
 
 
 
-import ProductCeoPage from "@/pages/ProductCeoPage.vue";
-import ProductCeoList from  "@/components/productCeo/ProductCeoList.vue"
-import ProductCeoCreate from  "@/components/productCeo/ProductCeoCreate.vue"
-import ProductCeoDetail from  "@/components/productCeo/ProductCeoDetail.vue"
-import ProductCeoUpdate from  "@/components/productCeo/ProductCeoUpdate.vue"
+import ProductSchoolPage from "@/pages/ProductSchoolPage.vue";
+import ProductSchoolList from "@/components/productSchool/ProductSchoolList.vue"
+import ProductSchoolCreate from "@/components/productSchool/ProductSchoolCreate.vue"
+import ProductSchoolDetail from "@/components/productSchool/ProductSchoolDetail.vue"
+import ProductSchoolUpdate from "@/components/productSchool/ProductSchoolUpdate.vue"
 
 import ProductManagerPage from "@/pages/ProductManagerPage.vue";
 import ProductManagerList from  "@/components/productManager/ProductManagerList.vue"
@@ -52,18 +52,18 @@ const routes = [
   { path: "/manager", component: ProductManagerPage, beforeEnter: requireAuth() },
 
   {
-    path: "/productCeo",
-    component: ProductCeoPage,
+    path: "/product/school",
+    component: ProductSchoolPage,
     children: [
-      { path: "list", component: ProductCeoList },
-      { path: "create", component: ProductCeoCreate },
-      { path: "detail/:idx", component: ProductCeoDetail },
-      { path: "update", component: ProductCeoUpdate },
+      { path: "list", component: ProductSchoolList },
+      { path: "create", component: ProductSchoolCreate },
+      { path: "detail/:idx", component: ProductSchoolDetail },
+      { path: "update", component: ProductSchoolUpdate },
     ],
   },
 
   {
-    path: "/productManager",
+    path: "/product/manager",
     component: ProductManagerPage,
     children: [
       { path: "list", component: ProductManagerList },
